@@ -1,0 +1,508 @@
+library(shiny)
+library(shinyjs)
+library(plotly)
+library(DT)
+library(readxl)
+
+markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
+
+n = 35000
+x<-rnorm(n, mean = 10, sd = 2)
+y<-rnorm(n, mean = 100, sd = 25)
+z<-rnorm(n, mean = 50, sd = 50)
+ind <- c(rep("group1",n))
+df1 = data.frame(x,y,z, ind)
+x<-rnorm(n, mean = 20, sd = 3)
+y<-rnorm(n, mean = 50, sd = 25)
+z<-rnorm(n, mean = 100, sd = 10)
+ind <- c(rep("group2",n))
+df2 = data.frame(x,y,z, ind)
+df <-rbind(df1, df2)
+x<-rnorm(n, mean = 30, sd = 50)
+y<-rnorm(n, mean = 100, sd = 15)
+z<-rnorm(n, mean = 5, sd = 10)
+ind <- c(rep("group3",n))
+df3 = data.frame(x,y,z, ind)
+df <-rbind(df, df3)
+
+df$group1 <- sample(c(1, 2, 3,4,5), n*3, replace = TRUE)
+df$group2 <- sample(c('A', 'B', 'C', 'D','E','F','G', 'H', 'I','J','K','L','M','N','O','P','Q','R','S','T','U'), n*3, replace = TRUE)
+df$group3 <- sample(c('athff', 'rhe', 'erjgel', 'ejg','ejgle','epgt','bb', 'qljrqlr', 'mbndkbn', 'gag', 'ttpgi', 'egiep'), n*3, replace = TRUE)
+df$group4 <- sample(rnorm(1000, mean = 5, sd = 3), n*3, replace = TRUE)
+df$pk = c(1:(n*3))
+
+
+xformMatrix <- function(m,v) {
+  out = c(0,0,0,0)
+  for (i in 1:4) {
+    for (j in 1:4) {
+      out[j] = out[j] + m[4*(i-1) + j] * v[i]
+    }
+  }
+  return(out)
+}
+
+projectVertex <- function(v, model, view, projection, resolution) {
+  p = xformMatrix(projection,
+                  xformMatrix(view, 
+                              xformMatrix(model, c(v[1],v[2],v[3],1.0))))
+  for (i in 1:4) {
+    p[i] = p[i]/p[4]
+  }
+  if ((p[3]+1)*0.5 > 1) {
+    p[1] = -1
+    p[2] = -1
+  }
+  else {
+    p[1] = 0.5 * resolution[1] * (1.0+p[1])
+    p[2] = 0.5 * resolution[2] * (1.0+p[2])
+  }
+  return(c(p[1], p[2]))
+}
+
+js_code <-"
+  shinyjs.plot3d = function(mydiv){
+    console.log(mydiv[1])
+
+    var data = []
+    
+    if (mydiv[5]) {
+    
+      colsels = [
+        '#1f77b4',
+        '#ff7f0e',
+        '#2ca02c',
+        '#d62728',
+        '#9467bd',
+        '#8c564b',
+        '#e377c2',
+        '#7f7f7f',
+        '#bcbd22',
+        '#17becf'
+      ];
+      
+      var cats = mydiv[4].filter((v,i,a) => a.indexOf(v)===i)
+      console.log(cats)
+      
+      var catcols = {}
+      var styledict = {}
+      
+      for (isl=0; isl<cats.length;isl++) {
+        catcols[cats[isl]] = colsels[isl]
+        styledict[cats[isl]] = {target: cats[isl], value: {marker: {color: colsels[isl], symbol: mydiv[7], size:mydiv[6]}}}
+      }
+      
+      console.log(catcols)
+      console.log(styledict)
+      
+      globalstyles = Object.values(styledict)
+      console.log(globalstyles)
+      
+      data = [
+        {
+          opacity:1,
+          type: 'scatter3d',
+          mode: 'markers',
+          
+          x: mydiv[1],
+          y: mydiv[2],
+          z: mydiv[3],
+          
+          text: mydiv[4],
+          hoverinfo:'text',
+          transforms: [{
+            type: 'groupby',
+            groups: mydiv[4],
+            styles: globalstyles
+          }]
+        }
+      ];
+    }
+    else{
+      data = [
+        {
+          opacity:1,
+          type: 'scatter3d',
+          mode: 'markers',
+          
+          x: mydiv[1],
+          y: mydiv[2],
+          z: mydiv[3],
+          
+          text: mydiv[4],
+          hoverinfo:'text',
+          
+          marker: {
+            size: mydiv[6],
+            symbol: mydiv[7],
+            color: mydiv[4],
+            colorbar: {thickness:20}
+          }
+        }
+      ];
+    }
+    
+    var camera= {
+      'eye': {'x':0, 'y':1, 'z':0},
+      'up': {'x':0, 'y':0, 'z':1},
+      'center': {'x':0, 'y':0, 'z':0},
+    }
+    
+    var gd3D = document.getElementById('mydiv');
+    
+    if(gd3D.className !== 'myplot') {
+      camera=gd3D._fullLayout.scene.camera;
+    }
+    
+    var layout = {
+      autosize: false,
+      width:600,
+      height:600,
+      scene: {
+        aspectmode: 'manual',
+        aspectratio: {
+          x:1, y:1, z:1,
+        },
+        xaxis: {
+          nticks: 5,
+          autorange: true,
+        },
+        yaxis: {
+          nticks: 5,
+          autorange: true,
+        },
+        zaxis: {
+          nticks: 5,
+          autorange: true,
+        },
+        camera: camera
+      }
+    };
+    
+    var graphDiv3D = document.getElementById(mydiv[0])
+    
+    Plotly.newPlot(graphDiv3D,data,layout)
+    
+  }
+  "
+
+ui <- fluidPage(
+  useShinyjs(),
+  extendShinyjs(text = js_code, functions = c('plot3d')),
+  tags$head(
+    tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
+  ),
+  titlePanel("T-SNE 3D Scatterplot"),
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("file_ID", label = "TODO", buttonLabel = 'TODO', placeholder = 'TODO', accept = c(".csv", ".xlsx")),
+      selectInput("x_col", label = "X-Axis", choices = colnames(df), selected = colnames(df[1])),
+      selectInput("y_col", label = "Y-Axis", choices = colnames(df), selected = colnames(df[2])),
+      selectInput("z_col", label = "Z-Axis", choices = colnames(df), selected = colnames(df[3])),
+      selectInput("indicator_col", "Indicator", choices = colnames(df), selected = colnames(df[5])),
+      actionButton('show', 'Generate Plot'),
+      br(),
+      br(),
+      checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
+    ),
+    mainPanel(
+      fluidRow(
+        column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
+        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
+      ),
+      tabsetPanel(
+        tabPanel("3D Plot",
+                 br(),
+                 htmlOutput("text"),
+                 actionButton('getParam', 'Save View to Project'),
+                 actionButton('project2D', "Project to 2D"),
+                 tags$body(
+                   tags$div(id='mydiv', class = 'myplot')
+                 )),
+        tabPanel("2D Lasso",
+                 br(),
+                 textInput("points_names", label = "Name of Selected Points"),
+                 actionButton("add_to_list", label = "Add Points to Export List"),
+                 plotlyOutput("plot2d")),
+        tabPanel("View Export Dataset",
+                 br(),
+                 actionButton("clear", label = "Clear Export List"),
+                 br(),
+                 br(),
+                 DTOutput("Export_Dataset"))
+      )
+    )
+  )
+)
+
+server <- function (input, output, session) {
+  
+  shinyjs::disable("add_to_list")
+  shinyjs::disable("getParam")
+  shinyjs::disable("project2D")
+  
+  mydata <- reactive({
+    
+    inFile <- input$file_ID
+    
+    if (is.null(inFile)){
+      return(df)
+    }
+    else {
+      if (grepl( "xlsx", inFile$name, fixed = TRUE)){
+        print("yes")
+        df = read_excel(inFile$datapath)
+        df = data.frame(df)
+        print(sapply(df,class))
+        return (df)
+      }
+      else {
+        print ("no")
+        df <- read.csv(inFile$datapath)
+        df = data.frame(df)
+        return (df)
+      }
+    }
+  })
+  
+  columnType <- reactive({
+    sapply(mydata(),class)
+  })
+  
+  pkDataset <- reactiveValues(
+    data = data.frame(),
+  )
+  
+  exportDataset <- reactiveValues(
+    data = data.frame()
+  )
+  
+  projectedData <- reactiveValues(
+    data = data.frame(),
+  )
+  
+  factor_value <- reactiveVal(TRUE)
+  
+  output$text <- renderText({
+    paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
+  })
+  
+  observeEvent(input$indicator_col, {
+    print(columnType())
+    df = mydata()
+    if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
+      factor_value(TRUE)
+      updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                               choices = unique(df[[input$indicator_col]] %>% sort()),
+                               selected = unique(df[[input$indicator_col]]))
+    }
+    else {
+      factor_value(FALSE)
+      updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                               choices = "Not a Factor",
+                               selected = "Not a Factor")
+    }
+  })
+  
+  filterData <- eventReactive(input$indicator_values_filter,{
+    df = mydata()
+    if (factor_value()) {
+      df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
+    }
+    else{
+     df <- df
+    }
+  })
+  
+  observeEvent(input$file_ID,{
+    exportDataset$data = data.frame()
+    df = mydata()
+    updateSelectInput(session, "x_col", choices = colnames(df), selected = colnames(df[1]))
+    updateSelectInput(session, "y_col", choices = colnames(df), selected = colnames(df[2]))
+    updateSelectInput(session, "z_col", choices = colnames(df), selected = colnames(df[3]))
+    updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+  })
+  
+  observeEvent(input$show,{
+    showModal(modalDialog(
+      paste0("Plotting..."),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+    print(nrow(exportDataset$data))
+    print(nrow(filterData()))
+    ind = filterData()[[input$indicator_col]]
+    x = filterData()[[input$x_col]]
+    y = filterData()[[input$y_col]]
+    z = filterData()[[input$z_col]]
+    #ind = df[[input$indicator_col]]
+    #print('hello world')
+    js$plot3d('mydiv', x, y, z, ind, factor_value(), input$marker, input$shape)
+    removeModal()
+    shinyjs::enable("getParam")
+  })
+  
+  observeEvent(input$getParam, {
+    runjs("
+      var plotElement = document.getElementById('mydiv');
+      var camera = plotElement._fullLayout.scene._scene.glplot.cameraParams
+      var scene = plotElement._fullLayout.scene._scene
+      console.log(plotElement._fullLayout.scene._scene.glplot)
+      console.log(camera)
+      console.log(scene)
+      Shiny.onInputChange('view',camera.view);
+      Shiny.onInputChange('model',camera.model);
+      Shiny.onInputChange('projection',camera.projection);
+      Shiny.onInputChange('dataScale',scene.dataScale)
+    ")
+    showModal(modalDialog(
+      paste0("Projection View Saved"),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+    shinyjs::enable("project2D")
+  })
+  
+  observeEvent(input$project2D, {
+    
+    showModal(modalDialog(
+      paste0("Please wait, projecting to 2D"),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+    
+    x2d = c()
+    y2d = c()
+    pk = c()
+    indicator = c()
+    
+    projectedData$data = data.frame()
+    print(nrow(filterData()))
+    ind = filterData()[[input$indicator_col]]
+    x = filterData()[[input$x_col]]
+    y = filterData()[[input$y_col]]
+    z = filterData()[[input$z_col]]
+    pkCol = filterData()[['pk']]
+    for (ai in 1: length(pkCol)) {
+      vp = c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
+      transformed = projectVertex(vp, input$model, input$view, input$projection, c(1,1))
+      
+      x2d[ai] = transformed[1]
+      y2d[ai] = transformed[2]
+      indicator[ai] = ind[ai]
+      pk[ai] = pkCol[ai]
+    }
+    transformed1 = data.frame(x = x2d,y = y2d,indicator,pk)
+    projectedData$data <- rbind(projectedData$data, transformed1)
+  })
+  
+  
+  observeEvent(input$project2D, {
+    output$plot2d <- renderPlotly({
+      fig2d <- plot_ly(source = "2dplot",
+                       width = 600,
+                       height = 600) %>%
+        add_markers(data = projectedData$data,
+                    x = as.formula(paste0("~","x")), 
+                    y = as.formula(paste0("~","y")),
+                    type = "scatter",
+                    mode = "markers",
+                    color = as.formula(paste0("~",'indicator')),
+                    text = paste(projectedData$data[['indicator']]),
+                    #color = as.formula(paste0("~",input$indicator_col)),
+                    #text = paste(projectedData$data[[input$indicator_col]]),
+                    hoverinfo = "text")
+      
+      fig2d <- fig2d %>% layout(
+          xaxis = list(range=c(0,1)),
+          yaxis = list(range=c(0,1))
+        )
+      
+      fig2d <- fig2d %>% layout(
+        dragmode = "lasso"
+      )
+    })
+    showModal(modalDialog(
+      paste0("Projecting to 2D has been completed"),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+    
+    shinyjs::disable("project2D")
+  })
+  
+  observeEvent({event_data("plotly_selected", source = "2dplot"); input$points_names}, {
+    if (length(event_data("plotly_selected", source = "2dplot")) & input$points_names != "") {
+      shinyjs::enable("add_to_list")
+    }
+    else{
+      shinyjs::disable("add_to_list")
+    }
+  })
+  
+  observeEvent(input$add_to_list, {
+    
+    df = mydata()
+    
+    pkDataset$data <- data.frame()
+    selected_points <- event_data("plotly_selected", source = "2dplot")
+    
+    indicator_col_values = unique(projectedData$data[['indicator']]) %>% sort
+    
+    num_selected_points <- nrow(selected_points)
+    
+    if (factor_value()) {
+      for (i in 1:num_selected_points) {
+        curveNum = selected_points[i,]$curveNumber
+        pointNum = selected_points[i,]$pointNumber
+        filtered_data = filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
+        #print('Hello World')
+        #print(filtered_data[pointNum+1,'pk'])
+        filtered_data = filtered_data[pointNum+1,]
+        #filtered_data$InterestPoint = input$points_names
+        pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
+      }
+    }
+    else {
+      filtered_data = projectedData$data[selected_points$pointNumber+1,]
+      #filtered_data$InterestPoint = input$points_names
+      pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
+    }
+    print(pkDataset$data)
+    pk = pkDataset$data
+    exportData = df[df$pk %in% pk$pk,]
+    #change annotation to replot 3d in future
+    #df[df$pk %in% pk$pk,]$ind = 'Hi'
+    exportData$InterestPoint = input$points_names
+    exportDataset$data = rbind(exportDataset$data, exportData)
+    print(exportDataset$data)
+  })
+  
+  observeEvent(input$clear, {
+    exportDataset$data = data.frame()
+  })
+  
+  output$Export_Dataset <- renderDT(server = FALSE,{
+    DT::datatable(exportDataset$data,
+                  rownames = FALSE,
+                  extensions = 'Buttons',
+                  options = list(pageLength = 10,
+                                 dom = 'Bfrtip',
+                                 buttons = c('copy', 'csv', 'excel')))
+  })
+  
+}
+
+shinyApp(ui, server)
+
+
+
+
+
+
+
+
+
+
+
+
