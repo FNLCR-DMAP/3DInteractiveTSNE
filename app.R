@@ -199,7 +199,7 @@ ui <- fluidPage(
       selectInput("x_col", label = "X-Axis", choices = colnames(df), selected = colnames(df[1])),
       selectInput("y_col", label = "Y-Axis", choices = colnames(df), selected = colnames(df[2])),
       selectInput("z_col", label = "Z-Axis", choices = colnames(df), selected = colnames(df[3])),
-      selectInput("indicator_col", "Indicator", choices = colnames(df), selected = colnames(df[5])),
+      selectInput("indicator_col", "Indicator", choices = colnames(df), selected = colnames(df[4])),
       actionButton('show', 'Generate Plot'),
       br(),
       br(),
@@ -335,8 +335,6 @@ server <- function (input, output, session) {
     x = filterData()[[input$x_col]]
     y = filterData()[[input$y_col]]
     z = filterData()[[input$z_col]]
-    #ind = df[[input$indicator_col]]
-    #print('hello world')
     js$plot3d('mydiv', x, y, z, ind, factor_value(), input$marker, input$shape)
     removeModal()
     shinyjs::enable("getParam")
@@ -394,10 +392,10 @@ server <- function (input, output, session) {
     }
     transformed1 = data.frame(x = x2d,y = y2d,indicator,pk)
     projectedData$data <- rbind(projectedData$data, transformed1)
-  })
-  
-  
-  observeEvent(input$project2D, {
+    
+    projectedData$data <- projectedData$data[projectedData$data['x'] >= 0 & projectedData$data['x'] <= 1,]
+    projectedData$data <- projectedData$data[projectedData$data['y'] >= 0 & projectedData$data['y'] <= 1,]
+    
     output$plot2d <- renderPlotly({
       fig2d <- plot_ly(source = "2dplot",
                        width = 600,
@@ -409,8 +407,6 @@ server <- function (input, output, session) {
                     mode = "markers",
                     color = as.formula(paste0("~",'indicator')),
                     text = paste(projectedData$data[['indicator']]),
-                    #color = as.formula(paste0("~",input$indicator_col)),
-                    #text = paste(projectedData$data[[input$indicator_col]]),
                     hoverinfo = "text")
       
       fig2d <- fig2d %>% layout(
@@ -448,6 +444,7 @@ server <- function (input, output, session) {
     selected_points <- event_data("plotly_selected", source = "2dplot")
     
     indicator_col_values = unique(projectedData$data[['indicator']]) %>% sort
+    print(indicator_col_values)
     
     num_selected_points <- nrow(selected_points)
     
@@ -456,23 +453,17 @@ server <- function (input, output, session) {
         curveNum = selected_points[i,]$curveNumber
         pointNum = selected_points[i,]$pointNumber
         filtered_data = filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
-        #print('Hello World')
-        #print(filtered_data[pointNum+1,'pk'])
         filtered_data = filtered_data[pointNum+1,]
-        #filtered_data$InterestPoint = input$points_names
         pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
       }
     }
     else {
       filtered_data = projectedData$data[selected_points$pointNumber+1,]
-      #filtered_data$InterestPoint = input$points_names
       pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
     }
     print(pkDataset$data)
     pk = pkDataset$data
     exportData = df[df$pk %in% pk$pk,]
-    #change annotation to replot 3d in future
-    #df[df$pk %in% pk$pk,]$ind = 'Hi'
     exportData$InterestPoint = input$points_names
     exportDataset$data = rbind(exportDataset$data, exportData)
     print(exportDataset$data)
@@ -494,15 +485,3 @@ server <- function (input, output, session) {
 }
 
 shinyApp(ui, server)
-
-
-
-
-
-
-
-
-
-
-
-
