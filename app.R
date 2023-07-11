@@ -7,7 +7,7 @@ library(readxl)
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
 
-df = generate_random_sample_data(150000) # takes total number of points as an argument
+df = generate_random_sample_data(300000) # takes total number of points as an argument
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
