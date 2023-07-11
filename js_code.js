@@ -1,5 +1,5 @@
-
   shinyjs.plot3d = function(mydiv){
+
     console.log(mydiv[1])
 
     var data = []
