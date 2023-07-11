@@ -1,5 +1,4 @@
-  shinyjs.plot3d = function(mydiv){
-
+shinyjs.plot3d = function(mydiv){
     console.log(mydiv[1])
 
     var data = []
@@ -122,3 +121,5 @@
     Plotly.newPlot(graphDiv3D,data,layout)
     
   }
+  
+  

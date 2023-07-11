@@ -19,8 +19,7 @@ projectVertex <- function(v, model, view, projection, resolution) {
   if ((p[3]+1)*0.5 > 1) {
     p[1] = -1
     p[2] = -1
-  }
-  else {
+  } else {
     p[1] = 0.5 * resolution[1] * (1.0+p[1])
     p[2] = 0.5 * resolution[2] * (1.0+p[2])
   }
