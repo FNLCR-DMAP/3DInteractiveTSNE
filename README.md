@@ -15,13 +15,13 @@ For many single cell analysis, the studies contains much larger number of cell ~
 - To get the projection from 3D view onto 2D view, the user would have to click 2 seperate button instead of 1. the first click is to get the parameters, while the second click is to start projecting onto 2D.
 
 ## Code Walkthrough
-- There are 2 functions in this app that are used to project 3D onto 2D, they are:
-  - xformMatrix
-  - projectVertex
+matrix_functions.R File contains 2 functions that this app uses to project 3D onto 2D, they are:
+- xformMatrix
+- projectVertex
  
-Together they project each x,y,z datapoint onto x, y plane, point by point. So depending on how many datapoints are being ploted, this transformation from 3D to 2D could take a while. A progress bar has since been added to track how far along the transformation is.
+Together they project each x,y,z datapoint onto x, y plane, point by point. So depending on how many datapoints are being ploted, this transformation from 3D to 2D could take a while. A progress bar has since been added to track how far along the transformation is.<br>
 
-- the jscode script is the code that is used to plot the 3D scatter plot using plotly.js
+js_code.js file contains the js script that is used to plot the 3D scatter plot using plotly.js with shinyjs.
 
 ## Test Datasets Used
 These were the datasets used during the testing phase, they are all currently hosted in NIDAP.<br>
