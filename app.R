@@ -62,6 +62,7 @@ server <- function (input, output, session) {
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
   print("hello from GIT")
+  print("Hello from rstudio")
   mydata <- reactive({
     df = generate_random_sample_data(50000) # takes total number of points as an argument
   })
