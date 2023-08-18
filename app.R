@@ -2,12 +2,9 @@ library(shiny)
 library(shinyjs)
 library(plotly)
 library(DT)
-library(readxl)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
-
-df = generate_random_sample_data(300000) # takes total number of points as an argument
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
@@ -20,11 +17,10 @@ ui <-  fluidPage(
   titlePanel("T-SNE 3D Scatterplot"),
   sidebarLayout(
     sidebarPanel(
-      fileInput("file_ID", label = "TODO", buttonLabel = 'TODO', placeholder = 'TODO', accept = c(".csv", ".xlsx")),
-      selectInput("x_col", label = "X-Axis", choices = colnames(df), selected = colnames(df[1])),
-      selectInput("y_col", label = "Y-Axis", choices = colnames(df), selected = colnames(df[2])),
-      selectInput("z_col", label = "Z-Axis", choices = colnames(df), selected = colnames(df[3])),
-      selectInput("indicator_col", "Indicator", choices = colnames(df), selected = colnames(df[4])),
+      selectInput("x_col", label = "X-Axis", choices = NULL),
+      selectInput("y_col", label = "Y-Axis", choices = NULL),
+      selectInput("z_col", label = "Z-Axis", choices = NULL),
+      selectInput("indicator_col", "Indicator", choices = NULL),
       actionButton('show', 'Generate Plot'),
       br(),
       br(),
@@ -67,27 +63,7 @@ server <- function (input, output, session) {
   shinyjs::disable("project2D")
   
   mydata <- reactive({
-    
-    inFile <- input$file_ID
-    
-    if (is.null(inFile)){
-      return(df)
-    }
-    else {
-      if (grepl( "xlsx", inFile$name, fixed = TRUE)){ # MAY BE DEFUNCT FOR READING IN NIDAP DATA
-        # # print("yes")
-        df = read_excel(inFile$datapath)
-        df = data.frame(df)
-        # print(sapply(df,class))
-        return (df)
-      }
-      else {
-        print ("no")
-        df <- read.csv(inFile$datapath)
-        df = data.frame(df)
-        return (df)
-      }
-    }
+    df = generate_random_sample_data(50000) # takes total number of points as an argument
   })
   
   columnType <- reactive({
@@ -112,20 +88,34 @@ server <- function (input, output, session) {
     paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
   })
   
+  #Update Feature Selection and Check if indicator column contains factors.
+  #Factors includes columns that have type character or factor
   observeEvent(input$indicator_col, {
-    # print(columnType())
-    df = mydata()
-    if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
-      factor_value(TRUE)
-      updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
-                               choices = unique(df[[input$indicator_col]] %>% sort()),
-                               selected = unique(df[[input$indicator_col]]))
+    if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
+      df = mydata()
+      unique_values = unique(df[[input$indicator_col]] %>% sort())
+      if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
+        factor_value(TRUE)
+        updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                                 choices = unique_values,
+                                 selected = unique_values)
+      }
+      else {
+        factor_value(FALSE)
+        updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                                 choices = "Not a Factor",
+                                 selected = "Not a Factor")
+      }      
+    }
+  })
+  
+  #Disable Generate button if no features are chosen
+  observe({
+    if (length(input$indicator_values_filter) > 0) {
+      shinyjs::enable("show")
     }
     else {
-      factor_value(FALSE)
-      updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
-                               choices = "Not a Factor",
-                               selected = "Not a Factor")
+      shinyjs::disable("show")
     }
   })
   
@@ -134,12 +124,10 @@ server <- function (input, output, session) {
     if (factor_value()) {
       df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
     }
-    else{
-      df <- df
-    }
+    return(df)
   })
   
-  observeEvent(input$file_ID,{
+  observe({
     exportDataset$data = data.frame()
     df = mydata()
     updateSelectInput(session, "x_col", choices = colnames(df), selected = colnames(df[1]))
@@ -206,15 +194,23 @@ server <- function (input, output, session) {
     y = filterData()[[input$y_col]]
     z = filterData()[[input$z_col]]
     pkCol = filterData()[['pk']]
-    for (ai in 1: length(pkCol)) {
-      vp = c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
-      transformed = projectVertex(vp, input$model, input$view, input$projection, c(1,1))
-      
-      x2d[ai] = transformed[1]
-      y2d[ai] = transformed[2]
-      indicator[ai] = ind[ai]
-      pk[ai] = pkCol[ai]
-    }
+    
+    #progress bar
+    withProgress(message = 'Transforming Points',
+                 value = 0,{
+      for (ai in 1: length(pkCol)) {
+        vp = c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
+        transformed = projectVertex(vp, input$model, input$view, input$projection, c(1,1))
+                     
+        x2d[ai] = transformed[1]
+        y2d[ai] = transformed[2]
+        indicator[ai] = ind[ai]
+        pk[ai] = pkCol[ai]
+        
+        incProgress(amount = 1/length(pkCol), detail = paste(ai, "of", length(pkCol)))
+      } 
+    })
+ 
     transformed1 = data.frame(x = x2d,y = y2d,indicator,pk)
     projectedData$data <- rbind(projectedData$data, transformed1)
     

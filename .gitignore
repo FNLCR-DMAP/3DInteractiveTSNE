@@ -1,1 +1,10 @@
 .Rhistory
+_auth0.yml
+.Rproj.user
+rsconnect/
+.DS_Store
+.Rprofile
+3DInteractiveTSNE.Rproj
+renv.lock
+renv/
+
