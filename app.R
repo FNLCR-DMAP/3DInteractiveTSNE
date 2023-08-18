@@ -17,6 +17,7 @@ ui <-  fluidPage(
   titlePanel("T-SNE 3D Scatterplot"),
   sidebarLayout(
     sidebarPanel(
+      textOutput("This change came from pushing to git!"),
       selectInput("x_col", label = "X-Axis", choices = NULL),
       selectInput("y_col", label = "Y-Axis", choices = NULL),
       selectInput("z_col", label = "Z-Axis", choices = NULL),
