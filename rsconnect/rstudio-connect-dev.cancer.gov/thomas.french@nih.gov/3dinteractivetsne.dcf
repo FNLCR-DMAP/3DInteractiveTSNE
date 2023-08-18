@@ -1,0 +1,13 @@
+name: 3dinteractivetsne
+title: 3DInteractiveTSNE
+username: thomas.french@nih.gov
+account: thomas.french@nih.gov
+server: rstudio-connect-dev.cancer.gov
+hostUrl: https://rstudio-connect-dev.cancer.gov/__api__
+appId: 173
+bundleId: 843
+url: https://rstudio-connect-dev.cancer.gov/content/5d0fd2f0-1f53-4115-b1b0-9599276ef4cf/
+when: 1692373044.61068
+lastSyncTime: 1692373044.61069
+asMultiple: FALSE
+asStatic: FALSE
