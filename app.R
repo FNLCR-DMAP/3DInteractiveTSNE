@@ -62,12 +62,12 @@ ui <-  fluidPage(
 server <- function (input, output, session) {
   
   auth_token <- session$userData$auth0_credentials$access_token
-  
-  url2 <- "https://nidap.nih.gov/api/v1/datasets/ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a/files/tSNE3d_v01_test_data_140K.csv/content"
-  response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  output$response <- renderText({
-    raw = content(response, as="text")
-  })
+  print(auth_token)
+  # url2 <- "https://nidap.nih.gov/api/v1/datasets/ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a/files/tSNE3d_v01_test_data_140K.csv/content"
+  # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  # output$response <- renderText({
+  #   raw = content(response, as="text")
+  # })
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
