@@ -2,6 +2,8 @@ library(shiny)
 library(shinyjs)
 library(plotly)
 library(DT)
+library(auth0)
+library(httr)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -30,6 +32,7 @@ ui <-  fluidPage(
       fluidRow(
         column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
         column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
+        column (4, verbatimTextOutput("response"))
       ),
       tabsetPanel(
         tabPanel("3D Plot",
@@ -57,6 +60,14 @@ ui <-  fluidPage(
 )
 
 server <- function (input, output, session) {
+  
+  auth_token <- session$userData$auth0_credentials$access_token
+  
+  url2 <- "https://nidap.nih.gov/api/v1/datasets/ri.foundry.main.dataset.cc20947e-23ea-4e0e-a3eb-e6badeb94221/files/spark/part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet/content"
+  response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  output$response <- renderText({
+    raw = content(response, as="text")
+  })
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
@@ -306,4 +317,4 @@ server <- function (input, output, session) {
   
 }
 
-shinyApp(ui, server)
+shinyAppAuth0(ui = ui, server = server)
