@@ -17,7 +17,6 @@ ui <-  fluidPage(
   titlePanel("T-SNE 3D Scatterplot"),
   sidebarLayout(
     sidebarPanel(
-      textOutput("This change came from pushing to git!"),
       selectInput("x_col", label = "X-Axis", choices = NULL),
       selectInput("y_col", label = "Y-Axis", choices = NULL),
       selectInput("z_col", label = "Z-Axis", choices = NULL),
@@ -62,7 +61,7 @@ server <- function (input, output, session) {
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
-  
+  print("hello from GIT")
   mydata <- reactive({
     df = generate_random_sample_data(50000) # takes total number of points as an argument
   })
