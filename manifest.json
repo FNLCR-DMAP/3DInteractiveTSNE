@@ -200,6 +200,33 @@
         "Archs": "askpass.so.dSYM"
       }
     },
+    "auth0": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "auth0",
+        "Type": "Package",
+        "Title": "Authentication in Shiny with Auth0",
+        "Version": "0.2.3",
+        "Authors@R": "c(\nperson(\"Julio\", \"Trecenti\", email = \"julio.trecenti@gmail.com\", role = \"cre\"),\nperson(\"Daniel\", \"Falbel\", email = \"dfalbel@gmail.com\", role = \"aut\"),\nperson(\"José\", \"Jesus\", email = \"jjesusfilho@gmail.com\", role = \"ctb\"),\nperson(\"Dean\", \"Attali\", email = \"daattali@gmail.com\", role = \"ctb\"),\nperson(\"C\", \"Lente\", email = \"c@lente.dev\", role = \"ctb\"))",
+        "Description": "Uses Auth0 API (see <https://auth0.com> for more\ninformation) to use a simple authentication system. It provides\ntools to log in and out a shiny application using social networks or a list\nof e-mails.",
+        "BugReports": "https://github.com/curso-r/auth0/issues",
+        "License": "MIT + file LICENSE",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "Imports": "httr, shiny, yaml, utils, shinyjs",
+        "Suggests": "knitr, rmarkdown",
+        "VignetteBuilder": "knitr",
+        "URL": "https://curso-r.github.io/auth0/",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-03-22 18:59:25 UTC; julio",
+        "Author": "Julio Trecenti [cre],\nDaniel Falbel [aut],\nJosé Jesus [ctb],\nDean Attali [ctb],\nC Lente [ctb]",
+        "Maintainer": "Julio Trecenti <julio.trecenti@gmail.com>",
+        "Repository": "RSPM",
+        "Date/Publication": "2023-03-26 21:50:05 UTC",
+        "Built": "R 4.3.1; ; 2023-08-18 16:42:41 UTC; unix"
+      }
+    },
     "base64enc": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/latest",
@@ -1674,7 +1701,7 @@
         "Package": "renv",
         "Type": "Package",
         "Title": "Project Environments",
-        "Version": "1.0.0",
+        "Version": "1.0.2",
         "Authors@R": "c(\nperson(\"Kevin\", \"Ushey\", role = c(\"aut\", \"cre\"), email = \"kevin@rstudio.com\",\ncomment = c(ORCID = \"0000-0003-2880-7407\")),\nperson(\"Hadley\", \"Wickham\", role = c(\"aut\"), email = \"hadley@rstudio.com\",\ncomment = c(ORCID = \"0000-0003-4757-117X\")),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "A dependency management toolkit for R. Using 'renv', you can create\nand manage project-local R libraries, save the state of these libraries to\na 'lockfile', and later restore your library as required. Together, these\ntools can help make your projects more isolated, portable, and reproducible.",
         "License": "MIT + file LICENSE",
@@ -1690,12 +1717,12 @@
         "Config/testthat/parallel": "true",
         "Config/testthat/start-first": "bioconductor,python,install,restore,snapshot,retrieve,remotes",
         "NeedsCompilation": "no",
-        "Packaged": "2023-07-07 21:11:12 UTC; kevin",
+        "Packaged": "2023-08-14 23:03:34 UTC; kevin",
         "Author": "Kevin Ushey [aut, cre] (<https://orcid.org/0000-0003-2880-7407>),\nHadley Wickham [aut] (<https://orcid.org/0000-0003-4757-117X>),\nPosit Software, PBC [cph, fnd]",
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
-        "Date/Publication": "2023-07-07 21:50:02 UTC",
-        "Built": "R 4.3.1; ; 2023-08-18 17:58:17 UTC; unix"
+        "Date/Publication": "2023-08-15 07:40:02 UTC",
+        "Built": "R 4.3.1; ; 2023-08-18 18:08:01 UTC; unix"
       }
     },
     "rlang": {
@@ -2367,7 +2394,7 @@
       "checksum": "f8bb3a70429fea3684a18e3c2761fb77"
     },
     ".Rprofile": {
-      "checksum": "b788cf747b090a9fe6e5210e4ac895a1"
+      "checksum": "1e68c2f96224d3659a51bed2f786c96b"
     },
     "app.R": {
       "checksum": "e7dd11d71d89ab3c3ba3770fbed853dd"
