@@ -60,8 +60,9 @@ ui <-  fluidPage(
 )
 
 server <- function (input, output, session) {
-  
+  print("before auth0 call")
   auth_token <- session$userData$auth0_credentials$access_token
+  print("after_auth0_call")
   print(auth_token)
   # url2 <- "https://nidap.nih.gov/api/v1/datasets/ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a/files/tSNE3d_v01_test_data_140K.csv/content"
   # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
