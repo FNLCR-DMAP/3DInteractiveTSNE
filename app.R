@@ -61,8 +61,8 @@ ui <-  fluidPage(
 
 server <- function (input, output, session) {
   auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.cc20947e-23ea-4e0e-a3eb-e6badeb94221"
-  fileName = "spark/part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
+  rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
+  fileName = "tSNE3d_v01_test_data_140K.csv"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   output$response <- renderText({
