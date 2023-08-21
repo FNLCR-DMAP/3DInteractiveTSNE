@@ -68,7 +68,7 @@ server <- function (input, output, session) {
   print("response")
   raw = content(response, as="text")
   print("raw")
-  df = read.csv(raw)
+  df = read.csv(text = raw)
   print("csv")
   df = data.frame(df)
   print("df")
