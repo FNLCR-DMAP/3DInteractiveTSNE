@@ -32,7 +32,6 @@ ui <-  fluidPage(
       fluidRow(
         column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
         column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
-        # column (4, verbatimTextOutput("response"))
       ),
       tabsetPanel(
         tabPanel("3D Plot",
@@ -50,7 +49,10 @@ ui <-  fluidPage(
                  plotlyOutput("plot2d")),
         tabPanel("View Export Dataset",
                  br(),
-                 actionButton("clear", label = "Clear Export List"),
+                 fluidRow(
+                   column (4, actionButton("clear", label = 'Clear Export List')),
+                   column (4, actionButton("exportNidap", label = "Export to NIDAP"))
+                 ),
                  br(),
                  br(),
                  DTOutput("Export_Dataset"))
@@ -68,16 +70,10 @@ server <- function (input, output, session) {
   raw = content(response, as="text")
   df = read.csv(text = raw)
   df = data.frame(df)
-  print(nrow(df))
   df = df %>% filter(!is.na(pk))
-  print(nrow(df))
   
   #df = generate_random_sample_data(50000) # takes total number of points as an argument
   
-  # output$response <- renderText({
-  #   raw = content(response, as="text")
-  # })
-  # 
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
