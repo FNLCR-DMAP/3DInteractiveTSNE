@@ -79,8 +79,9 @@ server <- function (input, output, session) {
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print("after GET")
   print(status_code(response))
+  print(response)
   
-  #df = generate_random_sample_data(50000) # takes total number of points as an argument
+  df = generate_random_sample_data(50000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
