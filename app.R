@@ -31,8 +31,8 @@ ui <-  fluidPage(
     mainPanel(
       fluidRow(
         column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
-        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
-        column (4, verbatimTextOutput("response"))
+        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
+        # column (4, verbatimTextOutput("response"))
       ),
       tabsetPanel(
         tabPanel("3D Plot",
@@ -72,10 +72,10 @@ server <- function (input, output, session) {
   print("csv")
   df = data.frame(df)
   print("df")
-  output$response <- renderText({
-    raw = content(response, as="text")
-  })
-  
+  # output$response <- renderText({
+  #   raw = content(response, as="text")
+  # })
+  # 
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
