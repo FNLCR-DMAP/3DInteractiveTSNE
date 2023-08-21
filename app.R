@@ -65,6 +65,9 @@ server <- function (input, output, session) {
   fileName = "tSNE3d_v01_test_data_140K.csv"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  raw = content(response, as="text")
+  df = read.csv(raw)
+  df = data.frame(df)
   output$response <- renderText({
     raw = content(response, as="text")
   })
@@ -75,7 +78,8 @@ server <- function (input, output, session) {
   print("hello from GIT")
   print("Hello from rstudio")
   mydata <- reactive({
-    df = generate_random_sample_data(50000) # takes total number of points as an argument
+    #df = generate_random_sample_data(50000) # takes total number of points as an argument
+    return(df)
   })
   
   columnType <- reactive({
