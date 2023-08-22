@@ -336,8 +336,7 @@ server <- function (input, output, session) {
     csv_content = capture.output(write.csv(exportDataset$data, row.names = FALSE))
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload")
     response <- POST(url, 
-                     httr::add_headers(Authorization = paste("Bearer", auth_token)), 
-                     content_type("application/octet-stream"), 
+                     httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
                      body = csv_content)
   })
 }
