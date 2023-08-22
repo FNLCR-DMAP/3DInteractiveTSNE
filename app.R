@@ -84,7 +84,7 @@ server <- function (input, output, session) {
   #   raw = content(response, as="text")
   # })
   
-  df = generate_random_sample_data(50000) # takes total number of points as an argument
+  #df = generate_random_sample_data(50000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
