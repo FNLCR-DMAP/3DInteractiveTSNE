@@ -31,7 +31,8 @@ ui <-  fluidPage(
     mainPanel(
       fluidRow(
         column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
-        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
+        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
+        column (4, verbatimTextOutput("response"))
       ),
       tabsetPanel(
         tabPanel("3D Plot",
@@ -78,7 +79,10 @@ server <- function (input, output, session) {
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   raw = content(response, as="text")
-  print(raw)
+  
+  output$raw_resp <- renderText({
+    raw
+  })
   
   df = generate_random_sample_data(50000) # takes total number of points as an argument
   
