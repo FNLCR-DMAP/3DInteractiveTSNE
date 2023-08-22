@@ -78,10 +78,10 @@ server <- function (input, output, session) {
   fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  raw = content(response, as="text")
+  print(status_code(response))
   
   output$raw_resp <- renderText({
-    raw
+    raw = content(response, as="text")
   })
   
   df = generate_random_sample_data(50000) # takes total number of points as an argument
