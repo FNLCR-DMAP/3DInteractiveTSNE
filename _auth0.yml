@@ -4,7 +4,7 @@ auth0_config:
   api_url: https://nidap.nih.gov/multipass/api/oauth2
   access: token
   request: token
-  scope: compass:view api:datasets-read
+  scope: compass:view api:datasets-read api:datasets-write
   credentials:
     key: !expr Sys.getenv("auth0_clientid")
     secret: !expr Sys.getenv("auth0_clientsecret")
