@@ -80,7 +80,7 @@ server <- function (input, output, session) {
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(status_code(response))
   
-  output$raw_resp <- renderText({
+  output$response <- renderText({
     raw = content(response, as="text")
   })
   
