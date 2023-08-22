@@ -338,6 +338,7 @@ server <- function (input, output, session) {
     # print(list.files(path = ".", full.names = TRUE))
     filePath = "./tempFile.csv"
     csv_content = capture.output(write.csv(exportDataset$data, file = filePath, row.names = FALSE))
+    csv_content = paste(csv_content, collapse = "\n")
     raw_data = charToRaw(csv_content)
     # print(list.files(path = ".", full.names = TRUE))
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
