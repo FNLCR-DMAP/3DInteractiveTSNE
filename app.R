@@ -341,7 +341,7 @@ server <- function (input, output, session) {
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload")
     response <- POST(url, 
                      httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
-                     body = upload_file(system.file("./tempFile.csv")))
+                     body = upload_file("./tempFile.csv"))
     print(status_code(response))
   })
 }
