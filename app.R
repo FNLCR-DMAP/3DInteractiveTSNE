@@ -335,9 +335,9 @@ server <- function (input, output, session) {
   observeEvent(input$exportNidap, {
     print("exporting to nidap")
     rid = "ri.foundry.main.dataset.1ef74b91-6660-4be5-9080-1267b1f80f50"
-    print(list.dirs(path = ".", full.names = TRUE))
+    print(list.files(path = ".", full.names = TRUE))
     write.csv(exportDataset$data, file = "./tempFile.csv", row.names = FALSE)
-    print(list.dirs(path = ".", full.names = TRUE))
+    print(list.files(path = ".", full.names = TRUE))
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload")
     response <- POST(url, 
                      httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
