@@ -72,6 +72,7 @@ server <- function (input, output, session) {
   df = read.csv(text = raw)
   df = data.frame(df)
   df = df %>% filter(!is.na(pk))
+  df = head(df,1000)
   
   # auth_token <- session$userData$auth0_credentials$access_token
   # rid = "ri.foundry.main.dataset.5c075c3b-8195-48ca-aac1-a556f4f96403"
@@ -104,8 +105,7 @@ server <- function (input, output, session) {
   )
   
   exportDataset <- reactiveValues(
-    # data = data.frame()
-    df = head(df,5)
+    data = data.frame()
   )
   
   projectedData <- reactiveValues(
