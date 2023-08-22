@@ -104,7 +104,8 @@ server <- function (input, output, session) {
   )
   
   exportDataset <- reactiveValues(
-    data = data.frame()
+    # data = data.frame()
+    df = head(df,5)
   )
   
   projectedData <- reactiveValues(
@@ -338,6 +339,7 @@ server <- function (input, output, session) {
     response <- POST(url, 
                      httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
                      body = csv_content)
+    print(status_code(response))
   })
 }
 
