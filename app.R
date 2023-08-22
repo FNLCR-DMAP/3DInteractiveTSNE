@@ -10,56 +10,76 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
-ui <-  fluidPage(
-  useShinyjs(),
-  extendShinyjs(text = js_code, functions = c('plot3d')),
-  tags$head(
-    tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
-  ),
-  titlePanel("T-SNE 3D Scatterplot"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("x_col", label = "X-Axis", choices = NULL),
-      selectInput("y_col", label = "Y-Axis", choices = NULL),
-      selectInput("z_col", label = "Z-Axis", choices = NULL),
-      selectInput("indicator_col", "Indicator", choices = NULL),
-      actionButton('show', 'Generate Plot'),
-      br(),
-      br(),
-      checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
-    ),
-    mainPanel(
-      fluidRow(
-        column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
-        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
-      ),
-      tabsetPanel(
-        tabPanel("3D Plot",
-                 br(),
-                 htmlOutput("text"),
-                 actionButton('getParam', 'Save View to Project'),
-                 actionButton('project2D', "Project to 2D"),
-                 tags$body(
-                   tags$div(id='mydiv', class = 'myplot')
-                 )),
-        tabPanel("2D Lasso",
-                 br(),
-                 textInput("points_names", label = "Name of Selected Points"),
-                 actionButton("add_to_list", label = "Add Points to Export List"),
-                 plotlyOutput("plot2d")),
-        tabPanel("View Export Dataset",
-                 br(),
-                 fluidRow(
-                   column (4, actionButton("clear", label = 'Clear Export List')),
-                   column (4, actionButton("exportNidap", label = "Export to NIDAP"))
-                 ),
-                 br(),
-                 br(),
-                 DTOutput("Export_Dataset"))
+ui <- function(req) {
+  # The `req` object is a Rook environment
+  # See https://github.com/jeffreyhorner/Rook#the-environment
+  if (identical(req$REQUEST_METHOD, "GET")) {
+      fluidPage(
+        useShinyjs(),
+        extendShinyjs(text = js_code, functions = c('plot3d')),
+        tags$head(
+          tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
+        ),
+        titlePanel("T-SNE 3D Scatterplot"),
+        sidebarLayout(
+          sidebarPanel(
+            selectInput("x_col", label = "X-Axis", choices = NULL),
+            selectInput("y_col", label = "Y-Axis", choices = NULL),
+            selectInput("z_col", label = "Z-Axis", choices = NULL),
+            selectInput("indicator_col", "Indicator", choices = NULL),
+            actionButton('show', 'Generate Plot'),
+            br(),
+            br(),
+            checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
+          ),
+          mainPanel(
+            fluidRow(
+              column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
+              column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
+            ),
+            tabsetPanel(
+              tabPanel("3D Plot",
+                       br(),
+                       htmlOutput("text"),
+                       actionButton('getParam', 'Save View to Project'),
+                       actionButton('project2D', "Project to 2D"),
+                       tags$body(
+                         tags$div(id='mydiv', class = 'myplot')
+                       )),
+              tabPanel("2D Lasso",
+                       br(),
+                       textInput("points_names", label = "Name of Selected Points"),
+                       actionButton("add_to_list", label = "Add Points to Export List"),
+                       plotlyOutput("plot2d")),
+              tabPanel("View Export Dataset",
+                       br(),
+                       fluidRow(
+                         column (4, actionButton("clear", label = 'Clear Export List')),
+                         column (4, actionButton("exportNidap", label = "Export to NIDAP"))
+                       ),
+                       br(),
+                       br(),
+                       DTOutput("Export_Dataset"))
+              )
+            )
+          )
       )
+  }
+  else if (identical(req$REQUEST_METHOD, "POST")) {
+    # Handle the POST
+    query_params <- parseQueryString(req$QUERY_STRING)
+    body_bytes <- req$rook.input$read(-1)
+    print("GOT POST REQUEST")
+    print(query_params)
+    print(body_bytes)
+    # Be sure to return a response
+    httpResponse(
+      status = 200L,
+      content_type = "application/json",
+      content = '{"status": "ok"}'
     )
-  )
-)
+  }
+}
 
 server <- function (input, output, session) {
   auth_token <- session$userData$auth0_credentials$access_token
@@ -338,4 +358,5 @@ server <- function (input, output, session) {
   })
 }
 
-shinyAppAuth0(ui = ui, server = server)
+#shinyAppAuth0(ui = ui, server = server)
+shinyApp(ui = ui, server = server)
