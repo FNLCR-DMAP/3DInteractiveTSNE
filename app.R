@@ -343,6 +343,7 @@ server <- function (input, output, session) {
                      httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
                      body = upload_file("./tempFile.csv"))
     print(status_code(response))
+    print(content(response))
   })
 }
 
