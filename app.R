@@ -338,11 +338,12 @@ server <- function (input, output, session) {
     # print(list.files(path = ".", full.names = TRUE))
     filePath = "./tempFile.csv"
     csv_content = capture.output(write.csv(exportDataset$data, file = filePath, row.names = FALSE))
+    raw_data = charToRaw(csv_content)
     # print(list.files(path = ".", full.names = TRUE))
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
     response <- POST(url, 
                      httr::add_headers(Authorization = paste("Bearer", auth_token), content_type = "application/octet-stream"),
-                     body = csv_content)
+                     body = raw_data)
     print(status_code(response))
     print(content(response))
   })
