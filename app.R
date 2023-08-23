@@ -342,18 +342,17 @@ server <- function (input, output, session) {
     rid = "ri.foundry.main.dataset.1ef74b91-6660-4be5-9080-1267b1f80f50"
     filePath = "./tempFile.csv"
     # data_to_upload = exportDataset$data
-    data_to_upload =  data.frame(replicate(10,sample(0:10,1000,rep=TRUE)))
+    data_to_upload =  data.frame(replicate(10,sample(0:10,10,rep=TRUE)))
 
-    csv_content = capture.output(write.csv(data_to_upload, file = filePath, row.names = FALSE))
-    print(class((csv_content)))
-    data_to_upload = charToRaw(data_to_upload)
-    print(class((data_to_upload)))
+    two_d_csv = capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
+    character_list = paste(two_d_csv, collapse="\n")
+    raw_char_array = charToRaw(character_list)
     
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
     response <- POST(url, 
                      content_type("application/octet-stream"),
                      httr::add_headers(Authorization = paste("Bearer", auth_token)),
-                     body = csv_content)
+                     body = raw_char_array)
     print(status_code(response))
     print(content(response))
   })
