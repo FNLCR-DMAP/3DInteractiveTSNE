@@ -109,7 +109,9 @@ server <- function (input, output, session) {
   )
   
   exportDataset <- reactiveValues(
-    data = data.frame()
+    #data = data.frame()
+    data = data.frame(replicate(10,sample(0:10,100,rep=TRUE)))
+    
   )
   
   projectedData <- reactiveValues(
@@ -329,6 +331,7 @@ server <- function (input, output, session) {
   })
   
   output$Export_Dataset <- renderDT(server = FALSE,{
+    
     DT::datatable(exportDataset$data,
                   rownames = FALSE,
                   extensions = 'Buttons',
