@@ -109,9 +109,7 @@ server <- function (input, output, session) {
   )
   
   exportDataset <- reactiveValues(
-    #data = data.frame()
-    data = data.frame(replicate(10,sample(0:10,100,rep=TRUE)))
-    
+    data = data.frame()
   )
   
   projectedData <- reactiveValues(
@@ -342,12 +340,12 @@ server <- function (input, output, session) {
   observeEvent(input$exportNidap, {
     print("exporting to nidap")
     rid = "ri.foundry.main.dataset.1ef74b91-6660-4be5-9080-1267b1f80f50"
-    # print(list.files(path = ".", full.names = TRUE))
     filePath = "./tempFile.csv"
-    csv_content = capture.output(write.csv(exportDataset$data, file = filePath, row.names = FALSE))
-    #csv_content = paste(csv_content, collapse = "\n")
-    #raw_data = charToRaw(csv_content)
-    # print(list.files(path = ".", full.names = TRUE))
+    # data_to_upload = exportDataset$data
+    data_to_upload =  data.frame(replicate(10,sample(0:10,1000,rep=TRUE)))
+
+    csv_content = capture.output(write.csv(data_to_upload, file = filePath, row.names = FALSE))
+
     print(class((csv_content)))
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
     response <- POST(url, 
