@@ -345,8 +345,10 @@ server <- function (input, output, session) {
     data_to_upload =  data.frame(replicate(10,sample(0:10,1000,rep=TRUE)))
 
     csv_content = capture.output(write.csv(data_to_upload, file = filePath, row.names = FALSE))
-
     print(class((csv_content)))
+    data_to_upload = charToRaw(data_to_upload)
+    print(class((data_to_upload)))
+    
     url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
     response <- POST(url, 
                      content_type("application/octet-stream"),
