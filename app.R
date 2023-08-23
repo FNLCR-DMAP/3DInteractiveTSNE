@@ -8,6 +8,10 @@ library(httr)
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
 
+
+print(Sys.getenv("redirect_uri"))
+print(Sys.getenv("auth0_clientid"))
+
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
 ui <-  fluidPage(
