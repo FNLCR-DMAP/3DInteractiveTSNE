@@ -80,9 +80,10 @@ server <- function (input, output, session) {
   
   auth_token <- session$userData$auth0_credentials$access_token
   rid = "ri.foundry.main.dataset.5c075c3b-8195-48ca-aac1-a556f4f96403"
-  fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
-  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
+  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/readTable?format=CSV&preview=true")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  print(response)
   print(status_code(response))
   output$response <- renderText({
     raw = content(response, as="text")
