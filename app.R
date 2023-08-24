@@ -83,13 +83,18 @@ server <- function (input, output, session) {
   # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/readTable?format=CSV&preview=true")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  print(response)
-  print(status_code(response))
-  output$response <- renderText({
-    raw = content(response, as="text")
-  })
+  raw = content(response, as="text")
+  df = read.csv(text = raw)
+  df = data.frame(df)
+  df = df %>% filter(!is.na(pk))
+  df = head(df,1000)
+  # print(response)
+  # print(status_code(response))
+  # output$response <- renderText({
+  #   raw = content(response, as="text")
+  # })
   
-  df = generate_random_sample_data(50000) # takes total number of points as an argument
+  # df = generate_random_sample_data(50000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
