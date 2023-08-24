@@ -87,7 +87,7 @@ server <- function (input, output, session) {
   df = read.csv(text = raw)
   df = data.frame(df)
   df = df %>% filter(!is.na(pk))
-  df = head(df,1000)
+
   # print(response)
   # print(status_code(response))
   # output$response <- renderText({
