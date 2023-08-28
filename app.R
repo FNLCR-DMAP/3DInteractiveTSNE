@@ -14,6 +14,7 @@ print(Sys.getenv("auth0_clientid"))
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
+
 ui <-  fluidPage(
   useShinyjs(),
   extendShinyjs(text = js_code, functions = c('plot3d')),
@@ -41,6 +42,7 @@ ui <-  fluidPage(
       tabsetPanel(
         tabPanel("3D Plot",
                  br(),
+                 textOutput("debug_query_message"),
                  htmlOutput("text"),
                  actionButton('getParam', 'Save View to Project'),
                  actionButton('project2D', "Project to 2D"),
@@ -95,6 +97,10 @@ server <- function (input, output, session) {
   # })
   
   # df = generate_random_sample_data(50000) # takes total number of points as an argument
+  url_search_params <- parseQueryString(session$clientData$url_search)
+  print("url_search_params")
+  print(url_search_params)
+  output$debug_query_message <- renderText(url_search_params)
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")

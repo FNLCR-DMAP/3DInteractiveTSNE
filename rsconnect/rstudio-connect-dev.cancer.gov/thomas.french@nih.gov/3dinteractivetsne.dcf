@@ -5,9 +5,7 @@ account: thomas.french@nih.gov
 server: rstudio-connect-dev.cancer.gov
 hostUrl: https://rstudio-connect-dev.cancer.gov/__api__
 appId: 173
-bundleId: 844
+bundleId: 933
 url: https://rstudio-connect-dev.cancer.gov/content/5d0fd2f0-1f53-4115-b1b0-9599276ef4cf/
-when: 1692373494.5618
-lastSyncTime: 1692373494.56183
 asMultiple: FALSE
 asStatic: FALSE
