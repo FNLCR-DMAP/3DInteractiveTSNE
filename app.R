@@ -43,6 +43,7 @@ ui <-  fluidPage(
         tabPanel("3D Plot",
                  br(),
                  textOutput("debug_query_message"),
+                 br(),
                  htmlOutput("text"),
                  actionButton('getParam', 'Save View to Project'),
                  actionButton('project2D', "Project to 2D"),
