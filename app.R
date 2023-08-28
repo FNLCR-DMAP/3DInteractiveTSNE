@@ -10,7 +10,13 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
+
+got_a_post_request_flag = FALSE
+
 ui <- function(req) {
+  print(req$QUERY_STRING)
+  print(req$REQUEST_METHOD)
+  
   # The `req` object is a Rook environment
   # See https://github.com/jeffreyhorner/Rook#the-environment
   if (identical(req$REQUEST_METHOD, "GET")) {
@@ -28,6 +34,7 @@ ui <- function(req) {
             selectInput("z_col", label = "Z-Axis", choices = NULL),
             selectInput("indicator_col", "Indicator", choices = NULL),
             actionButton('show', 'Generate Plot'),
+            actionButton('check_post_request', 'check post request'),
             br(),
             br(),
             checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
@@ -38,6 +45,10 @@ ui <- function(req) {
               column (4, selectInput("shape", label = "Marker Shape", choices = markerShape))
             ),
             tabsetPanel(
+              tabPanel("test",
+                       br(),
+                       textOutput("request_text") 
+                       ),
               tabPanel("3D Plot",
                        br(),
                        htmlOutput("text"),
@@ -67,12 +78,14 @@ ui <- function(req) {
   }
   else if (identical(req$REQUEST_METHOD, "POST")) {
     # Handle the POST
+    print("GOT POST REQUEST")
     query_params <- parseQueryString(req$QUERY_STRING)
     body_bytes <- req$rook.input$read(-1)
-    print("GOT POST REQUEST")
-    print(query_params)
-    print(body_bytes)
+    
     # Be sure to return a response
+    got_a_post_request_flag = TRUE
+    print("gor a post request")
+    print(got_a_post_request_flag)
     httpResponse(
       status = 200L,
       content_type = "application/json",
@@ -80,6 +93,7 @@ ui <- function(req) {
     )
   }
 }
+attr(ui, "http_methods_supported") <- c("GET", "POST")
 
 server <- function (input, output, session) {
   auth_token <- session$userData$auth0_credentials$access_token
@@ -107,6 +121,9 @@ server <- function (input, output, session) {
   shinyjs::disable("project2D")
   print("hello from GIT")
   print("Hello from rstudio")
+  
+  got_a_post_request_flag = reactiveVal(FALSE)
+  
   mydata <- reactive({
     return(df)
   })
@@ -170,6 +187,17 @@ server <- function (input, output, session) {
       df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
     }
     return(df)
+  })
+  observeEvent(input$check_post_request, {
+    print("checking post request flag")
+    print(got_a_post_request_flag)
+    if (got_a_post_request_flag()){
+      output$request_text = renderText("GOT A POST REQUEST!")
+    }
+    else {
+      output$request_text = renderText("have not gotten a post request")
+    }
+      
   })
   
   observe({
