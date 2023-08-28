@@ -67,29 +67,34 @@ ui <-  fluidPage(
 )
 
 server <- function (input, output, session) {
+  # auth_token <- session$userData$auth0_credentials$access_token
+  # rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
+  # fileName = "tSNE3d_v01_test_data_140K.csv"
+  # url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+  # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  # raw = content(response, as="text")
+  # df = read.csv(text = raw)
+  # df = data.frame(df)
+  # df = df %>% filter(!is.na(pk))
+  # df = head(df,1000)
+  
   auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
-  fileName = "tSNE3d_v01_test_data_140K.csv"
-  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+  rid = "ri.foundry.main.dataset.cc20947e-23ea-4e0e-a3eb-e6badeb94221"
+  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
+  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/readTable?format=CSV&preview=true")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   raw = content(response, as="text")
   df = read.csv(text = raw)
   df = data.frame(df)
   df = df %>% filter(!is.na(pk))
-  df = head(df,1000)
-  
-  # auth_token <- session$userData$auth0_credentials$access_token
-  # rid = "ri.foundry.main.dataset.5c075c3b-8195-48ca-aac1-a556f4f96403"
-  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
-  # url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-  # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+
+  # print(response)
   # print(status_code(response))
-  # 
   # output$response <- renderText({
   #   raw = content(response, as="text")
   # })
   
-  #df = generate_random_sample_data(50000) # takes total number of points as an argument
+  # df = generate_random_sample_data(50000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
@@ -341,8 +346,8 @@ server <- function (input, output, session) {
     print("exporting to nidap")
     rid = "ri.foundry.main.dataset.1ef74b91-6660-4be5-9080-1267b1f80f50"
     filePath = "tempFile_from_posit.csv"
-    # data_to_upload = exportDataset$data
-    data_to_upload =  data.frame(replicate(10,sample(0:10,10,rep=TRUE)))
+    data_to_upload = exportDataset$data
+    #data_to_upload =  data.frame(replicate(10,sample(0:10,10,rep=TRUE)))
 
     two_d_csv = capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
     character_list = paste(two_d_csv, collapse="\n")
