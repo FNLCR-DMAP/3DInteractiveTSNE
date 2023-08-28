@@ -98,11 +98,12 @@ server <- function (input, output, session) {
   # })
   
   # df = generate_random_sample_data(50000) # takes total number of points as an argument
-  url_search_params <- parseQueryString(session$clientData$url_search)
-  print("url_search_params")
-  print(url_search_params)
-  output$debug_query_message <- renderText(url_search_params)
-  
+  observe({
+    url_search_params <- parseQueryString(session$clientData$url_search)
+    print("url_search_params")
+    print(url_search_params)
+    output$debug_query_message <- renderText(url_search_params)
+  })
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
