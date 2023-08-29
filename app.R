@@ -70,6 +70,12 @@ ui <-  fluidPage(
 )
 
 server <- function (input, output, session) {
+  observe({
+    url_search_params <- parseQueryString(session$clientData$url_search)
+    #print("url_search_params")
+    #print(url_search_params)
+    output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
+  })
   # auth_token <- session$userData$auth0_credentials$access_token
   # rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
   # fileName = "tSNE3d_v01_test_data_140K.csv"
@@ -98,12 +104,7 @@ server <- function (input, output, session) {
   # })
   
   # df = generate_random_sample_data(50000) # takes total number of points as an argument
-  observe({
-    url_search_params <- parseQueryString(session$clientData$url_search)
-    #print("url_search_params")
-    #print(url_search_params)
-    output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
-  })
+  
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
