@@ -4,6 +4,7 @@ library(plotly)
 library(DT)
 library(auth0)
 library(httr)
+library(jsonlite)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -41,8 +42,8 @@ ui <-  fluidPage(
       ),
       tabsetPanel(
         tabPanel("3D Plot",
-                 br(),
-                 textOutput("debug_query_message"),
+                 #br(),
+                 #textOutput("debug_query_message"),
                  br(),
                  htmlOutput("text"),
                  actionButton('getParam', 'Save View to Project'),
@@ -69,41 +70,48 @@ ui <-  fluidPage(
   )
 )
 
-server <- function (input, output, session) {
-  # auth_token <- session$userData$auth0_credentials$access_token
-  # rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
-  # fileName = "tSNE3d_v01_test_data_140K.csv"
-  # url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+get_data_from_nidap <- function (dataset_rid){
+  auth_token <- session$userData$auth0_credentials$access_token
+  api_url = "https://nidap.nih.gov/api/v1/"
+  
+  list_dataset_url = paste0(api_url, "datasets/", dataset_rid)
+  list_dataset_response = GET(list_dataset_url,  httr::add_headers(Authorization = paste("Bearer", auth_token)) )
+  dataset_files = content(list_dataset_response, as="text")
+  dataset_files = fromJSON(dataset_files)
+  
+  
+  # url2 <- paste0("datasets/",dataset_rid,"/readTable?format=CSV&preview=true")
   # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  # print(response)
+  # print(status_code(response))
+  # 
   # raw = content(response, as="text")
   # df = read.csv(text = raw)
   # df = data.frame(df)
   # df = df %>% filter(!is.na(pk))
-  # df = head(df,1000)
-  
-  auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.cc20947e-23ea-4e0e-a3eb-e6badeb94221"
-  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
-  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/readTable?format=CSV&preview=true")
-  response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  raw = content(response, as="text")
-  df = read.csv(text = raw)
-  df = data.frame(df)
-  df = df %>% filter(!is.na(pk))
-
-  # print(response)
-  # print(status_code(response))
+  # 
   # output$response <- renderText({
   #   raw = content(response, as="text")
   # })
+  df = data.frame()
+  df
+}
+server <- function (input, output, session) {
+  # rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a" # CSV data
+  # fileName = "tSNE3d_v01_test_data_140K.csv"
+  
+  dataset_rid = "ri.foundry.main.dataset.cc20947e-23ea-4e0e-a3eb-e6badeb94221" # PARQUET data
+  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
+  
+  df = get_data_from_nidap(dataset_rid);
   
   # df = generate_random_sample_data(50000) # takes total number of points as an argument
-  observe({
-    url_search_params <- parseQueryString(session$clientData$url_search)
-    print("url_search_params")
-    print(url_search_params)
-    output$debug_query_message <- renderText(url_search_params)
-  })
+  #observe({
+  #  url_search_params <- parseQueryString(session$clientData$url_search)
+  #  print("url_search_params")
+  #  print(url_search_params)
+  #  output$debug_query_message <- renderText(url_search_params)
+  #})
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
