@@ -4,6 +4,7 @@ library(plotly)
 library(DT)
 library(auth0)
 library(httr)
+library(jsonlite)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -94,10 +95,12 @@ server <- function (input, output, session) {
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response)
+  print(content(response, as="text"))
   
   output$response <- renderText({
     raw_content = content(response, as="text")
-    files = raw_content$data
+    parsed_json = fromJSON(raw_content)
+    files = parsed_json$data
     return(files)
   })
   
