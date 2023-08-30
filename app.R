@@ -5,6 +5,7 @@ library(DT)
 library(auth0)
 library(httr)
 library(jsonlite)
+library(tools)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -97,10 +98,7 @@ server <- function (input, output, session) {
   data_content = content(response, as="text")
   parsed_json = fromJSON(data_content)
   files = parsed_json$data$path
-  print(response)
-  print(data_content)
-  print(parsed_json)
-  print(files)
+  files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
   
   output$response <- renderText({
     files
