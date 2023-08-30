@@ -103,14 +103,12 @@ server <- function (input, output, session) {
   # trying to read contents of parquet file
   print("reading parquet files")
   fileName = files[1]
-  print(fileName)
   url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-  print(url3)
   response2 <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response2)
   
   output$response <- renderText({
-    response2
+    raw = content(response2, as="text")
   })
   
   # raw = content(response, as="text")
