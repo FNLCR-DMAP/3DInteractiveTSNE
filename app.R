@@ -94,14 +94,16 @@ server <- function (input, output, session) {
   # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  data_content = content(response, as="text")
+  parsed_json = fromJSON(data_content)
+  files = parsed_json$data$path
   print(response)
-  print(content(response, as="text"))
-  print(fromJSON(content(response, as="text")))
+  print(data_content)
+  print(parsed_json)
+  print(files)
   
   output$response <- renderText({
-    raw_content = content(response, as="text")
-    parsed_json = fromJSON(raw_content)
-    return(parsed_json)
+    files
   })
   
   # raw = content(response, as="text")
