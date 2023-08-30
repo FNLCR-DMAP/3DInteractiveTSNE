@@ -268,7 +268,7 @@ server <- function (input, output, session) {
     output$plot2d <- renderPlotly({
       fig2d <- plot_ly(source = "2dplot",
                        width = 800,
-                       height = 600) %>%
+                       height = 800) %>%
         add_markers(data = projectedData$data,
                     x = as.formula(paste0("~","x")), 
                     y = as.formula(paste0("~","y")),
