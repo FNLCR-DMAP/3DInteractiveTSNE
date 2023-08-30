@@ -96,12 +96,12 @@ server <- function (input, output, session) {
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response)
   print(content(response, as="text"))
+  print(fromJSON(content(response, as="text")))
   
   output$response <- renderText({
     raw_content = content(response, as="text")
     parsed_json = fromJSON(raw_content)
-    files = parsed_json$data
-    return(files)
+    return(parsed_json)
   })
   
   # raw = content(response, as="text")
