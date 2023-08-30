@@ -96,7 +96,9 @@ server <- function (input, output, session) {
   print(response)
   
   output$response <- renderText({
-    raw = content(response, as="text")
+    raw_content = content(response, as="text")
+    files = raw_content$data
+    return(files)
   })
   
   # raw = content(response, as="text")
