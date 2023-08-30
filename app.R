@@ -100,8 +100,14 @@ server <- function (input, output, session) {
   files = parsed_json$data$path
   files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
   
+  # trying to read contents of parquet file
+  fileName = files[1]
+  url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+  response2 <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  print(response2)
+  
   output$response <- renderText({
-    files
+    response2
   })
   
   # raw = content(response, as="text")
