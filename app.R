@@ -111,9 +111,11 @@ server <- function (input, output, session) {
   url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response2)
+  print("reading content here")
+  print(content(response2, as="raw"))
   
   output$response <- renderText({
-    raw = content(response2, as="text")
+    raw = content(response2, as="raw")
   })
   
   # raw = content(response, as="text")
