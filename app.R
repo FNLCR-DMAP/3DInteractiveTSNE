@@ -8,7 +8,9 @@ library(jsonlite)
 library(tools)
 library(urltools)
 
-Sys.setenv("NOT_CRAN" = "true", "LIBARROW_BUILD" = FALSE, "ARROW_R_DEV" = TRUE)
+Sys.setenv("LIBARROW_BINARY" = FALSE)
+Sys.setenv("LIBARROW_MINIMAL" = FALSE)
+Sys.setenv("ARROW_R_DEV" = TRUE)
 install.packages("arrow")
 
 library(arrow)
