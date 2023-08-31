@@ -8,13 +8,6 @@ library(jsonlite)
 library(tools)
 library(urltools)
 
-Sys.setenv("LIBARROW_BINARY" = FALSE)
-Sys.setenv("LIBARROW_MINIMAL" = FALSE)
-Sys.setenv("ARROW_R_DEV" = TRUE)
-install.packages("arrow")
-
-library(arrow)
-
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
 
