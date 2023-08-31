@@ -7,6 +7,7 @@ library(httr)
 library(jsonlite)
 library(tools)
 library(urltools)
+library(arrow)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -112,11 +113,9 @@ server <- function (input, output, session) {
   response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response2)
   print("reading content here")
-  print(content(response2, as="raw"))
-  
-  output$response <- renderText({
-    raw = content(response2, as="raw")
-  })
+  raw_data = content(response2, as="raw")
+  parquet_data = read_parquet(raw_data)
+  print(parquet_data)
   
   # raw = content(response, as="text")
   # df = read.csv(text = raw)
