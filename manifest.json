@@ -2195,6 +2195,64 @@
         "Built": "R 4.3.1; ; 2023-08-18 16:19:00 UTC; unix"
       }
     },
+    "triebeard": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "triebeard",
+        "Type": "Package",
+        "Title": "'Radix' Trees in 'Rcpp'",
+        "Version": "0.4.1",
+        "Author": "Os Keyes [aut, cre], Drew Schmidt [aut], Yuuki Takano [cph]",
+        "Maintainer": "Os Keyes <ironholds@gmail.com>",
+        "Description": "'Radix trees', or 'tries', are key-value data structures optimised for efficient lookups, similar in purpose\nto hash tables. 'triebeard' provides an implementation of 'radix trees' for use in R programming and in\ndeveloping packages with 'Rcpp'.",
+        "License": "MIT + file LICENSE",
+        "LinkingTo": "Rcpp",
+        "Encoding": "UTF-8",
+        "Imports": "Rcpp",
+        "RoxygenNote": "7.1.2",
+        "Suggests": "knitr, rmarkdown, testthat",
+        "VignetteBuilder": "knitr",
+        "URL": "https://github.com/Ironholds/triebeard/",
+        "BugReports": "https://github.com/Ironholds/triebeard/issues",
+        "Date": "2023-03-04",
+        "NeedsCompilation": "yes",
+        "Packaged": "2023-03-04 21:40:31 UTC; ironholds",
+        "Repository": "RSPM",
+        "Date/Publication": "2023-03-04 23:30:07 UTC",
+        "Built": "R 4.3.1; aarch64-apple-darwin20; 2023-08-31 15:24:15 UTC; unix"
+      }
+    },
+    "urltools": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "urltools",
+        "Type": "Package",
+        "Title": "Vectorised Tools for URL Handling and Parsing",
+        "Version": "1.7.3",
+        "Date": "2019-04-14",
+        "Author": "Os Keyes [aut, cre], Jay Jacobs [aut, cre], Drew Schmidt [aut],\nMark Greenaway [ctb], Bob Rudis [ctb], Alex Pinto [ctb], Maryam Khezrzadeh [ctb], Peter Meilstrup [ctb],\nAdam M. Costello [cph], Jeff Bezanson [cph], Peter Meilstrup [ctb], Xueyuan Jiang [ctb]",
+        "Maintainer": "Os Keyes <ironholds@gmail.com>",
+        "Description": "A toolkit for all URL-handling needs, including encoding and decoding,\nparsing, parameter extraction and modification. All functions are\ndesigned to be both fast and entirely vectorised. It is intended to be\nuseful for people dealing with web-related datasets, such as server-side\nlogs, although may be useful for other situations involving large sets of\nURLs.",
+        "License": "MIT + file LICENSE",
+        "LazyData": "TRUE",
+        "LinkingTo": "Rcpp",
+        "Imports": "Rcpp, methods, triebeard",
+        "Suggests": "testthat, knitr",
+        "URL": "https://github.com/Ironholds/urltools/",
+        "BugReports": "https://github.com/Ironholds/urltools/issues",
+        "VignetteBuilder": "knitr",
+        "RoxygenNote": "6.1.1",
+        "Encoding": "UTF-8",
+        "Depends": "R (>= 2.10)",
+        "NeedsCompilation": "yes",
+        "Packaged": "2019-04-14 22:25:08 UTC; ironholds",
+        "Repository": "RSPM",
+        "Date/Publication": "2019-04-14 23:02:47 UTC",
+        "Built": "R 4.3.1; aarch64-apple-darwin20; 2023-08-31 15:24:32 UTC; unix"
+      }
+    },
     "utf8": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/latest",
@@ -2391,16 +2449,19 @@
   },
   "files": {
     "_auth0.yml": {
-      "checksum": "f8bb3a70429fea3684a18e3c2761fb77"
+      "checksum": "6508015b0bfe05e466abd6d82cc46060"
+    },
+    ".RData": {
+      "checksum": "19914311db70ec8cf7f8ee47deb684b5"
     },
     ".Rprofile": {
-      "checksum": "a366f7697ea7ad96ac268b1e71adce1c"
+      "checksum": "e69faaccb5a7ce41fc98375d27430dc5"
     },
     "app.R": {
-      "checksum": "e6b18c0a89ae121e2b69444dca3d58ad"
+      "checksum": "07ed58adfab178ce1b9cdc9ad4d05bf3"
     },
     "js_code.js": {
-      "checksum": "5d34606603fb39268cc4bc867c17296f"
+      "checksum": "acd70acf7d283993d15e90b235474887"
     },
     "matrix_functions.R": {
       "checksum": "d07d588b17fc84abd20c438543aece64"

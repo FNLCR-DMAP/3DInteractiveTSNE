@@ -6,6 +6,7 @@ library(auth0)
 library(httr)
 library(jsonlite)
 library(tools)
+library(urltools)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -103,6 +104,10 @@ server <- function (input, output, session) {
   # trying to read contents of parquet file
   print("reading parquet files")
   fileName = files[1]
+  print(fileName)
+  # handling / in file name
+  fileName = url_encode(fileName)
+  print(fileName)
   url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
   response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   print(response2)
