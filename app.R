@@ -81,7 +81,7 @@ server <- function (input, output, session) {
   
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
+  rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   data_content = content(response, as="text")
