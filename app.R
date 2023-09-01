@@ -104,7 +104,7 @@ server <- function (input, output, session) {
   print("reading through files")
   df = data.frame()
   for (file in files) {
-    print(file)
+    print(file_ext(file))
     file = url_encode(file)
     dataset = generate_random_sample_data(10)
     dataset$name = file
