@@ -100,18 +100,26 @@ server <- function (input, output, session) {
   files = parsed_json$data$path
   files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
   
-  # trying to read contents of parquet file
-  print("reading parquet files")
-  fileName = files[1]
-  print(fileName)
+  # looping through file name
+  print("reading through files")
+  df = data.frame()
+  for (file in files) {
+    print(file)
+    file = url_encode(file)
+    dataset = generate_random_sample_data(10)
+    dataset$name = file
+    df = rbind(df, dataset)
+  }
+  # fileName = files[1]
+  # print(fileName)
   # handling / in file name
-  fileName = url_encode(fileName)
-  print(fileName)
-  url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-  response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  print(response2)
-  print("reading content here")
-  raw_data = content(response2, as="raw")
+  # fileName = url_encode(fileName)
+  # print(fileName)
+  # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+  # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+  # print(response2)
+  # print("reading content here")
+  # raw_data = content(response2, as="raw")
   
   # raw = content(response, as="text")
   # df = read.csv(text = raw)
@@ -124,7 +132,7 @@ server <- function (input, output, session) {
   #   raw = content(response, as="text")
   # })
   
-  df = generate_random_sample_data(10000) # takes total number of points as an argument
+  # df = generate_random_sample_data(10000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
