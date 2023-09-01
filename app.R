@@ -78,16 +78,6 @@ server <- function (input, output, session) {
     #print(url_search_params)
     output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
   })
-  # auth_token <- session$userData$auth0_credentials$access_token
-  # rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
-  # fileName = "tSNE3d_v01_test_data_140K.csv"
-  # url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-  # response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  # raw = content(response, as="text")
-  # df = read.csv(text = raw)
-  # df = data.frame(df)
-  # df = df %>% filter(!is.na(pk))
-  # df = head(df,1000)
   
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
@@ -113,10 +103,15 @@ server <- function (input, output, session) {
       dataset = data.frame(dataset)
       df = rbind(df, dataset)
     }
-    else {
+    else if (file_ext(file) == "parquet") {
       file = url_encode(file)
       dataset = generate_random_sample_data(10)
       dataset$name = file
+      df = rbind(df, dataset)
+    }
+    else {
+      dataset = generate_random_sample_data(100)
+      dataset$name = "else"
       df = rbind(df, dataset)
     }
   }
