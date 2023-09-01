@@ -94,16 +94,19 @@ server <- function (input, output, session) {
   df = data.frame()
   for (file in files) {
     print(file_ext(file))
+    file = url_encode(file)
+    url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
+    response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+    print(response2)
     if (file_ext(file) == "csv") {
-      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
-      response <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-      raw = content(response, as="text")
+      raw = content(response2, as="text")
       dataset = read.csv(text = raw)
       dataset = data.frame(dataset)
       df = rbind(df, dataset)
     }
     else if (file_ext(file) == "parquet") {
-      file = url_encode(file)
+      raw = content(response2, as="raw")
+      print(raw[1:5])
       dataset = generate_random_sample_data(10)
       dataset$name = file
       df = rbind(df, dataset)
