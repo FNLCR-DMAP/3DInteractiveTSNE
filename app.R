@@ -97,7 +97,6 @@ server <- function (input, output, session) {
     file = url_encode(file)
     url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
     response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    print(response2)
     if (file_ext(file) == "csv") {
       raw = content(response2, as="text")
       dataset = read.csv(text = raw)
@@ -106,7 +105,9 @@ server <- function (input, output, session) {
     }
     else if (file_ext(file) == "parquet") {
       raw = content(response2, as="raw")
-      print(raw[1:5])
+      print("reading parquet file")
+      print(file)
+      print(raw[1:5,])
       dataset = generate_random_sample_data(10)
       dataset$name = file
       df = rbind(df, dataset)
