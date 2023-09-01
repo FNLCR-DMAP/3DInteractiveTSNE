@@ -82,7 +82,6 @@ server <- function (input, output, session) {
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
   rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
-  # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   data_content = content(response, as="text")
@@ -128,17 +127,6 @@ server <- function (input, output, session) {
   # print(response2)
   # print("reading content here")
   # raw_data = content(response2, as="raw")
-  
-  # raw = content(response, as="text")
-  # df = read.csv(text = raw)
-  # df = data.frame(df)
-  # df = df %>% filter(!is.na(pk))
-
-  # print(response)
-  # print(status_code(response))
-  # output$response <- renderText({
-  #   raw = content(response, as="text")
-  # })
   
   # df = generate_random_sample_data(10000) # takes total number of points as an argument
   
