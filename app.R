@@ -91,7 +91,7 @@ server <- function (input, output, session) {
   
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
+  rid = "ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a"
   # fileName = "spark_part-00000-e7447c17-60bc-442d-ba6d-8c2126c12be4-c000.snappy.parquet"
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
@@ -105,11 +105,24 @@ server <- function (input, output, session) {
   df = data.frame()
   for (file in files) {
     print(file_ext(file))
-    file = url_encode(file)
-    dataset = generate_random_sample_data(10)
-    dataset$name = file
-    df = rbind(df, dataset)
+    if (file_ext(file) == "csv") {
+      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
+      response <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+      raw = content(response, as="text")
+      dataset = read.csv(text = raw)
+      dataset = data.frame(dataset)
+      df = rbind(df, dataset)
+    }
+    else {
+      file = url_encode(file)
+      dataset = generate_random_sample_data(10)
+      dataset$name = file
+      df = rbind(df, dataset)
+    }
   }
+  
+  df = df %>% filter(!is.na(pk))
+
   # fileName = files[1]
   # print(fileName)
   # handling / in file name
