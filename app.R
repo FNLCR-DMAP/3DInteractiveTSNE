@@ -107,7 +107,7 @@ server <- function (input, output, session) {
       raw = content(response2, as="raw")
       print("reading parquet file")
       print(file)
-      print(raw[1:5,])
+      print(raw[1:100])
       dataset = generate_random_sample_data(10)
       dataset$name = file
       df = rbind(df, dataset)
