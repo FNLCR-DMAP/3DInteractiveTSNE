@@ -7,7 +7,7 @@ library(httr)
 library(jsonlite)
 library(tools)
 library(urltools)
-library(arrow)
+#library(arrow)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
