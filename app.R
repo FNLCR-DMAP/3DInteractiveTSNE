@@ -496,11 +496,11 @@ my_auth0_server <- function(server, info) {
     print("funciton wihin myauth0server")
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
-    observe{
+    observe({
       url_search_params <- parseQueryString(session$clientData$url_search)
       print("search params")
       print(url_search_params)
-    }
+    })
     server(input, output, session)
   }
 }
