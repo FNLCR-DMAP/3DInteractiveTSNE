@@ -443,6 +443,7 @@ my_auth0_ui <- function(ui, info) {
   print("my auth0 UI called")
   if (missing(info)) info <- auth0_info()
   function(req) {
+    shinyjs::useShinyjs()
     shinyjs::logjs("hello from the myauth0ui function")
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
@@ -503,8 +504,8 @@ my_auth0_server <- function(server, info) {
     print("funciton wihin myauth0server")
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
-    shinyjs::useShinyjs()
-    shinyjs::logjs("Hello from shinyjs inmyauth0 function")
+
+    #shinyjs::logjs("Hello from shinyjs inmyauth0 function")
 
     observe({
       url_search_params <- parseQueryString(session$clientData$url_search)
