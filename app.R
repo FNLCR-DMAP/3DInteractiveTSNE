@@ -46,6 +46,7 @@ ui <-  fluidPage(
         tabPanel("3D Plot",
                  br(),
                  textOutput("debug_query_message"),
+                 textOutput("debug_query_message_2"),
                  br(),
                  htmlOutput("text"),
                  actionButton('getParam', 'Save View to Project'),
@@ -490,6 +491,9 @@ my_auth0_ui <- function(ui, info) {
   }
 }
 
+
+myGlobalQueryVars <- list()
+
 my_auth0_server <- function(server, info) {
   print("using my auth0 server")
   if (missing(info)) info <- auth0_info()
@@ -502,6 +506,8 @@ my_auth0_server <- function(server, info) {
       url_search_params <- parseQueryString(session$clientData$url_search)
       shinyjs::logjs("search params")
       shinyjs::logjs(url_search_params)
+      myGlobalQueryVars <- url_search_params
+      output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
     })
     server(input, output, session)
   }
