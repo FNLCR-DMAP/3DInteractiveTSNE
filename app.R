@@ -91,51 +91,52 @@ server <- function (input, output, session) {
   files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
   
   # looping through file name
-  print("reading through files")
-  df = data.frame()
-  for (file in files) {
-    print(file_ext(file))
-    file = url_encode(file)
-    url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
-    response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    if (file_ext(file) == "csv") {
-      raw = content(response2, as="text")
-      dataset = read.csv(text = raw)
-      dataset = data.frame(dataset)
-      df = rbind(df, dataset)
+  if(FALSE){
+    print("reading through files")
+    df = data.frame()
+    for (file in files) {
+      #print(file_ext(file))
+      file = url_encode(file)
+      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
+      response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+      if (file_ext(file) == "csv") {
+        raw = content(response2, as="text")
+        dataset = read.csv(text = raw)
+        dataset = data.frame(dataset)
+        df = rbind(df, dataset)
+      }
+      else if (file_ext(file) == "parquet") {
+        raw = content(response2, as="raw")
+        # dataset = read_parquet(raw)
+        # dataset = data.frame(dataset)
+        #print("reading parquet file")
+        #print(file)
+        #print(raw[1:100])
+        dataset = generate_random_sample_data(10)
+        dataset$name = file
+        df = rbind(df, dataset)
+      }
+      else {
+        dataset = generate_random_sample_data(100)
+        dataset$name = "else"
+        df = rbind(df, dataset)
+      }
     }
-    else if (file_ext(file) == "parquet") {
-      raw = content(response2, as="raw")
-      # dataset = read_parquet(raw)
-      # dataset = data.frame(dataset)
-      print("reading parquet file")
-      print(file)
-      print(raw[1:100])
-      dataset = generate_random_sample_data(10)
-      dataset$name = file
-      df = rbind(df, dataset)
-    }
-    else {
-      dataset = generate_random_sample_data(100)
-      dataset$name = "else"
-      df = rbind(df, dataset)
-    }
+    
+    df = df %>% filter(!is.na(pk))
+  
+    # fileName = files[1]
+    # print(fileName)
+    # handling / in file name
+    # fileName = url_encode(fileName)
+    # print(fileName)
+    # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+    # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+    # print(response2)
+    # print("reading content here")
+    # raw_data = content(response2, as="raw")
   }
-  
-  df = df %>% filter(!is.na(pk))
-
-  # fileName = files[1]
-  # print(fileName)
-  # handling / in file name
-  # fileName = url_encode(fileName)
-  # print(fileName)
-  # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-  # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  # print(response2)
-  # print("reading content here")
-  # raw_data = content(response2, as="raw")
-  
-  # df = generate_random_sample_data(10000) # takes total number of points as an argument
+  df = generate_random_sample_data(10000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
