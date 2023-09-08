@@ -504,8 +504,14 @@ my_auth0_server <- function(server, info) {
   function(input, output, session) {
     print("funciton wihin myauth0server")
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
+    
     shiny::observeEvent(input[["._auth0logout_"]], logout())
-
+    if( shiny::isRunning() ) {
+      print("my auth0 server, shiny is running!")
+    }
+    else{
+      print("my auth0 server, shiny is NOT running!")      
+    }
     #shinyjs::logjs("Hello from shinyjs inmyauth0 function")
 
     observe({
