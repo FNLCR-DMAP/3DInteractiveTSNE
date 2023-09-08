@@ -80,7 +80,7 @@ server <- function (input, output, session) {
     #print(url_search_params)
     output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
   })
-  
+  shinyjs::logjs("hello from our server function")
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
   rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
@@ -443,8 +443,9 @@ my_auth0_ui <- function(ui, info) {
   print("my auth0 UI called")
   if (missing(info)) info <- auth0_info()
   function(req) {
-    shinyjs::useShinyjs()
-    shinyjs::logjs("hello from the myauth0ui function")
+    
+    #shinyjs::useShinyjs()
+    #shinyjs::logjs("hello from the myauth0ui function")
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
     print("auth0 ui verify")
@@ -509,8 +510,8 @@ my_auth0_server <- function(server, info) {
 
     observe({
       url_search_params <- parseQueryString(session$clientData$url_search)
-      shinyjs::logjs("search params")
-      shinyjs::logjs(url_search_params)
+      #shinyjs::logjs("search params")
+      #shinyjs::logjs(url_search_params)
       myGlobalQueryVars <- url_search_params
       output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
     })
