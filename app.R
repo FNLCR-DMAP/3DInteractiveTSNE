@@ -83,7 +83,7 @@ server <- function (input, output, session) {
   shinyjs::logjs("hello from our server function")
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
-  
+  #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
   #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
   rid = myGlobalQueryVars$inputRID
   
