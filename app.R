@@ -446,17 +446,21 @@ my_auth0_ui <- function(ui, info) {
     
     #shinyjs::useShinyjs()
     #shinyjs::logjs("hello from the myauth0ui function")
-    
+    print("shiny query string:")
+    print(shiny::parseQueryString(req$QUERY_STRING))
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
     print("auth0 ui verify")
     print(verify)
     
     if (!verify) {
+      print("verify came back false") 
       if (grepl("error=unauthorized", req$QUERY_STRING)) {
         redirect <- sprintf("location.replace(\"%s\");", logout_url())
         shiny::tags$script(shiny::HTML(redirect))
       } 
       else {
+        print("not unauthorized")
+        
         params <- shiny::parseQueryString(req$QUERY_STRING)
         params$code <- NULL
         params$state <- NULL
@@ -516,16 +520,30 @@ my_auth0_server <- function(server, info) {
 
     observe({
       url_search_params <- parseQueryString(session$clientData$url_search)
-      #shinyjs::logjs("search params")
-      #shinyjs::logjs(url_search_params)
       myGlobalQueryVars <- url_search_params
       output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
     })
+    
     server(input, output, session)
   }
 }
 assignInNamespace("auth0_ui", my_auth0_ui, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
+
+#sillyUI <- fluidPage(
+#  useShinyjs()
+#)
+
+#sillyServer <- function (input, output, session) {
+#   logjs("Inside the temporary server")
+#  observe({
+#    url_search_params <- parseQueryString(session$clientData$url_search)
+    #shinyjs::logjs("search params")
+    #shinyjs::logjs(url_search_params)
+#    myGlobalQueryVars <- url_search_params
+#    output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
+#  })
+#}
 
 shinyAppAuth0(ui = ui, server = server)
 
