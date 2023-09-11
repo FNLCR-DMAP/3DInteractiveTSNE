@@ -83,7 +83,10 @@ server <- function (input, output, session) {
   shinyjs::logjs("hello from our server function")
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
-  rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
+  
+  #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
+  rid = myGlobalQueryVars$inputRID
+  
   url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
   response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
   data_content = content(response, as="text")
@@ -92,7 +95,7 @@ server <- function (input, output, session) {
   files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
   
   # looping through file name
-  if(FALSE){
+  if(TRUE){ # REMOVE IF STATEMENT when ready to actually read in data 
     print("reading through files")
     df = data.frame()
     for (file in files) {
@@ -437,35 +440,45 @@ auth0_server_verify <- function(session, app, api, state) {
   }
   
 }
-#auth0_state
-#url_search_params <- parseQueryString(session$clientData$url_search)
+my_auth0_server <- function(server, info) {
+  print("using my auth0 server")
+  if (missing(info)) info <- auth0_info()
+  function(input, output, session) {
+    print("funciton wihin myauth0server")
+    shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
+    shiny::observeEvent(input[["._auth0logout_"]], logout())
+    
+    observe({
+      if(length(myGlobalQueryVars) > 0) {
+        output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
+      }
+      else {
+        output$debug_query_message_2 <- renderText("No Global Vars Found")
+      }
+    })
+    
+    server(input, output, session)
+  }
+}
 my_auth0_ui <- function(ui, info) {
   print("my auth0 UI called")
   if (missing(info)) info <- auth0_info()
   function(req) {
-    
-    #shinyjs::useShinyjs()
-    #shinyjs::logjs("hello from the myauth0ui function")
-    print("shiny query string:")
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print(q_string)
+    
     if("inputRID" %in% names(q_string)){
       myGlobalQueryVars <<- q_string
     }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
-    print("auth0 ui verify")
-    print(verify)
     
     if (!verify) {
-      print("verify came back false") 
       if (grepl("error=unauthorized", req$QUERY_STRING)) {
         redirect <- sprintf("location.replace(\"%s\");", logout_url())
         shiny::tags$script(shiny::HTML(redirect))
       } 
       else {
-        print("not unauthorized")
-        
         params <- shiny::parseQueryString(req$QUERY_STRING)
         params$code <- NULL
         params$state <- NULL
@@ -504,54 +517,10 @@ my_auth0_ui <- function(ui, info) {
   }
 }
 
-
 myGlobalQueryVars <- list()
 
-my_auth0_server <- function(server, info) {
-  print("using my auth0 server")
-  if (missing(info)) info <- auth0_info()
-  function(input, output, session) {
-    print("funciton wihin myauth0server")
-    shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
-    
-    shiny::observeEvent(input[["._auth0logout_"]], logout())
-    if( shiny::isRunning() ) {
-      print("my auth0 server, shiny is running!")
-    }
-    else{
-      print("my auth0 server, shiny is NOT running!")      
-    }
-    #shinyjs::logjs("Hello from shinyjs inmyauth0 function")
-
-    observe({
-      if(length(myGlobalQueryVars) > 0) {
-        output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
-      }
-      else {
-        output$debug_query_message_2 <- renderText("No Global Vars Found")
-      }
-    })
-    
-    server(input, output, session)
-  }
-}
 assignInNamespace("auth0_ui", my_auth0_ui, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
-
-#sillyUI <- fluidPage(
-#  useShinyjs()
-#)
-
-#sillyServer <- function (input, output, session) {
-#   logjs("Inside the temporary server")
-#  observe({
-#    url_search_params <- parseQueryString(session$clientData$url_search)
-    #shinyjs::logjs("search params")
-    #shinyjs::logjs(url_search_params)
-#    myGlobalQueryVars <- url_search_params
-#    output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
-#  })
-#}
 
 shinyAppAuth0(ui = ui, server = server)
 
