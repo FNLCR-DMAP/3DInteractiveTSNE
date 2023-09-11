@@ -450,7 +450,7 @@ my_auth0_ui <- function(ui, info) {
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print(q_string)
     if("inputRID" %in% names(q_string)){
-      myGlobalQueryVars <- q_string
+      myGlobalQueryVars <<- q_string
     }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
