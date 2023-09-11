@@ -447,7 +447,12 @@ my_auth0_ui <- function(ui, info) {
     #shinyjs::useShinyjs()
     #shinyjs::logjs("hello from the myauth0ui function")
     print("shiny query string:")
-    print(shiny::parseQueryString(req$QUERY_STRING))
+    q_string <- shiny::parseQueryString(req$QUERY_STRING)
+    print(q_string)
+    if("inputRID" %in% names(q_string)){
+      myGlobalQueryVars <- q_string
+    }
+    
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
     print("auth0 ui verify")
     print(verify)
@@ -519,9 +524,7 @@ my_auth0_server <- function(server, info) {
     #shinyjs::logjs("Hello from shinyjs inmyauth0 function")
 
     observe({
-      url_search_params <- parseQueryString(session$clientData$url_search)
-      myGlobalQueryVars <- url_search_params
-      output$debug_query_message_2 <- renderText(paste(url_search_params, sep = " | "))
+      output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
     })
     
     server(input, output, session)
