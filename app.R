@@ -83,6 +83,7 @@ server <- function (input, output, session) {
   shinyjs::logjs("hello from our server function")
   # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
+  # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
   #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
   #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
   rid = myGlobalQueryVars$inputRID
@@ -127,7 +128,7 @@ server <- function (input, output, session) {
       }
     }
     
-    df = df %>% filter(!is.na(pk))
+   # df = df %>% filter(!is.na(pk))
   
     # fileName = files[1]
     # print(fileName)
@@ -140,7 +141,7 @@ server <- function (input, output, session) {
     # print("reading content here")
     # raw_data = content(response2, as="raw")
   }
-  df = generate_random_sample_data(10000) # takes total number of points as an argument
+  #df = generate_random_sample_data(10000) # takes total number of points as an argument
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
