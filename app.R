@@ -524,7 +524,12 @@ my_auth0_server <- function(server, info) {
     #shinyjs::logjs("Hello from shinyjs inmyauth0 function")
 
     observe({
-      output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
+      if(length(myGlobalQueryVars) > 0) {
+        output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
+      }
+      else {
+        output$debug_query_message_2 <- renderText("No Global Vars Found")
+      }
     })
     
     server(input, output, session)
