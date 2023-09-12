@@ -76,27 +76,27 @@ ui <-  fluidPage(
 server <- function (input, output, session) {
   observe({ 
     url_search_params <- parseQueryString(session$clientData$url_search)
-    #print("url_search_params")
-    #print(url_search_params)
     output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
   })
   shinyjs::logjs("hello from our server function")
-  # trying out file system
   auth_token <- session$userData$auth0_credentials$access_token
-  # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
-  #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
-  #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
-  rid = myGlobalQueryVars$inputRID
-  
-  url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
-  response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-  data_content = content(response, as="text")
-  parsed_json = fromJSON(data_content)
-  files = parsed_json$data$path
-  files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
-  
-  # looping through file name
-  if(TRUE){ # REMOVE IF STATEMENT when ready to actually read in data 
+  if(FALSE){ # REMOVE IF STATEMENT when ready to actually read in data 
+    # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
+    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
+    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
+    #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
+    
+    rid = myGlobalQueryVars$inputRID
+    
+    url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
+    response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+    data_content = content(response, as="text")
+    parsed_json = fromJSON(data_content)
+    files = parsed_json$data$path
+    files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
+    
+    # looping through file name
+    
     print("reading through files")
     df = data.frame()
     for (file in files) {
@@ -127,8 +127,9 @@ server <- function (input, output, session) {
         df = rbind(df, dataset)
       }
     }
-    
-   # df = df %>% filter(!is.na(pk))
+    else{
+      df = df %>% filter(!is.na(pk))
+    }
   
     # fileName = files[1]
     # print(fileName)
