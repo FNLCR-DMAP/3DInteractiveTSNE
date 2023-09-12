@@ -127,9 +127,8 @@ server <- function (input, output, session) {
         df = rbind(df, dataset)
       }
     }
-    else{
-      df = df %>% filter(!is.na(pk))
-    }
+    
+   # df = df %>% filter(!is.na(pk))
   
     # fileName = files[1]
     # print(fileName)
@@ -142,7 +141,9 @@ server <- function (input, output, session) {
     # print("reading content here")
     # raw_data = content(response2, as="raw")
   }
-  #df = generate_random_sample_data(10000) # takes total number of points as an argument
+  else{
+    df = generate_random_sample_data(10000) # takes total number of points as an argument
+  }
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
