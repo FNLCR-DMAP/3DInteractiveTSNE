@@ -479,10 +479,12 @@ my_auth0_ui <- function(ui, info) {
     #  myGlobalQueryVars <<- q_string#
     #}
     
-    shinyjs::logjs("query string")
-    shinyjs::logjs(paste(q_string))
+    #shinyjs::logjs("query string")
+    #shinyjs::logjs(paste(q_string))
+    
     if("inputRID" %in% names(q_string)){
-      shinyjs::logjs(paste("setting cookie with state", info$state, "to", q_string$inputRID))
+      #shinyjs::logjs(paste("setting cookie with state", info$state, "to", q_string$inputRID)
+      print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
       js$setCookie(info$state, q_string$inputRID)
     }
     
