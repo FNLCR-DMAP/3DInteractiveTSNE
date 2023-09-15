@@ -453,6 +453,8 @@ my_auth0_server <- function(server, info) {
     #myGlobalQueryVars <- list()  
     observe({
       q_string <- parseQueryString(session$clientData$url_search)
+      shinyjs::logjs("query string")
+      shinyjs::logjs(paste(q_string))
       if("inputRID" %in% names(q_string)){
         shinyjs::logjs(paste("setting cookie with state", info$state, "to", q_string$inputRID))
         js$setCookie(info$state, q_string$inputRID)
@@ -460,6 +462,7 @@ my_auth0_server <- function(server, info) {
     })
     
     observe({
+      shinyjs::logjs(paste("observing getting cookie, state:", info$state))s
       cookie <- js$getCookie(info$state)
       if (!is.null(cookie)) {
         shinyjs::logjs(paste("getting cookie", info$state))
