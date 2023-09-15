@@ -451,6 +451,38 @@
         "Archs": "cli.so.dSYM"
       }
     },
+    "clock": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "clock",
+        "Title": "Date-Time Types and Tools",
+        "Version": "0.7.0",
+        "Authors@R": "c(\nperson(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
+        "Description": "Provides a comprehensive library for date-time manipulations\nusing a new family of orthogonal date-time classes (durations, time\npoints, zoned-times, and calendars) that partition responsibilities so\nthat the complexities of time zones are only considered when they are\nreally needed. Capabilities include: date-time parsing, formatting,\narithmetic, extraction and updating of components, and rounding.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://clock.r-lib.org, https://github.com/r-lib/clock",
+        "BugReports": "https://github.com/r-lib/clock/issues",
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "cli (>= 3.6.1), lifecycle (>= 1.0.3), rlang (>= 1.1.0), tzdb\n(>= 0.4.0), vctrs (>= 0.6.1)",
+        "Suggests": "covr, knitr, magrittr, pillar, rmarkdown, slider (>= 0.3.0),\ntestthat (>= 3.0.0), withr",
+        "LinkingTo": "cpp11 (>= 0.4.3), tzdb (>= 0.4.0)",
+        "VignetteBuilder": "knitr",
+        "Config/Needs/website": "lubridate, tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "LazyData": "true",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2023-05-15 17:58:13 UTC; davis",
+        "Author": "Davis Vaughan [aut, cre],\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Davis Vaughan <davis@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-05-15 19:10:05 UTC",
+        "Built": "R 4.3.0; aarch64-apple-darwin20; 2023-05-16 23:22:42 UTC; unix",
+        "Archs": "clock.so.dSYM"
+      }
+    },
     "colorspace": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -506,6 +538,32 @@
         "Date/Publication": "2023-03-17 18:40:02 UTC",
         "Built": "R 4.3.0; aarch64-apple-darwin20; 2023-04-11 04:31:28 UTC; unix",
         "Archs": "commonmark.so.dSYM"
+      }
+    },
+    "cookies": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "cookies",
+        "Title": "Use Browser Cookies with 'shiny'",
+        "Version": "0.2.2",
+        "Authors@R": "c(\nperson(\"Jon\", \"Harmon\", , \"jonthegeek@gmail.com\", role = c(\"aut\", \"cre\", \"cph\"),\ncomment = c(ORCID = \"0000-0003-4781-4346\")),\nperson(\"Klaus\", \"Hartl\", role = \"cph\",\ncomment = \"js-cookie JavaScript library\"),\nperson(\"Fagner\", \"Brack\", role = \"cph\",\ncomment = \"js-cookie JavaScript library\")\n)",
+        "Description": "Browser cookies are name-value pairs that are saved in a\nuser's browser by a website. Cookies allow websites to persist\ninformation about the user and their use of the website. Here we\nprovide tools for working with cookies in 'shiny' apps, in part by\nwrapping the 'js-cookie' JavaScript library\n<https://github.com/js-cookie/js-cookie>.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://github.com/r4ds/cookies, https://r4ds.github.io/cookies/",
+        "BugReports": "https://github.com/r4ds/cookies/issues",
+        "Imports": "cli, clock, glue, htmltools, httpuv, jsonlite, purrr, rlang,\nshiny (>= 1.6.0), stats, vctrs",
+        "Suggests": "covr, roxygen2, testthat (>= 3.0.0)",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-03-15 17:38:47 UTC; jonth",
+        "Author": "Jon Harmon [aut, cre, cph] (<https://orcid.org/0000-0003-4781-4346>),\nKlaus Hartl [cph] (js-cookie JavaScript library),\nFagner Brack [cph] (js-cookie JavaScript library)",
+        "Maintainer": "Jon Harmon <jonthegeek@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-03-15 18:10:09 UTC",
+        "Built": "R 4.3.0; ; 2023-04-06 18:05:54 UTC; unix"
       }
     },
     "cpp11": {
@@ -1148,26 +1206,26 @@
       "description": {
         "Package": "httr",
         "Title": "Tools for Working with URLs and HTTP",
-        "Version": "1.4.7",
+        "Version": "1.4.6",
         "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "Useful tools for working with HTTP organised by HTTP verbs\n(GET(), POST(), etc). Configuration functions make it easy to control\nadditional request components (authenticate(), add_headers() and so\non).",
         "License": "MIT + file LICENSE",
         "URL": "https://httr.r-lib.org/, https://github.com/r-lib/httr",
         "BugReports": "https://github.com/r-lib/httr/issues",
         "Depends": "R (>= 3.5)",
-        "Imports": "curl (>= 5.0.2), jsonlite, mime, openssl (>= 0.8), R6",
+        "Imports": "curl (>= 3.0.0), jsonlite, mime, openssl (>= 0.8), R6",
         "Suggests": "covr, httpuv, jpeg, knitr, png, readr, rmarkdown, testthat\n(>= 0.8.0), xml2",
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.3",
         "NeedsCompilation": "no",
-        "Packaged": "2023-08-15 02:56:56 UTC; hadleywickham",
+        "Packaged": "2023-05-04 19:23:27 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\nPosit, PBC [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-08-15 09:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-08-15 09:41:58 UTC; unix"
+        "Date/Publication": "2023-05-08 14:30:21 UTC",
+        "Built": "R 4.3.0; ; 2023-05-16 23:27:05 UTC; unix"
       }
     },
     "isoband": {
@@ -1907,14 +1965,14 @@
         "Package": "shiny",
         "Type": "Package",
         "Title": "Web Application Framework for R",
-        "Version": "1.7.5",
-        "Authors@R": "c(\nperson(\"Winston\", \"Chang\", role = c(\"aut\", \"cre\"), email = \"winston@posit.co\", comment = c(ORCID = \"0000-0002-1576-2126\")),\nperson(\"Joe\", \"Cheng\", role = \"aut\", email = \"joe@posit.co\"),\nperson(\"JJ\", \"Allaire\", role = \"aut\", email = \"jj@posit.co\"),\nperson(\"Carson\", \"Sievert\", role = \"aut\", email = \"carson@posit.co\", comment = c(ORCID = \"0000-0002-4958-2844\")),\nperson(\"Barret\", \"Schloerke\", role = \"aut\", email = \"barret@posit.co\", comment = c(ORCID = \"0000-0001-9986-114X\")),\nperson(\"Yihui\", \"Xie\", role = \"aut\", email = \"yihui@posit.co\"),\nperson(\"Jeff\", \"Allen\", role = \"aut\"),\nperson(\"Jonathan\", \"McPherson\", role = \"aut\", email = \"jonathan@posit.co\"),\nperson(\"Alan\", \"Dipert\", role = \"aut\"),\nperson(\"Barbara\", \"Borges\", role = \"aut\"),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")),\nperson(family = \"jQuery Foundation\", role = \"cph\",\ncomment = \"jQuery library and jQuery UI library\"),\nperson(family = \"jQuery contributors\", role = c(\"ctb\", \"cph\"),\ncomment = \"jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt\"),\nperson(family = \"jQuery UI contributors\", role = c(\"ctb\", \"cph\"),\ncomment = \"jQuery UI library; authors listed in inst/www/shared/jqueryui/AUTHORS.txt\"),\nperson(\"Mark\", \"Otto\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(\"Jacob\", \"Thornton\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(family = \"Bootstrap contributors\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(family = \"Twitter, Inc\", role = \"cph\",\ncomment = \"Bootstrap library\"),\nperson(\"Prem Nawaz\", \"Khan\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Victor\", \"Tsaran\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Dennis\", \"Lembree\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Srinivasu\", \"Chakravarthula\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Cathy\", \"O'Connor\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(family = \"PayPal, Inc\", role = \"cph\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Stefan\", \"Petre\", role = c(\"ctb\", \"cph\"),\ncomment = \"Bootstrap-datepicker library\"),\nperson(\"Andrew\", \"Rowls\", role = c(\"ctb\", \"cph\"),\ncomment = \"Bootstrap-datepicker library\"),\nperson(\"Brian\", \"Reavis\", role = c(\"ctb\", \"cph\"),\ncomment = \"selectize.js library\"),\nperson(\"Salmen\", \"Bejaoui\", role = c(\"ctb\", \"cph\"),\ncomment = \"selectize-plugin-a11y library\"),\nperson(\"Denis\", \"Ineshin\", role = c(\"ctb\", \"cph\"),\ncomment = \"ion.rangeSlider library\"),\nperson(\"Sami\", \"Samhuri\", role = c(\"ctb\", \"cph\"),\ncomment = \"Javascript strftime library\"),\nperson(family = \"SpryMedia Limited\", role = c(\"ctb\", \"cph\"),\ncomment = \"DataTables library\"),\nperson(\"John\", \"Fraser\", role = c(\"ctb\", \"cph\"),\ncomment = \"showdown.js library\"),\nperson(\"John\", \"Gruber\", role = c(\"ctb\", \"cph\"),\ncomment = \"showdown.js library\"),\nperson(\"Ivan\", \"Sagalaev\", role = c(\"ctb\", \"cph\"),\ncomment = \"highlight.js library\"),\nperson(family = \"R Core Team\", role = c(\"ctb\", \"cph\"),\ncomment = \"tar implementation from R\")\n)",
+        "Version": "1.7.4.1",
+        "Authors@R": "c(\nperson(\"Winston\", \"Chang\", role = c(\"aut\", \"cre\"), email = \"winston@rstudio.com\", comment = c(ORCID = \"0000-0002-1576-2126\")),\nperson(\"Joe\", \"Cheng\", role = \"aut\", email = \"joe@rstudio.com\"),\nperson(\"JJ\", \"Allaire\", role = \"aut\", email = \"jj@rstudio.com\"),\nperson(\"Carson\", \"Sievert\", role = \"aut\", email = \"carson@rstudio.com\", comment = c(ORCID = \"0000-0002-4958-2844\")),\nperson(\"Barret\", \"Schloerke\", role = \"aut\", email = \"barret@rstudio.com\", comment = c(ORCID = \"0000-0001-9986-114X\")),\nperson(\"Yihui\", \"Xie\", role = \"aut\", email = \"yihui@rstudio.com\"),\nperson(\"Jeff\", \"Allen\", role = \"aut\", email = \"jeff@rstudio.com\"),\nperson(\"Jonathan\", \"McPherson\", role = \"aut\", email = \"jonathan@rstudio.com\"),\nperson(\"Alan\", \"Dipert\", role = \"aut\"),\nperson(\"Barbara\", \"Borges\", role = \"aut\"),\nperson(family = \"RStudio\", role = \"cph\"),\nperson(family = \"jQuery Foundation\", role = \"cph\",\ncomment = \"jQuery library and jQuery UI library\"),\nperson(family = \"jQuery contributors\", role = c(\"ctb\", \"cph\"),\ncomment = \"jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt\"),\nperson(family = \"jQuery UI contributors\", role = c(\"ctb\", \"cph\"),\ncomment = \"jQuery UI library; authors listed in inst/www/shared/jqueryui/AUTHORS.txt\"),\nperson(\"Mark\", \"Otto\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(\"Jacob\", \"Thornton\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(family = \"Bootstrap contributors\", role = \"ctb\",\ncomment = \"Bootstrap library\"),\nperson(family = \"Twitter, Inc\", role = \"cph\",\ncomment = \"Bootstrap library\"),\nperson(\"Prem Nawaz\", \"Khan\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Victor\", \"Tsaran\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Dennis\", \"Lembree\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Srinivasu\", \"Chakravarthula\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Cathy\", \"O'Connor\", role = \"ctb\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(family = \"PayPal, Inc\", role = \"cph\",\ncomment = \"Bootstrap accessibility plugin\"),\nperson(\"Stefan\", \"Petre\", role = c(\"ctb\", \"cph\"),\ncomment = \"Bootstrap-datepicker library\"),\nperson(\"Andrew\", \"Rowls\", role = c(\"ctb\", \"cph\"),\ncomment = \"Bootstrap-datepicker library\"),\nperson(\"Brian\", \"Reavis\", role = c(\"ctb\", \"cph\"),\ncomment = \"selectize.js library\"),\nperson(\"Salmen\", \"Bejaoui\", role = c(\"ctb\", \"cph\"),\ncomment = \"selectize-plugin-a11y library\"),\nperson(\"Denis\", \"Ineshin\", role = c(\"ctb\", \"cph\"),\ncomment = \"ion.rangeSlider library\"),\nperson(\"Sami\", \"Samhuri\", role = c(\"ctb\", \"cph\"),\ncomment = \"Javascript strftime library\"),\nperson(family = \"SpryMedia Limited\", role = c(\"ctb\", \"cph\"),\ncomment = \"DataTables library\"),\nperson(\"John\", \"Fraser\", role = c(\"ctb\", \"cph\"),\ncomment = \"showdown.js library\"),\nperson(\"John\", \"Gruber\", role = c(\"ctb\", \"cph\"),\ncomment = \"showdown.js library\"),\nperson(\"Ivan\", \"Sagalaev\", role = c(\"ctb\", \"cph\"),\ncomment = \"highlight.js library\"),\nperson(family = \"R Core Team\", role = c(\"ctb\", \"cph\"),\ncomment = \"tar implementation from R\")\n)",
         "Description": "Makes it incredibly easy to build interactive web\napplications with R. Automatic \"reactive\" binding between inputs and\noutputs and extensive prebuilt widgets make it possible to build\nbeautiful, responsive, and powerful applications with minimal effort.",
         "License": "GPL-3 | file LICENSE",
         "Depends": "R (>= 3.0.2), methods",
-        "Imports": "utils, grDevices, httpuv (>= 1.5.2), mime (>= 0.3), jsonlite\n(>= 0.9.16), xtable, fontawesome (>= 0.4.0), htmltools (>=\n0.5.4), R6 (>= 2.0), sourcetools, later (>= 1.0.0), promises\n(>= 1.1.0), tools, crayon, rlang (>= 0.4.10), fastmap (>=\n1.1.1), withr, commonmark (>= 1.7), glue (>= 1.3.2), bslib (>=\n0.3.0), cachem, ellipsis, lifecycle (>= 0.2.0)",
+        "Imports": "utils, grDevices, httpuv (>= 1.5.2), mime (>= 0.3), jsonlite\n(>= 0.9.16), xtable, fontawesome (>= 0.4.0), htmltools (>=\n0.5.4), R6 (>= 2.0), sourcetools, later (>= 1.0.0), promises\n(>= 1.1.0), tools, crayon, rlang (>= 0.4.10), fastmap (>=\n1.1.0), withr, commonmark (>= 1.7), glue (>= 1.3.2), bslib (>=\n0.3.0), cachem, ellipsis, lifecycle (>= 0.2.0)",
         "Suggests": "datasets, Cairo (>= 1.5-5), testthat (>= 3.0.0), knitr (>=\n1.6), markdown, rmarkdown, ggplot2, reactlog (>= 1.0.0),\nmagrittr, yaml, future, dygraphs, ragg, showtext, sass",
-        "URL": "https://shiny.posit.co/, https://github.com/rstudio/shiny",
+        "URL": "https://shiny.posit.co/",
         "BugReports": "https://github.com/rstudio/shiny/issues",
         "Collate": "'globals.R' 'app-state.R' 'app_template.R' 'bind-cache.R'\n'bind-event.R' 'bookmark-state-local.R' 'bookmark-state.R'\n'bootstrap-deprecated.R' 'bootstrap-layout.R' 'conditions.R'\n'map.R' 'utils.R' 'bootstrap.R' 'cache-utils.R' 'deprecated.R'\n'devmode.R' 'diagnose.R' 'fileupload.R' 'graph.R' 'reactives.R'\n'reactive-domains.R' 'history.R' 'hooks.R' 'html-deps.R'\n'image-interact-opts.R' 'image-interact.R' 'imageutils.R'\n'input-action.R' 'input-checkbox.R' 'input-checkboxgroup.R'\n'input-date.R' 'input-daterange.R' 'input-file.R'\n'input-numeric.R' 'input-password.R' 'input-radiobuttons.R'\n'input-select.R' 'input-slider.R' 'input-submit.R'\n'input-text.R' 'input-textarea.R' 'input-utils.R'\n'insert-tab.R' 'insert-ui.R' 'jqueryui.R' 'knitr.R'\n'middleware-shiny.R' 'middleware.R' 'timer.R' 'shiny.R'\n'mock-session.R' 'modal.R' 'modules.R' 'notifications.R'\n'priorityqueue.R' 'progress.R' 'react.R' 'reexports.R'\n'render-cached-plot.R' 'render-plot.R' 'render-table.R'\n'run-url.R' 'runapp.R' 'serializers.R'\n'server-input-handlers.R' 'server-resource-paths.R' 'server.R'\n'shiny-options.R' 'shiny-package.R' 'shinyapp.R' 'shinyui.R'\n'shinywrappers.R' 'showcase.R' 'snapshot.R' 'staticimports.R'\n'tar.R' 'test-export.R' 'test-server.R' 'test.R'\n'update-input.R' 'utils-lang.R' 'version_bs_date_picker.R'\n'version_ion_range_slider.R' 'version_jquery.R'\n'version_jqueryui.R' 'version_selectize.R' 'version_strftime.R'\n'viewer.R'",
         "RoxygenNote": "7.2.3",
@@ -1923,12 +1981,12 @@
         "Config/testthat/edition": "3",
         "Config/Needs/check": "shinytest2",
         "NeedsCompilation": "no",
-        "Packaged": "2023-08-11 15:54:00 UTC; cpsievert",
-        "Author": "Winston Chang [aut, cre] (<https://orcid.org/0000-0002-1576-2126>),\nJoe Cheng [aut],\nJJ Allaire [aut],\nCarson Sievert [aut] (<https://orcid.org/0000-0002-4958-2844>),\nBarret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),\nYihui Xie [aut],\nJeff Allen [aut],\nJonathan McPherson [aut],\nAlan Dipert [aut],\nBarbara Borges [aut],\nPosit Software, PBC [cph, fnd],\njQuery Foundation [cph] (jQuery library and jQuery UI library),\njQuery contributors [ctb, cph] (jQuery library; authors listed in\ninst/www/shared/jquery-AUTHORS.txt),\njQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\ninst/www/shared/jqueryui/AUTHORS.txt),\nMark Otto [ctb] (Bootstrap library),\nJacob Thornton [ctb] (Bootstrap library),\nBootstrap contributors [ctb] (Bootstrap library),\nTwitter, Inc [cph] (Bootstrap library),\nPrem Nawaz Khan [ctb] (Bootstrap accessibility plugin),\nVictor Tsaran [ctb] (Bootstrap accessibility plugin),\nDennis Lembree [ctb] (Bootstrap accessibility plugin),\nSrinivasu Chakravarthula [ctb] (Bootstrap accessibility plugin),\nCathy O'Connor [ctb] (Bootstrap accessibility plugin),\nPayPal, Inc [cph] (Bootstrap accessibility plugin),\nStefan Petre [ctb, cph] (Bootstrap-datepicker library),\nAndrew Rowls [ctb, cph] (Bootstrap-datepicker library),\nBrian Reavis [ctb, cph] (selectize.js library),\nSalmen Bejaoui [ctb, cph] (selectize-plugin-a11y library),\nDenis Ineshin [ctb, cph] (ion.rangeSlider library),\nSami Samhuri [ctb, cph] (Javascript strftime library),\nSpryMedia Limited [ctb, cph] (DataTables library),\nJohn Fraser [ctb, cph] (showdown.js library),\nJohn Gruber [ctb, cph] (showdown.js library),\nIvan Sagalaev [ctb, cph] (highlight.js library),\nR Core Team [ctb, cph] (tar implementation from R)",
-        "Maintainer": "Winston Chang <winston@posit.co>",
+        "Packaged": "2023-07-03 17:48:43 UTC; winston",
+        "Author": "Winston Chang [aut, cre] (<https://orcid.org/0000-0002-1576-2126>),\nJoe Cheng [aut],\nJJ Allaire [aut],\nCarson Sievert [aut] (<https://orcid.org/0000-0002-4958-2844>),\nBarret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),\nYihui Xie [aut],\nJeff Allen [aut],\nJonathan McPherson [aut],\nAlan Dipert [aut],\nBarbara Borges [aut],\nRStudio [cph],\njQuery Foundation [cph] (jQuery library and jQuery UI library),\njQuery contributors [ctb, cph] (jQuery library; authors listed in\ninst/www/shared/jquery-AUTHORS.txt),\njQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\ninst/www/shared/jqueryui/AUTHORS.txt),\nMark Otto [ctb] (Bootstrap library),\nJacob Thornton [ctb] (Bootstrap library),\nBootstrap contributors [ctb] (Bootstrap library),\nTwitter, Inc [cph] (Bootstrap library),\nPrem Nawaz Khan [ctb] (Bootstrap accessibility plugin),\nVictor Tsaran [ctb] (Bootstrap accessibility plugin),\nDennis Lembree [ctb] (Bootstrap accessibility plugin),\nSrinivasu Chakravarthula [ctb] (Bootstrap accessibility plugin),\nCathy O'Connor [ctb] (Bootstrap accessibility plugin),\nPayPal, Inc [cph] (Bootstrap accessibility plugin),\nStefan Petre [ctb, cph] (Bootstrap-datepicker library),\nAndrew Rowls [ctb, cph] (Bootstrap-datepicker library),\nBrian Reavis [ctb, cph] (selectize.js library),\nSalmen Bejaoui [ctb, cph] (selectize-plugin-a11y library),\nDenis Ineshin [ctb, cph] (ion.rangeSlider library),\nSami Samhuri [ctb, cph] (Javascript strftime library),\nSpryMedia Limited [ctb, cph] (DataTables library),\nJohn Fraser [ctb, cph] (showdown.js library),\nJohn Gruber [ctb, cph] (showdown.js library),\nIvan Sagalaev [ctb, cph] (highlight.js library),\nR Core Team [ctb, cph] (tar implementation from R)",
+        "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-08-12 17:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-08-12 19:30:17 UTC; unix"
+        "Date/Publication": "2023-07-06 12:30:03 UTC",
+        "Built": "R 4.3.0; ; 2023-07-06 15:24:08 UTC; unix"
       }
     },
     "shinyjs": {
@@ -2222,6 +2280,36 @@
         "Archs": "triebeard.so.dSYM"
       }
     },
+    "tzdb": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tzdb",
+        "Title": "Time Zone Database Information",
+        "Version": "0.4.0",
+        "Authors@R": "c(\nperson(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"Howard\", \"Hinnant\", role = \"cph\",\ncomment = \"Author of the included date library\"),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
+        "Description": "Provides an up-to-date copy of the Internet Assigned Numbers\nAuthority (IANA) Time Zone Database. It is updated periodically to\nreflect changes made by political bodies to time zone boundaries, UTC\noffsets, and daylight saving time rules. Additionally, this package\nprovides a C++ interface for working with the 'date' library. 'date'\nprovides comprehensive support for working with dates and date-times,\nwhich this package exposes to make it easier for other R packages to\nutilize. Headers are provided for calendar specific calculations,\nalong with a limited interface for time zone manipulations.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://tzdb.r-lib.org, https://github.com/r-lib/tzdb",
+        "BugReports": "https://github.com/r-lib/tzdb/issues",
+        "Depends": "R (>= 3.5.0)",
+        "Suggests": "covr, testthat (>= 3.0.0)",
+        "LinkingTo": "cpp11 (>= 0.4.2)",
+        "Biarch": "yes",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "yes",
+        "Packaged": "2023-05-12 12:40:06 UTC; davis",
+        "Author": "Davis Vaughan [aut, cre],\nHoward Hinnant [cph] (Author of the included date library),\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Davis Vaughan <davis@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-05-12 23:00:02 UTC",
+        "Built": "R 4.3.0; aarch64-apple-darwin20; 2023-05-16 23:08:45 UTC; unix",
+        "Archs": "tzdb.so.dSYM"
+      }
+    },
     "urltools": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -2452,13 +2540,13 @@
       "checksum": "6508015b0bfe05e466abd6d82cc46060"
     },
     ".RData": {
-      "checksum": "2c3927e0672930072d1b637f0cbbc596"
+      "checksum": "54d1cb00694b1c25ad3cc5d5e8b7308a"
     },
     ".Rprofile": {
-      "checksum": "046d5ca3397df6293cc67616b8fc7362"
+      "checksum": "59872af142697b1db05f080005af0108"
     },
     "app.R": {
-      "checksum": "56d3cd5c9f54564bce47f0bdcfd38c84"
+      "checksum": "0dcb061184dd74a8fe26c220d632167d"
     },
     "js_code.js": {
       "checksum": "acd70acf7d283993d15e90b235474887"
@@ -2467,7 +2555,7 @@
       "checksum": "d07d588b17fc84abd20c438543aece64"
     },
     "README.md": {
-      "checksum": "27f5a853edb6a5e4b0486acb4826d379"
+      "checksum": "43fb0a9e2b2b451a9c815f36df43bf53"
     },
     "UI_functions.R": {
       "checksum": "2188e40183e7c2f54a6c95e1ff38f629"
