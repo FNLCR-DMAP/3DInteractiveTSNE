@@ -139,7 +139,7 @@ server <- function (input, output, session) {
     # raw_data = content(response2, as="raw")
   }
   else{
-    df = generate_random_sample_data(10000) # takes total number of points as an argument
+    df = generate_random_sample_data(1000) # takes total number of points as an argument
   }
   
   shinyjs::disable("add_to_list")
@@ -483,8 +483,11 @@ my_auth0_ui <- function(ui, info) {
     #shinyjs::logjs(paste(q_string))
     
     if("inputRID" %in% names(q_string)){
+      
       #shinyjs::logjs(paste("setting cookie with state", info$state, "to", q_string$inputRID)
       print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
+      print("js:")
+      print(js)
       js$setCookie(info$state, q_string$inputRID)
     }
     
