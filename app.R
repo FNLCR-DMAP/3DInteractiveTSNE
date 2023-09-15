@@ -462,7 +462,7 @@ my_auth0_server <- function(server, info) {
     })
     
     observe({
-      shinyjs::logjs(paste("observing getting cookie, state:", info$state))s
+      shinyjs::logjs(paste("observing getting cookie, state:", info$state))
       cookie <- js$getCookie(info$state)
       if (!is.null(cookie)) {
         shinyjs::logjs(paste("getting cookie", info$state))
