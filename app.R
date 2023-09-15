@@ -8,13 +8,9 @@ library(jsonlite)
 library(tools)
 library(urltools)
 library(arrow)
-#arrow
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
-
-print(Sys.getenv("redirect_uri"))
-print(Sys.getenv("auth0_clientid"))
 
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
@@ -424,7 +420,8 @@ auth0_server_verify <- function(session, app, api, state) {
   
   u_search <- session[["clientData"]]$url_search
   params <- shiny::parseQueryString(u_search)
-  
+
+
   if (has_auth_code(params, state)) {
     cred <- httr::oauth2.0_access_token(api, app(redirect_uri), params$code)
     token <- httr::oauth2.0_token(
@@ -447,17 +444,30 @@ auth0_server_verify <- function(session, app, api, state) {
 my_auth0_server <- function(server, info) {
   print("using my auth0 server")
   if (missing(info)) info <- auth0_info()
+  
   function(input, output, session) {
     print("funciton wihin myauth0server")
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
+    #myGlobalQueryVars <- list()  
     observe({
-      if(length(myGlobalQueryVars) > 0) {
+      q_string <- parseQueryString(session$clientData$url_search)
+      if("inputRID" %in% names(q_string)){
+        shinyjs::logjs(paste("setting cookie with state", info$state, "to", q_string$inputRID))
+        js$setCookie(info$state, q_string$inputRID)
+      }
+    })
+    
+    observe({
+      cookie <- js$getCookie(info$state)
+      if (!is.null(cookie)) {
+        shinyjs::logjs(paste("getting cookie", info$state))
         output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
       }
-      else {
-        output$debug_query_message_2 <- renderText("No Global Vars Found")
+      else{
+        print("cant find cookie")
+        shinyjs::logjs("can't find cookie")
       }
     })
     
@@ -471,9 +481,9 @@ my_auth0_ui <- function(ui, info) {
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print(q_string)
     
-    if("inputRID" %in% names(q_string)){
-      myGlobalQueryVars <<- q_string
-    }
+    #if("inputRID" %in% names(q_string)){
+    #  myGlobalQueryVars <<- q_string#
+    #}
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
     
@@ -521,7 +531,6 @@ my_auth0_ui <- function(ui, info) {
   }
 }
 
-myGlobalQueryVars <- list()
 
 assignInNamespace("auth0_ui", my_auth0_ui, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
