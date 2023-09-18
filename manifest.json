@@ -1206,26 +1206,26 @@
       "description": {
         "Package": "httr",
         "Title": "Tools for Working with URLs and HTTP",
-        "Version": "1.4.6",
+        "Version": "1.4.7",
         "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "Description": "Useful tools for working with HTTP organised by HTTP verbs\n(GET(), POST(), etc). Configuration functions make it easy to control\nadditional request components (authenticate(), add_headers() and so\non).",
         "License": "MIT + file LICENSE",
         "URL": "https://httr.r-lib.org/, https://github.com/r-lib/httr",
         "BugReports": "https://github.com/r-lib/httr/issues",
         "Depends": "R (>= 3.5)",
-        "Imports": "curl (>= 3.0.0), jsonlite, mime, openssl (>= 0.8), R6",
+        "Imports": "curl (>= 5.0.2), jsonlite, mime, openssl (>= 0.8), R6",
         "Suggests": "covr, httpuv, jpeg, knitr, png, readr, rmarkdown, testthat\n(>= 0.8.0), xml2",
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.2.3",
         "NeedsCompilation": "no",
-        "Packaged": "2023-05-04 19:23:27 UTC; hadleywickham",
+        "Packaged": "2023-08-15 02:56:56 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\nPosit, PBC [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2023-05-08 14:30:21 UTC",
-        "Built": "R 4.3.0; ; 2023-05-16 23:27:05 UTC; unix"
+        "Date/Publication": "2023-08-15 09:00:02 UTC",
+        "Built": "R 4.3.0; ; 2023-08-15 09:41:58 UTC; unix"
       }
     },
     "isoband": {
@@ -2543,10 +2543,10 @@
       "checksum": "54d1cb00694b1c25ad3cc5d5e8b7308a"
     },
     ".Rprofile": {
-      "checksum": "59872af142697b1db05f080005af0108"
+      "checksum": "93382a28e540c0621daaac33a8f6e436"
     },
     "app.R": {
-      "checksum": "0dcb061184dd74a8fe26c220d632167d"
+      "checksum": "f1a1c4614d96d10102556f2e371829a6"
     },
     "js_code.js": {
       "checksum": "acd70acf7d283993d15e90b235474887"
