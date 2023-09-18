@@ -493,6 +493,7 @@ my_auth0_ui <- function(ui, info) {
     #shinyjs::logjs("my auth0 ui function, can use shinyjs here")
     #shinyjs::runjs("alert('hello alert')")
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
+    print("my auth0 ui funciton: qstring:")
     print(q_string)
     
     #if("inputRID" %in% names(q_string)){  
