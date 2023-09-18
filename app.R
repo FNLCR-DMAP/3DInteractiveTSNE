@@ -77,15 +77,20 @@ server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
   print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
   nonce = session_info$state
-  print("nonce data:")
+  print("global nonce data:")
   print(global_nonce_data)
+  print("global nonce data names:")
+  print(names(global_nonce_data))
+
   nonce_data = global_nonce_data[nonce]
-  
+
   if (!is.null(nonce_data)){
-    print("found global data[nonce]")
+    print("found session nonce data")
     print(nonce_data)
-    rid <- nonce_data$inputRID
+    print("session nonce data names")
+    print(names(nonce_data))
     
+    rid <- nonce_data$inputRID
   }
   else{
     print("instance not found in global data")
