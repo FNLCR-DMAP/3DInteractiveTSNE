@@ -8,7 +8,7 @@ library(jsonlite)
 library(tools)
 library(urltools)
 library(arrow)
-
+library(cookies)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -16,56 +16,58 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
 
-ui <-  fluidPage(
-  useShinyjs(),
-  extendShinyjs(text = js_code, functions = c('plot3d')),
-  tags$head(
-    tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
-  ),
-  titlePanel("T-SNE 3D Scatterplot"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("x_col", label = "X-Axis", choices = NULL),
-      selectInput("y_col", label = "Y-Axis", choices = NULL),
-      selectInput("z_col", label = "Z-Axis", choices = NULL),
-      selectInput("indicator_col", "Indicator", choices = NULL),
-      actionButton('show', 'Generate Plot'),
-      br(),
-      br(),
-      checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
+ui <-  cookies::add_cookie_handlers(
+  fluidPage(
+    useShinyjs(),
+    extendShinyjs(text = js_code, functions = c('plot3d')),
+    tags$head(
+      tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
     ),
-    mainPanel(
-      fluidRow(
-        column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
-        column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
-        column (4, verbatimTextOutput("response"))
+    titlePanel("T-SNE 3D Scatterplot"),
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("x_col", label = "X-Axis", choices = NULL),
+        selectInput("y_col", label = "Y-Axis", choices = NULL),
+        selectInput("z_col", label = "Z-Axis", choices = NULL),
+        selectInput("indicator_col", "Indicator", choices = NULL),
+        actionButton('show', 'Generate Plot'),
+        br(),
+        br(),
+        checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
       ),
-      tabsetPanel(
-        tabPanel("3D Plot",
-                 br(),
-                 textOutput("debug_query_message"),
-                 textOutput("debug_query_message_2"),
-                 br(),
-                 htmlOutput("text"),
-                 actionButton('getParam', 'Save View to Project'),
-                 actionButton('project2D', "Project to 2D"),
-                 tags$body(
-                   tags$div(id='mydiv', class = 'myplot')
-                 )),
-        tabPanel("2D Lasso",
-                 br(),
-                 textInput("points_names", label = "Name of Selected Points"),
-                 actionButton("add_to_list", label = "Add Points to Export List"),
-                 plotlyOutput("plot2d")),
-        tabPanel("View Export Dataset",
-                 br(),
-                 fluidRow(
-                   column (4, actionButton("clear", label = 'Clear Export List')),
-                   column (4, actionButton("exportNidap", label = "Export to NIDAP"))
-                 ),
-                 br(),
-                 br(),
-                 DTOutput("Export_Dataset"))
+      mainPanel(
+        fluidRow(
+          column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
+          column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
+          column (4, verbatimTextOutput("response"))
+        ),
+        tabsetPanel(
+          tabPanel("3D Plot",
+                   br(),
+                   textOutput("debug_query_message"),
+                   textOutput("debug_query_message_2"),
+                   br(),
+                   htmlOutput("text"),
+                   actionButton('getParam', 'Save View to Project'),
+                   actionButton('project2D', "Project to 2D"),
+                   tags$body(
+                     tags$div(id='mydiv', class = 'myplot')
+                   )),
+          tabPanel("2D Lasso",
+                   br(),
+                   textInput("points_names", label = "Name of Selected Points"),
+                   actionButton("add_to_list", label = "Add Points to Export List"),
+                   plotlyOutput("plot2d")),
+          tabPanel("View Export Dataset",
+                   br(),
+                   fluidRow(
+                     column (4, actionButton("clear", label = 'Clear Export List')),
+                     column (4, actionButton("exportNidap", label = "Export to NIDAP"))
+                   ),
+                   br(),
+                   br(),
+                   DTOutput("Export_Dataset"))
+        )
       )
     )
   )
@@ -455,9 +457,8 @@ my_auth0_server <- function(server, info) {
     
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
+      cookie <- cookies::get_cookie(info$state)
       
-      #cookie <- cookies::get_cookie(info$state)
-      cookie <- "test not a real cookie"
       if (!is.null(cookie)) {
         shinyjs::logjs(paste("getting cookie", info$state))
         output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
@@ -465,6 +466,15 @@ my_auth0_server <- function(server, info) {
       else{
         print("cant find cookie")
         shinyjs::logjs("can't find cookie")
+      }
+    })
+    
+    observe({
+      url_search_params <- parseQueryString(session$clientData$url_search)
+      print("observing url searchparams")
+      if("inputRID" %in% names(url_search_params)){
+        print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
+        cookies::set_cookie(info$state, url_search_params$inputRID ) 
       }
     })
     
@@ -480,7 +490,7 @@ my_auth0_ui <- function(ui, info) {
   function(req) {
     #shinyjs::useShinyjs()
     #shinyjs::logjs("my auth0 ui function, can use shinyjs here")
-    shinyjs::runjs("alert('hello alert')")
+    #shinyjs::runjs("alert('hello alert')")
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print(q_string)
     
