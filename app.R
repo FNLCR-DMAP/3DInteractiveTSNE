@@ -503,15 +503,15 @@ my_auth0_ui <- function(ui, info) {
     print("my auth0 ui funciton: qstring:")
     print(q_string)
     
-    #if("inputRID" %in% names(q_string)){  
+    if("inputRID" %in% names(q_string)){  
       #shinyjs::logjs(paste("cookie with state", info$state, "to", q_string$inputRID) )
-    #  print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
-      #cookies::set_cookie(info$state, q_string$inputRID)
-    #  cookie_command <- sprintf("document.cookie = '%s=%s'", info$state, q_string$inputRID)
-    #  print("cookie Command:")
-    #  print(cookie_command)
+      print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
+      
+      cookie_command <- sprintf("document.cookie = '%s=%s'", info$state, q_string$inputRID)
+      print("cookie Command:")
+      print(cookie_command)
     #  return(shiny::tag$script(shiny::HTML(cookie_command)))
-    #}
+    }
     
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
