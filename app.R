@@ -75,7 +75,7 @@ ui <-  cookies::add_cookie_handlers(
 
 server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
-  print(paste(names(global_nonce_data), global_nonce_data, sep = ","))
+  print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
   print("getting global rid")
   nonce = session_info$state
   if (!is.null(global_nonce_data[nonce])){
@@ -502,7 +502,7 @@ my_auth0_ui <- function(ui, info) {
     if("inputRID" %in% names(q_string)){  
       print(paste("setting var with state", info$state, "to", q_string$inputRID))
       
-      global_nonce_data[[ info$state]] = list(inputRID = q_string$inputRID, outputRID = "blah") 
+      global_nonce_data <<- append(global_nonce_data, list(info$state = list(inputRID = q_string$inputRID)) )
     }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
