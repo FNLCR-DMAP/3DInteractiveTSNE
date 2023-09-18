@@ -76,10 +76,14 @@ ui <-  cookies::add_cookie_handlers(
 server <- function (input, output, session) {
   observe({ 
     url_search_params <- parseQueryString(session$clientData$url_search)
+    if("inputRID" %in% names(url_search_params)){
+      print("regular server, observed inputRID in search params")
+    }
     output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
   })
   shinyjs::logjs("hello from our server function")
   auth_token <- session$userData$auth0_credentials$access_token
+  
   if(FALSE){ # REMOVE IF STATEMENT when ready to actually read in data 
     # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
     #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
@@ -444,6 +448,7 @@ auth0_server_verify <- function(session, app, api, state) {
   }
   
 }
+
 my_auth0_server <- function(server, info) {
   print("using my auth0 server")
   if (missing(info)) info <- auth0_info()
