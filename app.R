@@ -78,16 +78,19 @@ server <- function (input, output, session, session_info = NULL) {
   print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
   print("getting global rid")
   nonce = session_info$state
-  if (!is.null(global_nonce_data[nonce])){
+  nonce_data = global_nonce_data[nonce]
+  if (!is.null(nonce_data)){
     print("found global data[nonce]")
-    print(paste(global_nonce_data[nonce]))
-    rid <- global_nonce_data[nonce]$inputRID
+    print(nonce_data)
+    rid <- nonce_data$inputRID
+    
   }
   else{
     print("instance not found in global data")
     rid <- NULL
   }
-  
+  print("rid:")
+  print(rid)
   auth_token <- session$userData$auth0_credentials$access_token
   observe({
     if(is.null(rid)){
@@ -102,9 +105,6 @@ server <- function (input, output, session, session_info = NULL) {
     #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
     #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
     #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
-    
-    
-    
     url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
     response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
     data_content = content(response, as="text")
