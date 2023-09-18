@@ -493,10 +493,7 @@ my_auth0_ui <- function(ui, info) {
   } 
 
   function(req) {
-  #  q_string <- shiny::parseQueryString(req$QUERY_STRING)
-  #  print("my auth0 ui funciton: qstring:")
-  #  print(q_string)
-    
+     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     if("inputRID" %in% names(q_string)){  
       print(paste("setting var with state", info$state, "to", q_string$inputRID))
       
