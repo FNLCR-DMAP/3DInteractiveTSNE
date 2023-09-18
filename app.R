@@ -75,8 +75,9 @@ ui <-  cookies::add_cookie_handlers(
 
 server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
-  
   print(paste(names(global_nonce_data), global_nonce_data, sep = ","))
+  print("session info:")
+  print(paste(session_info))
   
   shinyjs::logjs("hello from our server function")
   auth_token <- session$userData$auth0_credentials$access_token
