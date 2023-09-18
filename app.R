@@ -459,9 +459,10 @@ my_auth0_server <- function(server, info) {
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
-    url_search_params <- parseQueryString(session$clientData$url_search)
-    print("myauth0server search params")
-    print(paste(names(url_search_params), url_search_params, sep = " | "))
+    #url_search_params <- parseQueryString(session$clientData$url_search)
+    print("myauth0server input")
+    print(paste(names(input), input, sep = " | "))
+    
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
       cookie <- cookies::get_cookie(info$state)
