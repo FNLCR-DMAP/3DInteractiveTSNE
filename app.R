@@ -74,8 +74,9 @@ ui <-  cookies::add_cookie_handlers(
 )
 
 server <- function (input, output, session) {
-  #print("regular server function: info")
-  #print(paste(names(info), info, sep = ","))
+  print("regular server function: Global nonce data:")
+  
+  print(paste(names(global_nonce_data), global_nonce_data, sep = ","))
   
   shinyjs::logjs("hello from our server function")
   auth_token <- session$userData$auth0_credentials$access_token
@@ -494,7 +495,7 @@ my_auth0_ui <- function(ui, info) {
     if("inputRID" %in% names(q_string)){  
       print(paste("setting var with state", info$state, "to", q_string$inputRID))
       
-      global_nonce_data <<- append(global_nonce_data, c(inputRID=q_string$inputRID))
+      global_nonce_data <- append(global_nonce_data, c(inputRID=q_string$inputRID))
     }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
