@@ -80,7 +80,7 @@ server <- function (input, output, session, session_info = NULL) {
   print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
   print("getting global rid")
   nonce = session_info$state
-  if (global_nonce_data[nonce]){
+  if (!is.null(global_nonce_data[nonce])){
     print("found global data[nonce]")
     print(paste(global_nonce_data[nonce]))
   }
