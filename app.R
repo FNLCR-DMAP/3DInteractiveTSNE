@@ -91,9 +91,9 @@ server <- function (input, output, session, session_info = NULL) {
   auth_token <- session$userData$auth0_credentials$access_token
   observe({
     if(is.null(rid)){
-      input$debug_query_message <- renderText("inputRID: NULL")
+      output$debug_query_message <- renderText("inputRID: NULL")
     } else {
-      input$debug_query_message <- renderText(paste("inputRID: ", rid))
+      output$debug_query_message <- renderText(paste("inputRID: ", rid))
     }
   })
   
