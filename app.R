@@ -472,6 +472,7 @@ my_auth0_server <- function(server, info) {
     observe({
       url_search_params <- parseQueryString(session$clientData$url_search)
       print("observing url searchparams")
+      print(paste(names(url_search_params), url_search_params, sep = ":", collapse = ","))
       if("inputRID" %in% names(url_search_params)){
         print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
         cookies::set_cookie(info$state, url_search_params$inputRID ) 
