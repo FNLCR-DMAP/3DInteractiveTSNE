@@ -74,14 +74,8 @@ ui <-  cookies::add_cookie_handlers(
 )
 
 server <- function (input, output, session) {
-  observe({ 
-    print("regular server, observe search params")
-    url_search_params <- parseQueryString(session$clientData$url_search)
-    if("inputRID" %in% names(url_search_params)){
-      print("regular server, observed inputRID in search params")
-    }
-    output$debug_query_message <- renderText(paste(url_search_params, sep = " | "))
-  })
+  print("regular server function: info")
+  print(paste(names(info), info, sep = "||"))
   shinyjs::logjs("hello from our server function")
   auth_token <- session$userData$auth0_credentials$access_token
   
@@ -471,7 +465,7 @@ my_auth0_server <- function(server, info) {
       
       if (!is.null(cookie)) {
         shinyjs::logjs(paste("getting cookie", info$state))
-        output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
+        #output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
       }
       else{
         print("cant find cookie")
@@ -479,15 +473,15 @@ my_auth0_server <- function(server, info) {
       }
     })
     
-    observe({
-      print("observing url searchparams")
-      url_search_params <- parseQueryString(session$clientData$url_search)
-      print(paste(names(url_search_params), url_search_params, sep = ":", collapse = ","))
-      if("inputRID" %in% names(url_search_params)){
-        print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
-        cookies::set_cookie(info$state, url_search_params$inputRID ) 
-      }
-    })
+    #observe({
+    #  print("observing url searchparams")
+    #  url_search_params <- parseQueryString(session$clientData$url_search)
+    #  print(paste(names(url_search_params), url_search_params, sep = ":", collapse = ","))
+    #  if("inputRID" %in% names(url_search_params)){
+    #    print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
+    #    cookies::set_cookie(info$state, url_search_params$inputRID ) 
+    #  }
+    #})
     
     server(input, output, session)
   }
@@ -503,15 +497,11 @@ my_auth0_ui <- function(ui, info) {
   #  print("my auth0 ui funciton: qstring:")
   #  print(q_string)
     
-  #  if("inputRID" %in% names(q_string)){  
-      #shinyjs::logjs(paste("cookie with state", info$state, "to", q_string$inputRID) )
-  #    print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
+    if("inputRID" %in% names(q_string)){  
+      print(paste("setting var with state", info$state, "to", q_string$inputRID))
       
-  #    cookie_command <- sprintf("document.cookie = '%s=%s'", info$state, q_string$inputRID)
-  #    print("cookie Command:")
-  #    print(cookie_command)
-  #    shiny::tag$script(shiny::HTML(cookie_command)))
-  #  }
+      global_nonce_data <<- append(global_nonce_data, c(inputRID=q_string$inputRID))
+    }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
     
@@ -564,7 +554,7 @@ my_auth0_ui <- function(ui, info) {
   
 }
 
-
+global_nonce_data = list()
 assignInNamespace("auth0_ui", my_auth0_ui, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
 
