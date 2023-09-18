@@ -507,10 +507,10 @@ my_auth0_ui <- function(ui, info) {
       #shinyjs::logjs(paste("cookie with state", info$state, "to", q_string$inputRID) )
       print(paste("setting cookie with state", info$state, "to", q_string$inputRID))
       #cookies::set_cookie(info$state, q_string$inputRID)
-      cookie_command <- sprintf("document.cookie = '%s=%s;path=/'", info$state, q_string$inputRID)
+      cookie_command <- sprintf("document.cookie = '%s=%s'", info$state, q_string$inputRID)
       print("cookie Command:")
       print(cookie_command)
-      shiny::tag$script(shiny::HTML(cookie_command))
+      return(shiny::tag$script(shiny::HTML(cookie_command)))
     }
     
     
