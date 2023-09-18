@@ -510,51 +510,52 @@ my_auth0_ui <- function(ui, info) {
       cookie_command <- sprintf("document.cookie = '%s=%s'", info$state, q_string$inputRID)
       print("cookie Command:")
       print(cookie_command)
-    #  return(shiny::tag$script(shiny::HTML(cookie_command)))
+      shiny::tag$script(shiny::HTML(cookie_command))
     }
+    else{
     
-    
-    verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
-    
-    if (!verify) {
-      if (grepl("error=unauthorized", req$QUERY_STRING)) {
-        redirect <- sprintf("location.replace(\"%s\");", logout_url())
-        shiny::tags$script(shiny::HTML(redirect))
-      } 
-      else {
-        params <- shiny::parseQueryString(req$QUERY_STRING)
-        params$code <- NULL
-        params$state <- NULL
-        
-        query <- paste0("/?", paste(
-          mapply(paste, names(params), params, MoreArgs = list(sep = "=")),
-          collapse = "&"))
-        if (!is.null(info$remote_url) && info$remote_url != "" && !getOption("auth0_local")) {
-          redirect_uri <- info$remote_url
-        } else {
-          if (grepl("127.0.0.1", req$HTTP_HOST)) {
-            redirect_uri <- paste0("http://", gsub("127.0.0.1", "localhost", req$HTTP_HOST, query))
+      verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
+      
+      if (!verify) {
+        if (grepl("error=unauthorized", req$QUERY_STRING)) {
+          redirect <- sprintf("location.replace(\"%s\");", logout_url())
+          shiny::tags$script(shiny::HTML(redirect))
+        } 
+        else {
+          params <- shiny::parseQueryString(req$QUERY_STRING)
+          params$code <- NULL
+          params$state <- NULL
+          
+          query <- paste0("/?", paste(
+            mapply(paste, names(params), params, MoreArgs = list(sep = "=")),
+            collapse = "&"))
+          if (!is.null(info$remote_url) && info$remote_url != "" && !getOption("auth0_local")) {
+            redirect_uri <- info$remote_url
           } else {
-            redirect_uri <- paste0("http://", req$HTTP_HOST, query)
+            if (grepl("127.0.0.1", req$HTTP_HOST)) {
+              redirect_uri <- paste0("http://", gsub("127.0.0.1", "localhost", req$HTTP_HOST, query))
+            } else {
+              redirect_uri <- paste0("http://", req$HTTP_HOST, query)
+            }
           }
+          redirect_uri <<- redirect_uri
+          
+          query_extra <- if(is.null(info$audience)) list() else list(audience=info$audience)
+          url <- httr::oauth2.0_authorize_url(
+            info$api, info$app(redirect_uri), scope = info$scope, state = info$state,
+            query_extra=query_extra
+          )
+          redirect <- sprintf("location.replace(\"%s\");", url)
+          shiny::tags$script(shiny::HTML(redirect))
         }
-        redirect_uri <<- redirect_uri
-        
-        query_extra <- if(is.null(info$audience)) list() else list(audience=info$audience)
-        url <- httr::oauth2.0_authorize_url(
-          info$api, info$app(redirect_uri), scope = info$scope, state = info$state,
-          query_extra=query_extra
-        )
-        redirect <- sprintf("location.replace(\"%s\");", url)
-        shiny::tags$script(shiny::HTML(redirect))
-      }
-    } 
-    else {
-      if (is.function(ui)) {
-        ui(req)
       } 
       else {
-        ui
+        if (is.function(ui)) {
+          ui(req)
+        } 
+        else {
+          ui
+        }
       }
     }
   } 
