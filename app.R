@@ -75,6 +75,7 @@ ui <-  cookies::add_cookie_handlers(
 
 server <- function (input, output, session) {
   observe({ 
+    print("regular server, observe search params")
     url_search_params <- parseQueryString(session$clientData$url_search)
     if("inputRID" %in% names(url_search_params)){
       print("regular server, observed inputRID in search params")
@@ -458,8 +459,9 @@ my_auth0_server <- function(server, info) {
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
-    #myGlobalQueryVars <- list()  
-    
+    url_search_params <- parseQueryString(session$clientData$url_search)
+    print("myauth0server search params")
+    print(paste(names(url_search_params), url_search_params, sep = " | "))
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
       cookie <- cookies::get_cookie(info$state)
@@ -475,8 +477,8 @@ my_auth0_server <- function(server, info) {
     })
     
     observe({
-      url_search_params <- parseQueryString(session$clientData$url_search)
       print("observing url searchparams")
+      url_search_params <- parseQueryString(session$clientData$url_search)
       print(paste(names(url_search_params), url_search_params, sep = ":", collapse = ","))
       if("inputRID" %in% names(url_search_params)){
         print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
@@ -494,9 +496,6 @@ my_auth0_ui <- function(ui, info) {
   } 
 
   function(req) {
-    #shinyjs::useShinyjs()
-    #shinyjs::logjs("my auth0 ui function, can use shinyjs here")
-    #shinyjs::runjs("alert('hello alert')")
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print("my auth0 ui funciton: qstring:")
     print(q_string)
