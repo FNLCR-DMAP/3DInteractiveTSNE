@@ -491,7 +491,7 @@ my_auth0_ui <- function(ui, info) {
   if (missing(info)){
     info <- auth0_info()
   } 
-
+ #blah
   function(req) {
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     if("inputRID" %in% names(q_string)){  
