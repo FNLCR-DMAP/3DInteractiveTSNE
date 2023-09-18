@@ -501,8 +501,9 @@ my_auth0_ui <- function(ui, info) {
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     if("inputRID" %in% names(q_string)){  
       print(paste("setting var with state", info$state, "to", q_string$inputRID))
-      
-      global_nonce_data <<- append(global_nonce_data, list(info$state = list(inputRID = q_string$inputRID)) )
+      nonce <- info$state
+      #global_nonce_data <<- append(global_nonce_data, list(nonce = list(inputRID = q_string$inputRID)) )
+      global_nonce_data[[nonce]] <<-  list(inputRID = q_string$inputRID, outputRID = "blah")
     }
     
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
