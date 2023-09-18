@@ -74,8 +74,9 @@ ui <-  cookies::add_cookie_handlers(
 )
 
 server <- function (input, output, session) {
-  print("regular server function: info")
-  print(paste(names(info), info, sep = "||"))
+  #print("regular server function: info")
+  #print(paste(names(info), info, sep = ","))
+  
   shinyjs::logjs("hello from our server function")
   auth_token <- session$userData$auth0_credentials$access_token
   
@@ -454,10 +455,6 @@ my_auth0_server <- function(server, info) {
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
     #url_search_params <- parseQueryString(session$clientData$url_search)
-    observe({
-      print("myauth0server input")
-      print(paste(names(input), input, sep = " | "))
-    })
     
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
