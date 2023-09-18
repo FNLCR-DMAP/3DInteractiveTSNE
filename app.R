@@ -460,8 +460,10 @@ my_auth0_server <- function(server, info) {
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
     #url_search_params <- parseQueryString(session$clientData$url_search)
-    print("myauth0server input")
-    print(paste(names(input), input, sep = " | "))
+    observe({
+      print("myauth0server input")
+      print(paste(names(input), input, sep = " | "))
+    })
     
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
