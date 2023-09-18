@@ -478,8 +478,9 @@ my_auth0_ui <- function(ui, info) {
   } 
 
   function(req) {
-    shinyjs::useShinyjs()
+    #shinyjs::useShinyjs()
     shinyjs::logjs("my auth0 ui function, can use shinyjs here")
+    shinyjs::runjs("alert('hello alert')")
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
     print(q_string)
     
