@@ -76,9 +76,11 @@ ui <-  cookies::add_cookie_handlers(
 server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
   print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
-  print("getting global rid")
   nonce = session_info$state
+  print("nonce data:")
+  print(global_nonce_data)
   nonce_data = global_nonce_data[nonce]
+  
   if (!is.null(nonce_data)){
     print("found global data[nonce]")
     print(nonce_data)
