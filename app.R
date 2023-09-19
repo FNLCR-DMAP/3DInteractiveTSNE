@@ -12,66 +12,10 @@ library(cookies)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
-
+source("./tsne_UI.R") # tsne_ui
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
 markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
 
-ui <-  cookies::add_cookie_handlers(
-  fluidPage(
-    useShinyjs(),
-    extendShinyjs(text = js_code, functions = c('plot3d')),
-    tags$head(
-      tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
-    ),
-    titlePanel("T-SNE 3D Scatterplot"),
-    sidebarLayout(
-      sidebarPanel(
-        selectInput("x_col", label = "X-Axis", choices = NULL),
-        selectInput("y_col", label = "Y-Axis", choices = NULL),
-        selectInput("z_col", label = "Z-Axis", choices = NULL),
-        selectInput("indicator_col", "Indicator", choices = NULL),
-        actionButton('show', 'Generate Plot'),
-        br(),
-        br(),
-        checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
-      ),
-      mainPanel(
-        fluidRow(
-          column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
-          column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
-          column (4, verbatimTextOutput("response"))
-        ),
-        tabsetPanel(
-          tabPanel("3D Plot",
-                   br(),
-                   textOutput("debug_query_message"),
-                   textOutput("debug_query_message_2"),
-                   br(),
-                   htmlOutput("text"),
-                   actionButton('getParam', 'Save View to Project'),
-                   actionButton('project2D', "Project to 2D"),
-                   tags$body(
-                     tags$div(id='mydiv', class = 'myplot')
-                   )),
-          tabPanel("2D Lasso",
-                   br(),
-                   textInput("points_names", label = "Name of Selected Points"),
-                   actionButton("add_to_list", label = "Add Points to Export List"),
-                   plotlyOutput("plot2d")),
-          tabPanel("View Export Dataset",
-                   br(),
-                   fluidRow(
-                     column (4, actionButton("clear", label = 'Clear Export List')),
-                     column (4, actionButton("exportNidap", label = "Export to NIDAP"))
-                   ),
-                   br(),
-                   br(),
-                   DTOutput("Export_Dataset"))
-        )
-      )
-    )
-  )
-)
 
 server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
@@ -518,7 +462,6 @@ my_auth0_ui <- function(ui, info) {
     if("inputRID" %in% names(q_string)){  
       print(paste("setting var with state", info$state, "to", q_string$inputRID))
       nonce <- info$state
-      #global_nonce_data <<- append(global_nonce_data, list(nonce = list(inputRID = q_string$inputRID)) )
       global_nonce_data[[nonce]] <<-  list(inputRID = q_string$inputRID, outputRID = "blah")
     }
     
@@ -577,6 +520,4 @@ global_nonce_data = list()
 assignInNamespace("auth0_ui", my_auth0_ui, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
 
-shinyAppAuth0(ui = ui, server = server)
-
-
+shinyAppAuth0(ui = tsne_ui, server = server)
