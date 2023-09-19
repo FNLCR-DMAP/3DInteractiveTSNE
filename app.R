@@ -82,10 +82,10 @@ server <- function (input, output, session, session_info = NULL) {
   print("global nonce data names:")
   print(names(global_nonce_data))
 
-  nonce_data = global_nonce_data[nonce]
+  nonce_data = global_nonce_data[[nonce]]
 
   if (!is.null(nonce_data)){
-    print("found session nonce data")
+    print("found session nonce data global_nonce_data[nonce]")
     print(nonce_data)
     print("session nonce data names")
     print(names(nonce_data))
