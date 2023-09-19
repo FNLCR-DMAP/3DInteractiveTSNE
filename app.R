@@ -13,9 +13,6 @@ library(cookies)
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
 source("./tsne_UI.R") # tsne_ui
-js_code <- paste(readLines("./js_code.js"), collapse="\n")
-markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
-
 
 server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
