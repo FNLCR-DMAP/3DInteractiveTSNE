@@ -339,7 +339,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     cookie <- get_cookie(session_info$state)
     
     if(!is.null(cookie)){
-      rid <- cookie$outputRID      
+      cookie_json <- fromJSON(cookie)  
+      rid <- cookie_json$outputRID      
       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", rid))
       filePath = sprintf("tempFile_from_posit-%s.csv", Sys.Date())
       data_to_upload = exportDataset$data
