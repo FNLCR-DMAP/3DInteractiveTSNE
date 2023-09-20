@@ -24,6 +24,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 #   }
 #   print("rid:")
 #   print(rid)
+  rid <- "whatever"
   auth_token <- session$userData$auth0_credentials$access_token
   observe({
     if(is.null(rid)){
