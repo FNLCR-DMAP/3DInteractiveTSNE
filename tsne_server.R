@@ -1,97 +1,88 @@
 
 tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
-  foundry_rids <- NULL
-  observe({
-    print("getting cookies")
-    cookie <- get_cookie(session_info$state)
-    print(cookie)
-    if(!is.null(cookie)){
-      foundry_rids <- fromJSON(cookie)  
-    } else {
-      print(paste("could not find cooke: ", session_info$state))
-    }
-    
-  })
-  print(foundry_rids)
-  rid <- "whatever"
   auth_token <- session$userData$auth0_credentials$access_token
-  observe({
-    if(is.null(rid)){
-      output$debug_query_message <- renderText("inputRID: NULL")
-    } else {
-      output$debug_query_message <- renderText(paste("inputRID: ", rid))
-    }
-  })
   
-  if(FALSE){ # REMOVE IF STATEMENT when ready to actually read in data 
-    # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
-    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
-    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
-    #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
-    url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
-    response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    data_content = content(response, as="text")
-    parsed_json = fromJSON(data_content)
-    files = parsed_json$data$path
-    files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
-    
-    # looping through file name
-    
-    print("reading through files")
-    df = data.frame()
-    for (file in files) {
-      #print(file_ext(file))
-      file = url_encode(file)
-      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
-      response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-      if (file_ext(file) == "csv") {
-        raw = content(response2, as="text")
-        dataset = read.csv(text = raw)
-        dataset = data.frame(dataset)
-        df = rbind(df, dataset)
-      }
-      else if (file_ext(file) == "parquet") {
-        raw = content(response2, as="raw")
-        # dataset = read_parquet(raw)
-        # dataset = data.frame(dataset)
-        #print("reading parquet file")
-        #print(file)
-        #print(raw[1:100])
-        dataset = generate_random_sample_data(10)
-        dataset$name = file
-        df = rbind(df, dataset)
-      }
-      else {
-        dataset = generate_random_sample_data(100)
-        dataset$name = "else"
-        df = rbind(df, dataset)
-      }
-    }
-    
-   # df = df %>% filter(!is.na(pk))
   
-    # fileName = files[1]
-    # print(fileName)
-    # handling / in file name
-    # fileName = url_encode(fileName)
-    # print(fileName)
-    # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-    # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    # print(response2)
-    # print("reading content here")
-    # raw_data = content(response2, as="raw")
-  }
-  else{
-    df = generate_random_sample_data(1000) # takes total number of points as an argument
-  }
   
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
-  print("hello from GIT")
-  print("Hello from rstudio")
+  
   mydata <- reactive({
+    if(TRUE){ # REMOVE IF STATEMENT when ready to actually read in data 
+      print("getting cookies")
+      cookie <- get_cookie(session_info$state)
+      print(cookie)
+      rid <- NULL
+      if(!is.null(cookie)){
+        foundry_rids <- fromJSON(cookie)  
+        rid <- foundry_rids$inputRID
+      } else {
+        print(paste("could not find cooke: ", session_info$state))
+        output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state), color="red")
+        return(data.frame())
+      }
+
+      # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
+      #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
+      #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
+      #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
+
+      url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
+      response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+      data_content = content(response, as="text")
+      parsed_json = fromJSON(data_content)
+      files = parsed_json$data$path
+      files = files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
+      
+      print("reading through files")
+      df = data.frame()
+      for (file in files) {
+        #print(file_ext(file))
+        file = url_encode(file)
+        url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
+        response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+        if (file_ext(file) == "csv") {
+          raw = content(response2, as="text")
+          dataset = read.csv(text = raw)
+          dataset = data.frame(dataset)
+          df = rbind(df, dataset)
+        }
+        else if (file_ext(file) == "parquet") {
+          raw = content(response2, as="raw")
+          # dataset = read_parquet(raw)
+          # dataset = data.frame(dataset)
+          #print("reading parquet file")
+          #print(file)
+          #print(raw[1:100])
+          dataset = generate_random_sample_data(10)
+          dataset$name = file
+          df = rbind(df, dataset)
+        }
+        else {
+          dataset = generate_random_sample_data(100)
+          dataset$name = "else"
+          df = rbind(df, dataset)
+        }
+      }
+      
+    # df = df %>% filter(!is.na(pk))
+    
+      # fileName = files[1]
+      # print(fileName)
+      # handling / in file name
+      # fileName = url_encode(fileName)
+      # print(fileName)
+      # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
+      # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+      # print(response2)
+      # print("reading content here")
+      # raw_data = content(response2, as="raw")
+    }
+    else{
+      df = generate_random_sample_data(1000) # takes total number of points as an argument
+    }  
     return(df)
   })
   
