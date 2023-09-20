@@ -20,7 +20,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         rid <- foundry_rids$inputRID
       } else {
         print(paste("could not find cooke: ", session_info$state))
-        output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state), color="red")
+        output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state))
         return(data.frame())
       }
 
