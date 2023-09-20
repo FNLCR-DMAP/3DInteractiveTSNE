@@ -55,7 +55,8 @@ my_auth0_server <- function(server, info) {
     shiny::observeEvent(input[["._auth0logout_"]], logout())
     
     #url_search_params <- parseQueryString(session$clientData$url_search)
-    
+    #cookie <- cookies::get_cookie(info$state)
+
     observe({
       shinyjs::logjs(paste("observing getting cookie, state:", info$state))
       cookie <- cookies::get_cookie(info$state)
@@ -119,8 +120,6 @@ redirect_and_serve_UI <- function(ui, info) {
             redirect_uri <- paste0("http://", req$HTTP_HOST, query)
           }
         }
-        print("verify setting redirect uri")
-        print(redirect_uri)
         redirect_uri <<- redirect_uri
         
         query_extra <- if(is.null(info$audience)) list() else list(audience=info$audience)
@@ -130,14 +129,12 @@ redirect_and_serve_UI <- function(ui, info) {
         )
         redirect <- sprintf("location.replace(\"%s\");", url)
 
-        print("end of verify, locan redirect:")
-        print(redirect)
         if("inputRID" %in% names(q_string)){  
           print(paste("setting var with state", info$state, "to", q_string$inputRID))
           nonce <- info$state
           inputRID <- q_string$inputRID
           outputRID <- "out_rid"
-          set_cookie_and_redirect_script <- sprintf("document.cookie=\"%s={inputRID:%s,outputRID=%s}\"; %s",nonce, inputRID, outputRID, redirect )
+          set_cookie_and_redirect_script <- sprintf("document.cookie=\'%s={\"inputRID\":\"%s\",\"outputRID\"=\"%s\"}\''; %s",nonce, inputRID, outputRID, redirect )
           print("cookie redirect script")
           print(set_cookie_and_redirect_script)
 
