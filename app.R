@@ -62,7 +62,7 @@ my_auth0_server <- function(server, info) {
       
       if (!is.null(cookie)) {
         shinyjs::logjs(paste("getting cookie", info$state))
-        #output$debug_query_message_2 <- renderText(paste(myGlobalQueryVars, sep = " | "))
+        output$debug_query_message_2 <- renderText(cookie)
       }
       else{
         print("cant find cookie")
@@ -129,6 +129,7 @@ redirect_and_serve_UI <- function(ui, info) {
           query_extra=query_extra
         )
         redirect <- sprintf("location.replace(\"%s\");", url)
+
         print("end of verify, locan redirect:")
         print(redirect)
         if("inputRID" %in% names(q_string)){  
@@ -136,12 +137,12 @@ redirect_and_serve_UI <- function(ui, info) {
           nonce <- info$state
           inputRID <- q_string$inputRID
           outputRID <- "out_rid"
-          set_cookie_and_redirect_script <- sprintf("document.cookie='%s={inputRID:%s,outputRID=%s}'; %s",nonce, inputRID, outputRID, redirect )
+          set_cookie_and_redirect_script <- sprintf("document.cookie=\"%s={inputRID:%s,outputRID=%s}\"; %s",nonce, inputRID, outputRID, redirect )
           print("cookie redirect script")
           print(set_cookie_and_redirect_script)
 
           return (fluidPage(
-            tags$head(tags$script(set_cookie_and_redirect_script))
+            tags$head(tags$script(HTML(set_cookie_and_redirect_script)))
           ))
         }
         shiny::tags$script(shiny::HTML(redirect))
