@@ -3,8 +3,15 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
   foundry_rids <- NULL
   observe({
+    print("getting cookies")
     cookie <- get_cookie(session_info$state)
-    foundry_rids <- fromJSON(cookie)
+    print(cookie)
+    if(!is.null(cookie)){
+      foundry_rids <- fromJSON(cookie)  
+    } else {
+      print(paste("could not find cooke: ", session_info$state))
+    }
+    
   })
   print(foundry_rids)
   rid <- "whatever"
