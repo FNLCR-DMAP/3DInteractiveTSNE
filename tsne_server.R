@@ -336,23 +336,35 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   })
   observeEvent(input$exportNidap, {
     print("exporting to nidap")
-    rid = "ri.foundry.main.dataset.1ef74b91-6660-4be5-9080-1267b1f80f50"
-    filePath = "tempFile_from_posit.csv"
-    data_to_upload = exportDataset$data
-    #data_to_upload =  data.frame(replicate(10,sample(0:10,10,rep=TRUE)))
-
-    two_d_csv = capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
-    character_list = paste(two_d_csv, collapse="\n")
-    raw_char_array = charToRaw(character_list)
-    print(class(raw_char_array))
-    upload_url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
+    cookie <- get_cookie(session_info$state)
     
-    response <- POST(upload_url, 
-                     content_type("application/octet-stream"),
-                     httr::add_headers(Authorization = paste("Bearer", auth_token)),
-                     body = raw_char_array)
-   
-    print(status_code(response))
-    print(content(response))
+    if(!is.null(cookie)){
+      rid <- cookie$outputRID      
+      upload_error_message_box <- renderText(paste("Uploading to dataset:", rid))
+      filePath = sprintf("tempFile_from_posit-%s.csv", Sys.Date())
+      data_to_upload = exportDataset$data
+      
+      two_d_csv = capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
+      character_list = paste(two_d_csv, collapse="\n")
+      raw_char_array = charToRaw(character_list)
+      # /NIH/tSNE3d_v01/datasets/posit_output_test
+      # ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
+      upload_url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
+      
+      response <- POST(upload_url, 
+                      content_type("application/octet-stream"),
+                      httr::add_headers(Authorization = paste("Bearer", auth_token)),
+                      body = raw_char_array)
+    
+      print(status_code(response))
+      print(content(response))
+
+    }
+    else{
+      output$upload_error_message_box <- renderText("ERROR, could not find upload RID in cookies")
+    }
+    
+
+    
   })
 }
