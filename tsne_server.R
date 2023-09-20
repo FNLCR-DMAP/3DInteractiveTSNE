@@ -1,29 +1,29 @@
 
 tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
-  print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
-  nonce = session_info$state
-  print("global nonce data:")
-  print(global_nonce_data)
-  print("global nonce data names:")
-  print(names(global_nonce_data))
+#   print(paste(names(global_nonce_data), global_nonce_data, sep = "|"))
+#   nonce = session_info$state
+#   print("global nonce data:")
+#   print(global_nonce_data)
+#   print("global nonce data names:")
+#   print(names(global_nonce_data))
 
-  nonce_data = global_nonce_data[[nonce]]
+#   nonce_data = global_nonce_data[[nonce]]
 
-  if (!is.null(nonce_data)){
-    print("found session nonce data global_nonce_data[nonce]")
-    print(nonce_data)
-    print("session nonce data names")
-    print(names(nonce_data))
+#   if (!is.null(nonce_data)){
+#     print("found session nonce data global_nonce_data[nonce]")
+#     print(nonce_data)
+#     print("session nonce data names")
+#     print(names(nonce_data))
     
-    rid <- nonce_data$inputRID
-  }
-  else{
-    print("instance not found in global data")
-    rid <- NULL
-  }
-  print("rid:")
-  print(rid)
+#     rid <- nonce_data$inputRID
+#   }
+#   else{
+#     print("instance not found in global data")
+#     rid <- NULL
+#   }
+#   print("rid:")
+#   print(rid)
   auth_token <- session$userData$auth0_credentials$access_token
   observe({
     if(is.null(rid)){
