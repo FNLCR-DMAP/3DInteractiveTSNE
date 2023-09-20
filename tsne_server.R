@@ -340,7 +340,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     
     if(!is.null(cookie)){
       rid <- cookie$outputRID      
-      upload_error_message_box <- renderText(paste("Uploading to dataset:", rid))
+      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", rid))
       filePath = sprintf("tempFile_from_posit-%s.csv", Sys.Date())
       data_to_upload = exportDataset$data
       
@@ -349,6 +349,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       raw_char_array = charToRaw(character_list)
       # /NIH/tSNE3d_v01/datasets/posit_output_test
       # ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
+      # https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a&outputRID=ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
       upload_url = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath)
       
       response <- POST(upload_url, 
