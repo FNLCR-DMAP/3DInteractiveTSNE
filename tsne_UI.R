@@ -46,6 +46,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    plotlyOutput("plot2d")),
           tabPanel("View Export Dataset",
                    br(),
+                   textOutput("upload_error_message_box"),
                    fluidRow(
                      column (4, actionButton("clear", label = 'Clear Export List')),
                      column (4, actionButton("exportNidap", label = "Export to NIDAP"))
