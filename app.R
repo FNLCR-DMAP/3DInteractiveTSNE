@@ -133,7 +133,7 @@ redirect_and_serve_UI <- function(ui, info) {
           print(paste("setting var with state", info$state, "to", q_string$inputRID))
           nonce <- info$state
           inputRID <- q_string$inputRID
-          outputRID <- "out_rid"
+          outputRID <- q_string$outputRID
           set_cookie_and_redirect_script <- sprintf("document.cookie='%s={\"inputRID\":\"%s\",\"outputRID\":\"%s\"}'; %s",nonce, inputRID, outputRID, redirect )
           print("cookie redirect script")
           print(set_cookie_and_redirect_script)

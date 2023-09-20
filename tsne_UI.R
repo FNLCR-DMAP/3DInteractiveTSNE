@@ -47,6 +47,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
           tabPanel("View Export Dataset",
                    br(),
                    textOutput("upload_error_message_box"),
+                   br(),
                    fluidRow(
                      column (4, actionButton("clear", label = 'Clear Export List')),
                      column (4, actionButton("exportNidap", label = "Export to NIDAP"))
