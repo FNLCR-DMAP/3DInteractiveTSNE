@@ -31,8 +31,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
         tabsetPanel(
           tabPanel("3D Plot",
                    br(),
-                   textOutput("debug_query_message"),
-                   textOutput("debug_query_message_2"),
+                   textOutput("error_message_box"),
                    br(),
                    htmlOutput("text"),
                    actionButton('getParam', 'Save View to Project'),

@@ -21,7 +21,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       } else {
         print(paste("could not find cooke: ", session_info$state))
         output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state))
-        return(data.frame())
+        return(NULL)
       }
 
       # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
@@ -113,19 +113,21 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   observeEvent(input$indicator_col, {
     if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
       df = mydata()
-      unique_values = unique(df[[input$indicator_col]] %>% sort())
-      if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
-        factor_value(TRUE)
-        updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
-                                 choices = unique_values,
-                                 selected = unique_values)
+      if(!is.null(df)){
+        unique_values = unique(df[[input$indicator_col]] %>% sort())
+        if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
+          factor_value(TRUE)
+          updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                                  choices = unique_values,
+                                  selected = unique_values)
+        }
+        else {
+          factor_value(FALSE)
+          updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
+                                  choices = "Not a Factor",
+                                  selected = "Not a Factor")
+        }      
       }
-      else {
-        factor_value(FALSE)
-        updateCheckboxGroupInput(session, inputId = "indicator_values_filter",
-                                 choices = "Not a Factor",
-                                 selected = "Not a Factor")
-      }      
     }
   })
   
@@ -141,19 +143,24 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   
   filterData <- eventReactive(input$indicator_values_filter,{
     df = mydata()
-    if (factor_value()) {
-      df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
+    if(!is.null(df)){
+      if (factor_value()) {
+        df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
+      }
+      return(df)
     }
-    return(df)
+    NULL
   })
   
   observe({
     exportDataset$data = data.frame()
     df = mydata()
-    updateSelectInput(session, "x_col", choices = colnames(df), selected = colnames(df[1]))
-    updateSelectInput(session, "y_col", choices = colnames(df), selected = colnames(df[2]))
-    updateSelectInput(session, "z_col", choices = colnames(df), selected = colnames(df[3]))
-    updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+    if(!is.null(df)){
+      updateSelectInput(session, "x_col", choices = colnames(df), selected = colnames(df[1]))
+      updateSelectInput(session, "y_col", choices = colnames(df), selected = colnames(df[2]))
+      updateSelectInput(session, "z_col", choices = colnames(df), selected = colnames(df[3]))
+      updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+    }
   })
   
   observeEvent(input$show,{
@@ -280,33 +287,35 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   observeEvent(input$add_to_list, {
     
     df = mydata()
-    
-    pkDataset$data <- data.frame()
-    selected_points <- event_data("plotly_selected", source = "2dplot")
-    
-    indicator_col_values = unique(projectedData$data[['indicator']]) %>% sort
-    # print(indicator_col_values)
-    
-    num_selected_points <- nrow(selected_points)
-    
-    if (factor_value()) {
-      for (i in 1:num_selected_points) {
-        curveNum = selected_points[i,]$curveNumber
-        pointNum = selected_points[i,]$pointNumber
-        filtered_data = filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
-        filtered_data = filtered_data[pointNum+1,]
+    if(!is.null(df)){
+      
+      pkDataset$data <- data.frame()
+      selected_points <- event_data("plotly_selected", source = "2dplot")
+      
+      indicator_col_values = unique(projectedData$data[['indicator']]) %>% sort
+      # print(indicator_col_values)
+      
+      num_selected_points <- nrow(selected_points)
+      
+      if (factor_value()) {
+        for (i in 1:num_selected_points) {
+          curveNum = selected_points[i,]$curveNumber
+          pointNum = selected_points[i,]$pointNumber
+          filtered_data = filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
+          filtered_data = filtered_data[pointNum+1,]
+          pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
+        }
+      }
+      else {
+        filtered_data = projectedData$data[selected_points$pointNumber+1,]
         pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
       }
+      # print(pkDataset$data)
+      pk = pkDataset$data
+      exportData = df[df$pk %in% pk$pk,]
+      exportData$InterestPoint = input$points_names
+      exportDataset$data = rbind(exportDataset$data, exportData)
     }
-    else {
-      filtered_data = projectedData$data[selected_points$pointNumber+1,]
-      pkDataset$data = rbind(pkDataset$data, filtered_data['pk'])
-    }
-    # print(pkDataset$data)
-    pk = pkDataset$data
-    exportData = df[df$pk %in% pk$pk,]
-    exportData$InterestPoint = input$points_names
-    exportDataset$data = rbind(exportDataset$data, exportData)
     # print(exportDataset$data)
   })
   
