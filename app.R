@@ -84,9 +84,6 @@ my_auth0_server <- function(server, info) {
   }
 }
 
-set_cookie_ui <- funciton(req){
-
-}
 
 
 redirect_and_serve_UI <- function(ui, info) {
