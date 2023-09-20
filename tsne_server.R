@@ -18,12 +18,14 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       if(!is.null(cookie)){
         foundry_rids <- fromJSON(cookie)  
         rid <- foundry_rids$inputRID
+        output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid))
+
       } else {
         print(paste("could not find cooke: ", session_info$state))
         output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state))
         return(NULL)
       }
-
+      # ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95 100 RID
       # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
       #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a
       #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6
