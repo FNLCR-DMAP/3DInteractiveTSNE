@@ -19,10 +19,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         foundry_rids <- fromJSON(cookie)  
         rid <- foundry_rids$inputRID
         output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid))
+        output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
 
       } else {
         print(paste("could not find cooke: ", session_info$state))
         output$error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state))
+        output$upload_error_message_box <- renderText(paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state))
         return(NULL)
       }
       # ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95 100 RID
@@ -341,7 +343,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     if(!is.null(cookie)){
       cookie_json <- fromJSON(cookie)  
       rid <- cookie_json$outputRID      
-      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", rid))
       filePath = sprintf("tempFile_from_posit-%s.csv", Sys.Date())
       data_to_upload = exportDataset$data
       
