@@ -47,40 +47,14 @@ auth0_server_verify <- function(session, app, api, state) {
 
 my_auth0_server <- function(server, info) {
   print("using my auth0 server")
-  if (missing(info)) info <- auth0_info()
-  
+  if (missing(info)){
+    info <- auth0_info()
+  }
+
   function(input, output, session) {
-    print("funciton wihin myauth0server")
     shiny::isolate(auth0_server_verify(session, info$app, info$api, info$state))
     shiny::observeEvent(input[["._auth0logout_"]], logout())
-    
-    #url_search_params <- parseQueryString(session$clientData$url_search)
-    #cookie <- cookies::get_cookie(info$state)
-
-    observe({
-      shinyjs::logjs(paste("observing getting cookie, state:", info$state))
-      cookie <- cookies::get_cookie(info$state)
-      
-      if (!is.null(cookie)) {
-        shinyjs::logjs(paste("getting cookie", info$state))
-        output$debug_query_message_2 <- renderText(cookie)
-      }
-      else{
-        print("cant find cookie")
-        shinyjs::logjs("can't find cookie")
-      }
-    })
-    
-    #observe({
-    #  print("observing url searchparams")
-    #  url_search_params <- parseQueryString(session$clientData$url_search)
-    #  print(paste(names(url_search_params), url_search_params, sep = ":", collapse = ","))
-    #  if("inputRID" %in% names(url_search_params)){
-    #    print(paste("found inputrid", url_search_params$inputRID, "setting cookie", info$state))
-    #    cookies::set_cookie(info$state, url_search_params$inputRID ) 
-    #  }
-    #})
-    
+    #you need to add an optional field to your server funciton signature to pass the session info
     server(input, output, session, session_info = info)
   }
 }
@@ -91,26 +65,26 @@ redirect_and_serve_UI <- function(ui, info) {
   print("my auth0 UI called")
   if (missing(info)){
     info <- auth0_info()
-  } 
+  }
 
   function(req) {
     q_string <- shiny::parseQueryString(req$QUERY_STRING)
-
     verify <- has_auth_code(shiny::parseQueryString(req$QUERY_STRING), info$state)
-    
+
     if (!verify) {
+      #------------original oauth stuff------------
       if (grepl("error=unauthorized", req$QUERY_STRING)) {
         redirect <- sprintf("location.replace(\"%s\");", logout_url())
         shiny::tags$script(shiny::HTML(redirect))
-      } 
-      else {
+      } else {
         params <- shiny::parseQueryString(req$QUERY_STRING)
         params$code <- NULL
         params$state <- NULL
-        
+
         query <- paste0("/?", paste(
           mapply(paste, names(params), params, MoreArgs = list(sep = "=")),
-          collapse = "&"))
+          collapse = "&")
+        )
         if (!is.null(info$remote_url) && info$remote_url != "" && !getOption("auth0_local")) {
           redirect_uri <- info$remote_url
         } else {
@@ -121,44 +95,43 @@ redirect_and_serve_UI <- function(ui, info) {
           }
         }
         redirect_uri <<- redirect_uri
-        
+
         query_extra <- if(is.null(info$audience)) list() else list(audience=info$audience)
         url <- httr::oauth2.0_authorize_url(
           info$api, info$app(redirect_uri), scope = info$scope, state = info$state,
           query_extra=query_extra
         )
         redirect <- sprintf("location.replace(\"%s\");", url)
+        #------------/original oauth stuff------------
 
-        if("inputRID" %in% names(q_string)){  
+        if ("inputRID" %in% names(q_string)) {
           print(paste("setting var with state", info$state, "to", q_string$inputRID))
           nonce <- info$state
           inputRID <- q_string$inputRID
           outputRID <- q_string$outputRID
-          set_cookie_and_redirect_script <- sprintf("document.cookie='%s={\"inputRID\":\"%s\",\"outputRID\":\"%s\"}'; %s",nonce, inputRID, outputRID, redirect )
+          set_cookie_and_redirect_script <- sprintf(
+            "document.cookie='%s={\"inputRID\":\"%s\",\"outputRID\":\"%s\"}'; %s",
+            nonce, inputRID, outputRID, redirect 
+          )
           print("cookie redirect script")
           print(set_cookie_and_redirect_script)
-
-          return (fluidPage(
+          return(fluidPage(
             tags$head(tags$script(HTML(set_cookie_and_redirect_script)))
           ))
         }
         shiny::tags$script(shiny::HTML(redirect))
-       
+
       }
-    } 
-    else {
+    } else {
       if (is.function(ui)) {
         ui(req)
-      } 
-      else {
+      } else {
         ui
       }
     }
-  } 
-  
+  }
 }
 
-global_nonce_data = list()
 assignInNamespace("auth0_ui", redirect_and_serve_UI, ns = "auth0")
 assignInNamespace("auth0_server", my_auth0_server, ns = "auth0")
 

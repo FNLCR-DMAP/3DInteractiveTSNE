@@ -1,7 +1,7 @@
 library(cookies)
 library(shiny)
 js_code <- paste(readLines("./js_code.js"), collapse="\n")
-markerShape = c('circle', 'circle-open', 'square', 'square-open', 'diamond', 'diamond-open', 'cross', 'x')
+markerShape <- c("circle", "circle-open", "square", "square-open", "diamond", "diamond-open", "cross", "x")
 
 tsne_ui <-  cookies::add_cookie_handlers(
   fluidPage(
