@@ -53,12 +53,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         df <- rbind(df, dataset)
       } else if (file_ext(file) == "parquet") {
         raw = content(response2, as="raw")
-        #dataset = read_parquet(raw)
-        #dataset = data.frame(dataset)
-        #print("reading parquet file")
-        #print(file)
+        dataset = read_parquet(raw)
+        dataset = data.frame(dataset)
+        print("reading parquet file")
+        print(file)
         #print(raw[1:100])
-        dataset = generate_random_sample_data(10)
+        # dataset = generate_random_sample_data(10)
         dataset$name <- file
         df <- rbind(df, dataset)
       } else {
