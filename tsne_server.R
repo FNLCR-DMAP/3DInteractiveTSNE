@@ -43,20 +43,23 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     print("reading through files")
     df = data.frame()
     for (file in files) {
+      print(paste("getting data from", file))
       file <- url_encode(file)
       url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
       response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+      
       if (file_ext(file) == "csv") {
         raw <- content(response2, as="text")
         dataset <- read.csv(text = raw)
         dataset <- data.frame(dataset)
         df <- rbind(df, dataset)
       } else if (file_ext(file) == "parquet") {
+        print("reading parquet file")
+        print(file)
         raw = content(response2, as="raw")
         dataset = read_parquet(raw)
         dataset = data.frame(dataset)
-        print("reading parquet file")
-        print(file)
+        
         #print(raw[1:100])
         # dataset = generate_random_sample_data(10)
         dataset$name <- file
@@ -78,6 +81,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     # print(response2)
     # print("reading content here")
     # raw_data = content(response2, as="raw") 
+    print("successfully read in all data")
+    print(describe(df))
     return(df)
   })
 
