@@ -82,7 +82,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     # print("reading content here")
     # raw_data = content(response2, as="raw") 
     print("successfully read in all data")
-    print(df.printSchema)
+    print(df.printSchema())
     return(df)
   })
 
