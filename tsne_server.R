@@ -38,6 +38,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data_content <- content(response, as="text")
     parsed_json <- fromJSON(data_content)
     files <- parsed_json$data$path
+    print(paste("found files", files))
     files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
 
     print("reading through files")
