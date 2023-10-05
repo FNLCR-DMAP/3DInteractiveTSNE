@@ -158,9 +158,25 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     exportDataset$data <- data.frame()
     df <- mydata()
     if( !is.null(df) ){
-      updateSelectInput(session, "x_col", choices = colnames(df), selected = colnames(df[1]))
-      updateSelectInput(session, "y_col", choices = colnames(df), selected = colnames(df[2]))
-      updateSelectInput(session, "z_col", choices = colnames(df), selected = colnames(df[3]))
+      if("x" %in% colnames(df)){
+        x_default_col = "x"
+      } else {
+        x_default_col = colnames(df[1])
+      }
+      if("y" %in% colnames(df)){
+        y_default_col = "y"
+      } else {
+        y_default_col = colnames(df[2])
+      }
+      if("z" %in% colnames(df)){
+        z_default_col = "z"
+      } else {
+        z_default_col = colnames(df[3])
+      }
+
+      updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)
+      updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)
+      updateSelectInput(session, "z_col", choices = colnames(df), selected = z_default_col)
       updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
     }
   })
