@@ -36,7 +36,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
     response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
     data_content <- content(response, as="text")
+    print(paste("got content", data_content))
     parsed_json <- fromJSON(data_content)
+    print(paste("parsed json as ", parsed_json))
     files <- parsed_json$data$path
     print(paste("found files", files))
     files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
