@@ -10,10 +10,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   mydata <- reactive({
     cookie <- cookies::get_cookie(session_info$state)
     rid <- NULL
+    branch <- NULL
     if (!is.null(cookie)) {
       foundry_rids <- fromJSON(cookie)
       rid <- foundry_rids$inputRID
-      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid))
+      branch <- foundry_rids$branch
+      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
 
     } else {
@@ -33,7 +35,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6 # nolint
     #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
 
-    url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files")
+    url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files?branchId=", branch)
+    print(paste("making request to ", url2))
+
     response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
     data_content <- content(response, as="text")
     print(paste("got content", data_content))
@@ -48,7 +52,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     for (file in files) {
       print(paste("getting data from", file))
       file <- url_encode(file)
-      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content")
+      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content?branchId=", branch)
       response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
       
       if (file_ext(file) == "csv") {
