@@ -14,7 +14,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     if (!is.null(cookie)) {
       foundry_rids <- fromJSON(cookie)
       rid <- foundry_rids$inputRID
-      branch <- foundry_rids$branch
+      branch <- foundry_rids$inputBranch
       output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
 
@@ -388,7 +388,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       if(!is.null(cookie)){
         cookie_json <- fromJSON(cookie)  
         rid <- cookie_json$outputRID      
-        branch <- cookie_json$branch
+        branch <- cookie_json$outputBranch
         filePath <- sprintf("tempFile_from_posit-%s.csv", Sys.Date())
         data_to_upload <- exportDataset$data
         two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
