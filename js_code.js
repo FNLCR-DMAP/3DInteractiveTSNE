@@ -93,8 +93,8 @@ shinyjs.plot3d = function(mydiv){
     
     var layout = {
       autosize: false,
-      width:600,
-      height:600,
+      width:800,
+      height:800,
       scene: {
         aspectmode: 'manual',
         aspectratio: {
