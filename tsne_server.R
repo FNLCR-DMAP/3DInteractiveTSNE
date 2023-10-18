@@ -29,8 +29,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       )
       return(NULL)
     }
-    
-    df = downloa_dataset_from_nidap(rid, auth_token, branch)
+    withProgress(message="Downloading Data From NIDAP", value = 0), {
+      df = downloa_dataset_from_nidap(rid, auth_token, branch)
+    }
     return(df)
   })
 

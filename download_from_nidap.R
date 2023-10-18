@@ -4,16 +4,22 @@ downloa_dataset_from_nidap -> function(dataset_rid, token, branch) {
     print(paste("making request to ", list_files_url))
 
     response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+    
+    incProgress(0.10, detail="Listed files from dataset")
+    
     data_content <- content(response, as="text")
     parsed_json <- fromJSON(data_content)
-    
     files <- parsed_json$data$path
     files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
-    if (length(files) == 0 ){
+    
+    num_files <- length(files)
+    if (num_files) == 0 ){
         stop("Error, zero files found in dataset")
     }
     print("reading through files")
     df = data.frame()
+    index <- 0
+
     for (file in files) {
       print(paste("getting data from", file))
       file <- url_encode(file)
@@ -39,6 +45,8 @@ downloa_dataset_from_nidap -> function(dataset_rid, token, branch) {
         dataset$name <- "else"
         df <- rbind(df, dataset)
       }
+      index <- index + 1
+      incProgress(0.9 / num_files, detail=paste("Downloaded", index + 1, "of", num_files, "files"))
     }
     # df = df %>% filter(!is.na(pk))
     print("successfully read in all data")
