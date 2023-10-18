@@ -200,6 +200,33 @@
         "Archs": "askpass.so.dSYM"
       }
     },
+    "auth0": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com/",
+      "description": {
+        "Package": "auth0",
+        "Type": "Package",
+        "Title": "Authentication in Shiny with Auth0",
+        "Version": "0.2.3",
+        "Authors@R": "c(\n    person(\"Julio\", \"Trecenti\", email = \"julio.trecenti@gmail.com\", role = \"cre\"),\n    person(\"Daniel\", \"Falbel\", email = \"dfalbel@gmail.com\", role = \"aut\"),\n    person(\"José\", \"Jesus\", email = \"jjesusfilho@gmail.com\", role = \"ctb\"),\n    person(\"Dean\", \"Attali\", email = \"daattali@gmail.com\", role = \"ctb\"),\n    person(\"C\", \"Lente\", email = \"c@lente.dev\", role = \"ctb\"))",
+        "Description": "Uses Auth0 API (see <https://auth0.com> for more \n    information) to use a simple authentication system. It provides \n    tools to log in and out a shiny application using social networks or a list\n    of e-mails.",
+        "BugReports": "https://github.com/curso-r/auth0/issues",
+        "License": "MIT + file LICENSE",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "Imports": "httr, shiny, yaml, utils, shinyjs",
+        "Suggests": "knitr, rmarkdown",
+        "VignetteBuilder": "knitr",
+        "URL": "https://curso-r.github.io/auth0/",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-03-22 18:59:25 UTC; julio",
+        "Author": "Julio Trecenti [cre],\n  Daniel Falbel [aut],\n  José Jesus [ctb],\n  Dean Attali [ctb],\n  C Lente [ctb]",
+        "Maintainer": "Julio Trecenti <julio.trecenti@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-03-26 21:50:05 UTC",
+        "Built": "R 4.3.0; ; 2023-04-06 19:26:31 UTC; unix"
+      }
+    },
     "base64enc": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com/",
@@ -2404,7 +2431,7 @@
       "checksum": "7e7a9610e47389fd8bd713fad8d74c40"
     },
     "app.R": {
-      "checksum": "19c22b821d8eb4562945f8b10b6281d2"
+      "checksum": "0aca09e07265d14a2ba21a4dde500cb9"
     },
     "download_from_nidap.R": {
       "checksum": "ba714137adda4df93548706bd3e51755"
@@ -2419,7 +2446,7 @@
       "checksum": "43fb0a9e2b2b451a9c815f36df43bf53"
     },
     "tsne_server.R": {
-      "checksum": "4451a723b12a201a611c1285c1a43bcd"
+      "checksum": "ee1b96d33fa39943f4b39ba99dbf6aa8"
     },
     "tsne_UI.R": {
       "checksum": "ce2b5ea7cd52308f17499e2e54f665d5"
