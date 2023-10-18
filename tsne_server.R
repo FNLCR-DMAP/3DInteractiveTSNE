@@ -3,8 +3,38 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 
 
 tsne_server <- function (input, output, session, session_info = NULL) {
-  download_dataset_from_nidap -> function(dataset_rid, token, branch) {
+  # download_dataset_from_nidap -> function(dataset_rid, token, branch) {
 
+  # }
+  print("regular server function: Global nonce data:")
+  auth_token <- session$userData$auth0_credentials$access_token
+  shinyjs::disable("add_to_list")
+  shinyjs::disable("getParam")
+  shinyjs::disable("project2D")
+
+  mydata <- reactive({
+    cookie <- cookies::get_cookie(session_info$state)
+    rid <- NULL
+    branch <- NULL
+    if (!is.null(cookie)) {
+      foundry_rids <- fromJSON(cookie)
+      dataset_rid <- foundry_rids$inputRID
+      branch <- foundry_rids$inputBranch
+      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
+      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
+    } else {
+      print(paste("could not find cooke: ", session_info$state))
+      output$error_message_box <- renderText(
+        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+      )
+
+      output$upload_error_message_box <- renderText(
+        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+      )
+      return(NULL)
+    }
+    df <- NULL
+    withProgress(message="Downloading Data From NIDAP", value = 0, {
       list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
       print(paste("making request to ", list_files_url))
 
@@ -56,38 +86,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       # df = df %>% filter(!is.na(pk))
       print("successfully read in all data")
       print(head(df, 5))
-      return(df)
-  }
-  print("regular server function: Global nonce data:")
-  auth_token <- session$userData$auth0_credentials$access_token
-  shinyjs::disable("add_to_list")
-  shinyjs::disable("getParam")
-  shinyjs::disable("project2D")
-
-  mydata <- reactive({
-    cookie <- cookies::get_cookie(session_info$state)
-    rid <- NULL
-    branch <- NULL
-    if (!is.null(cookie)) {
-      foundry_rids <- fromJSON(cookie)
-      rid <- foundry_rids$inputRID
-      branch <- foundry_rids$inputBranch
-      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
-      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
-    } else {
-      print(paste("could not find cooke: ", session_info$state))
-      output$error_message_box <- renderText(
-        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-      )
-
-      output$upload_error_message_box <- renderText(
-        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-      )
-      return(NULL)
-    }
-    df <- NULL
-    withProgress(message="Downloading Data From NIDAP", value = 0, {
-      df <- download_dataset_from_nidap(rid, auth_token, branch)
     })
     return(df)
   })
