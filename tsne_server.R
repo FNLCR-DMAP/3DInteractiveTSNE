@@ -1,5 +1,5 @@
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
-source("./download_from_nidap.R")
+source("./download_from_nidap.R") #download_dataset_from_nidap
 
 tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
@@ -30,7 +30,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       return(NULL)
     }
     withProgress(message="Downloading Data From NIDAP", value = 0, {
-      df = downloa_dataset_from_nidap(rid, auth_token, branch)
+      df = download_dataset_from_nidap(rid, auth_token, branch)
     })
     return(df)
   })
