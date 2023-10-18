@@ -1,4 +1,5 @@
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
+source("./download_from_nidap.R")
 
 tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
