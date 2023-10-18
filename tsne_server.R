@@ -1,5 +1,4 @@
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
-#source("./download_from_nidap.R") #download_dataset_from_nidap
 
 download_dataset_from_nidap -> function(dataset_rid, token, branch) {
 
@@ -85,8 +84,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       )
       return(NULL)
     }
+    df <- NULL
     withProgress(message="Downloading Data From NIDAP", value = 0, {
-      df = download_dataset_from_nidap(rid, auth_token, branch)
+      df <- download_dataset_from_nidap(rid, auth_token, branch)
     })
     return(df)
   })
