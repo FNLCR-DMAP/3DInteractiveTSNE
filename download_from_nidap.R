@@ -13,7 +13,7 @@ downloa_dataset_from_nidap -> function(dataset_rid, token, branch) {
     files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
     
     num_files <- length(files)
-    if (num_files) == 0 ){
+    if (num_files == 0 ){
         stop("Error, zero files found in dataset")
     }
     print("reading through files")
