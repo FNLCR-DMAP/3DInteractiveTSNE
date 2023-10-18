@@ -1,4 +1,4 @@
-downloa_dataset_from_nidap -> function(dataset_rid, token, branch) {
+download_dataset_from_nidap -> function(dataset_rid, token, branch) {
 
     list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
     print(paste("making request to ", list_files_url))
