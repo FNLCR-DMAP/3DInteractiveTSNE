@@ -37,53 +37,53 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       df <- NULL
       withProgress(message="Downloading Data From NIDAP", value = 0, {
       
-      list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
-      print(paste("making request to ", list_files_url))
+        list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
+        print(paste("making request to ", list_files_url))
 
-      response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-      
-      incProgress(0.10, detail="Listed files from dataset")
-      
-      data_content <- content(response, as="text")
-      parsed_json <- fromJSON(data_content)
-      files <- parsed_json$data$path
-      files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
-      
-      num_files <- length(files)
-      if (num_files == 0 ){
-          stop("Error, zero files found in dataset")
-      }
-      print("reading through files")
-      df = data.frame()
-      index <- 0
-
-      for (file in files) {
-        print(paste("getting data from", file))
-        file <- url_encode(file)
-        get_file_content_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files/",file,"/content?branchId=", branch)
-        response2 <- GET(get_file_content_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+        response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
         
-        if (file_ext(file) == "csv") {
-          raw <- content(response2, as="text")
-          dataset <- read.csv(text = raw)
-          dataset <- data.frame(dataset)
-          df <- rbind(df, dataset)
-        } else if (file_ext(file) == "parquet") {
-          print("reading parquet file")
-          print(file)
-          raw = content(response2, as="raw")
-          dataset = read_parquet(raw)
-          dataset = data.frame(dataset)
-          
-          dataset$name <- file
-          df <- rbind(df, dataset)
-        } else {
-          dataset = generate_random_sample_data(100)
-          dataset$name <- "else"
-          df <- rbind(df, dataset)
+        incProgress(0.10, detail="Listed files from dataset")
+        
+        data_content <- content(response, as="text")
+        parsed_json <- fromJSON(data_content)
+        files <- parsed_json$data$path
+        files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
+        
+        num_files <- length(files)
+        if (num_files == 0 ){
+            stop("Error, zero files found in dataset")
         }
-        index <- index + 1
-        incProgress(0.9 / num_files, detail=paste("Downloaded", index + 1, "of", num_files, "files"))
+        print("reading through files")
+        df = data.frame()
+        index <- 0
+
+        for (file in files) {
+          print(paste("getting data from", file))
+          file <- url_encode(file)
+          get_file_content_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files/",file,"/content?branchId=", branch)
+          response2 <- GET(get_file_content_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+          
+          if (file_ext(file) == "csv") {
+            raw <- content(response2, as="text")
+            dataset <- read.csv(text = raw)
+            dataset <- data.frame(dataset)
+            df <- rbind(df, dataset)
+          } else if (file_ext(file) == "parquet") {
+            print("reading parquet file")
+            print(file)
+            raw = content(response2, as="raw")
+            dataset = read_parquet(raw)
+            dataset = data.frame(dataset)
+            
+            dataset$name <- file
+            df <- rbind(df, dataset)
+          } else {
+            dataset = generate_random_sample_data(100)
+            dataset$name <- "else"
+            df <- rbind(df, dataset)
+          }
+          index <- index + 1
+          incProgress(0.9 / num_files, detail=paste("Downloaded", index + 1, "of", num_files, "files"))
       }
       # df = df %>% filter(!is.na(pk))
       print("successfully read in all data")
@@ -406,6 +406,47 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         )
         print(status_code(response))
         print(content(response))
+        
+        schema_create_url <- sprintf("https://nidap.nih.gov/foundry-schema-inference/api/datasets/%s/branches/%s/schema", rid, branch)
+        
+        create_schema_response <- POST(
+          schema_create_url,
+          add_headers(
+            Authorization = paste0("Bearer ", auth_token),
+            "Content-Type" = "application/json"),
+          body = '{}',
+          encode = "json"
+        )
+        
+        if (status_code(create_schema_respons) == 200) {
+          print("Schema Acquisition Success")
+        } else {
+          error_message <- content(response, "text")
+          print(paste("Schema Acquisition Error:", error_message))
+        }
+        response_content <- content(create_schema_respons, "text")
+        foundrySchema <- fromJSON(response_content)$data$foundrySchema
+        
+        schema_set_url <- sprintf("https://nidap.nih.gov/foundry-metadata/api/schemas/datasets/%s/branches/%s", rid, branch)
+        
+        update_schema_response <- POST(
+          schema_set_url,
+          add_headers(
+            Authorization = paste0("Bearer ", key),
+            "Content-Type" = "application/json"
+          ),
+          body = foundrySchema,
+          encode = "json"
+        )
+
+        response_content <- content(update_schema_response, "text")
+
+        if (status_code(update_response) == 200) {
+          print("Schema Update Success")
+        } else {
+          error_message <- content(update_response, "text")
+          print(paste("Schema Update Error:", error_message))
+        }
 
       } else{
         output$upload_error_message_box <- renderText("ERROR, could not find upload RID in cookies")
