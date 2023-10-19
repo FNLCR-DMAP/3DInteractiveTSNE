@@ -21,6 +21,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
            }
            "
         )
+      )
     ),
     titlePanel("T-SNE 3D Scatterplot"),
     sidebarLayout(
