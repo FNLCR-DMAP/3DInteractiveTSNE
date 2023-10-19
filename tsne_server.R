@@ -11,9 +11,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
+  df <- NULL
 
   mydata <- reactive({
-    
+      if(!is.null(df)){
+        return(df)
+      }
       cookie <- cookies::get_cookie(session_info$state)
       rid <- NULL
       branch <- NULL
