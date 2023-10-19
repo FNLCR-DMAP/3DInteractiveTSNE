@@ -69,14 +69,15 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             dataset <- data.frame(dataset)
             df <- rbind(df, dataset)
           } else if (file_ext(file) == "parquet") {
+          
             print("reading parquet file")
             print(file)
-            raw = content(response2, as="raw")
-            dataset = read_parquet(raw)
-            dataset = data.frame(dataset)
+            # raw = content(response2, as="raw")
+            # dataset = read_parquet(raw)
+            # dataset = data.frame(dataset)
             
-            dataset$name <- file
-            df <- rbind(df, dataset)
+            # dataset$name <- file
+            # df <- rbind(df, dataset)
           } else {
             dataset = generate_random_sample_data(100)
             dataset$name <- "else"
@@ -256,6 +257,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         message = 'Transforming Points',
         value = 0,
         {
+          loading_bar_amount <- (1/length(pkCol))*100
           for (ai in 1: length(pkCol)) {
             vp <- c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
             transformed <- projectVertex(vp, input$model, input$view, input$projection, c(1,1))
@@ -263,7 +265,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             y2d[ai] <- transformed[2]
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
-            incProgress(amount = 1/length(pkCol), detail = paste(ai, "of", length(pkCol)))
+            if(ai %% 100 == 0 ){
+              incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
+            }
           }
         }
       )
