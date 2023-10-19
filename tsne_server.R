@@ -13,28 +13,29 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   shinyjs::disable("project2D")
 
   mydata <- reactive({
-    cookie <- cookies::get_cookie(session_info$state)
-    rid <- NULL
-    branch <- NULL
-    if (!is.null(cookie)) {
-      foundry_rids <- fromJSON(cookie)
-      dataset_rid <- foundry_rids$inputRID
-      branch <- foundry_rids$inputBranch
-      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
-      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
-    } else {
-      print(paste("could not find cooke: ", session_info$state))
-      output$error_message_box <- renderText(
-        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-      )
-
-      output$upload_error_message_box <- renderText(
-        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-      )
-      return(NULL)
-    }
-    df <- NULL
     withProgress(message="Downloading Data From NIDAP", value = 0, {
+      cookie <- cookies::get_cookie(session_info$state)
+      rid <- NULL
+      branch <- NULL
+      if (!is.null(cookie)) {
+        foundry_rids <- fromJSON(cookie)
+        dataset_rid <- foundry_rids$inputRID
+        branch <- foundry_rids$inputBranch
+        output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
+        output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
+      } else {
+        print(paste("could not find cooke: ", session_info$state))
+        output$error_message_box <- renderText(
+          paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+        )
+
+        output$upload_error_message_box <- renderText(
+          paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+        )
+        return(NULL)
+      }
+      df <- NULL
+    
       list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
       print(paste("making request to ", list_files_url))
 
