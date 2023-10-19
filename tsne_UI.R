@@ -16,7 +16,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
            position:fixed;
            top: calc(50% - 50px);
            left: calc(50% - 400px);
-           font-size: 250%;
+           font-size: 150%;
            text-align: center;
            }
            "
