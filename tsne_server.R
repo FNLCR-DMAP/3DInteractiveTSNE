@@ -72,6 +72,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           
             print("reading parquet file")
             print(file)
+            #noop
             # raw = content(response2, as="raw")
             # dataset = read_parquet(raw)
             # dataset = data.frame(dataset)
