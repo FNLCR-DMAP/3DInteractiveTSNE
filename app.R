@@ -6,7 +6,7 @@ library(httr)
 library(jsonlite)
 library(tools)
 library(urltools)
-# library(arrow)
+library(arrow)
 library(cookies)
 library(auth0)
 
