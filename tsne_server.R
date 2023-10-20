@@ -43,7 +43,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       reutrn(NULL)
     }
     dataset_rid <- cookie_data$inputRID
-    branch <- cookie_data$inputBranch]
+    branch <- cookie_data$inputBranch
     withProgress(message="Downloading Data From NIDAP", value = 0, {
       
         list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
