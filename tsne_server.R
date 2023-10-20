@@ -13,8 +13,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   shinyjs::disable("project2D")
 
 
-  # mydata <- reactive({
-  cookies <- reactive({
+  # mydata <- reactive({sdfasdf
+  appCookies <- reactive({
       cookie <- cookies::get_cookie(session_info$state)
       
       if (!is.null(cookie)) {
@@ -40,7 +40,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
   mydata <- reactive({
     df <- NULL
-    cookie_data <- cookies()
+    cookie_data <- appCookies()
     if(is.null(cookie_data) ){
       return()(NULL)
     }
