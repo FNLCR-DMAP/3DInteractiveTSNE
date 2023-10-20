@@ -35,7 +35,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         return(NULL)
       }
   })
-  
+
+  inputData <- reactiveVal(NULL)
+
   mydata <- reactive({
     df <- NULL
     cookie_data <- cookies()
@@ -100,6 +102,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       print("successfully read in all data")
       print(head(df, 5))
     }) #withProgress
+    inputData(df)
     return(df)
   }) #reactive mydata
   
@@ -118,6 +121,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   projectedData <- reactiveValues(
     data = data.frame(),
   )
+  
   factor_value <- reactiveVal(TRUE)
 
   output$text <- renderText({
@@ -128,7 +132,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #Factors includes columns that have type character or factor
   observeEvent(input$indicator_col, {
     if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
-      df <- mydata()
+      df <- inputData()
       if (!is.null(df) ){
         unique_values = unique(df[[input$indicator_col]] %>% sort())
         if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
@@ -172,8 +176,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   })
 
   observe({
-    exportDataset$data <- data.frame()
-    df <- mydata()
+    #exportDataset$data <- data.frame()
+    df <- inputData()
     if( !is.null(df) ){
       if("x" %in% colnames(df)){
         x_default_col = "x"
