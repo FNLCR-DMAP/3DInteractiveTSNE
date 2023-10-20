@@ -11,12 +11,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
-  df <- NULL
 
-  mydata <- reactive({
-      if(!is.null(df)){
-        return(df)
-      }
+
+  # mydata <- reactive({
+      
       cookie <- cookies::get_cookie(session_info$state)
       rid <- NULL
       branch <- NULL
@@ -94,9 +92,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       print("successfully read in all data")
       print(head(df, 5))
     })
-    return(df)
-  })
+    # return(df)
+  # })
 
+  reactive(df)
+  
   columnType <- reactive({
     sapply(mydata(),class)
   })
@@ -269,9 +269,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             y2d[ai] <- transformed[2]
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
-            if(ai %% 100 == 0 ){
-              incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
-            }
+            #if(ai %% 100 == 0 ){
+            incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
+            #}
           }
         }
       )
