@@ -15,6 +15,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
   # mydata <- reactive({sdfasdf
   appCookies <- reactive({
+      
       cookie <- cookies::get_cookie(session_info$state)
       
       if (!is.null(cookie)) {
@@ -80,16 +81,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             dataset <- data.frame(dataset)
             df <- rbind(df, dataset)
           } else if (file_ext(file) == "parquet") {
-          
-            print("reading parquet file")
-            print(file)
-            #noop
-            # raw = content(response2, as="raw")
-            # dataset = read_parquet(raw)
-            # dataset = data.frame(dataset)
+            raw = content(response2, as="raw")
+            dataset = read_parquet(raw)
+            dataset = data.frame(dataset)
             
-            # dataset$name <- file
-            # df <- rbind(df, dataset)
+            dataset$name <- file
+            df <- rbind(df, dataset)
           } else {
             dataset = generate_random_sample_data(100)
             dataset$name <- "else"
