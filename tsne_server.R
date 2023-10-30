@@ -42,7 +42,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     df <- NULL
     cookie_data <- appCookies()
     if(is.null(cookie_data) ){
-      return()(NULL)
+      return(NULL)
     }
     dataset_rid <- cookie_data$inputRID
     branch <- cookie_data$inputBranch
