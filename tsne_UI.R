@@ -8,20 +8,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
     useShinyjs(),
     extendShinyjs(text = js_code, functions = c('plot3d')),
     tags$head(
-      tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js"),
-      tags$style(
-        HTML(".shiny-notification {
-           height: 100px;
-           width: 800px;
-           position:fixed;
-           top: calc(50% - 50px);
-           left: calc(50% - 400px);
-           font-size: 150%;
-           text-align: center;
-           }
-           "
-        )
-      )
+      tags$script(src = "https://cdn.plot.ly/plotly-latest.min.js")
     ),
     titlePanel("T-SNE 3D Scatterplot"),
     sidebarLayout(
