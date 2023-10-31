@@ -14,36 +14,54 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
 
   # mydata <- reactive({sdfasdf
-  appCookies <- reactive({
+  # appCookies <- reactive({
       
-      cookie <- cookies::get_cookie(session_info$state)
+  #     cookie <- cookies::get_cookie(session_info$state)
       
-      if (!is.null(cookie)) {
-        foundry_rids <- fromJSON(cookie)
-        dataset_rid <- foundry_rids$inputRID
-        branch <- foundry_rids$inputBranch
-        output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
-        output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
-        return(foundry_rids)
-      } else {
-        print(paste("could not find cooke: ", session_info$state))
-        output$error_message_box <- renderText(
-          paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-        )
-        output$upload_error_message_box <- renderText(
-          paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-        )
-        return(NULL)
-      }
-  })
+  #     if (!is.null(cookie)) {
+  #       foundry_rids <- fromJSON(cookie)
+  #       dataset_rid <- foundry_rids$inputRID
+  #       branch <- foundry_rids$inputBranch
+  #       output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
+  #       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
+  #       return(foundry_rids)
+  #     } else {
+  #       print(paste("could not find cooke: ", session_info$state))
+  #       output$error_message_box <- renderText(
+  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+  #       )
+  #       output$upload_error_message_box <- renderText(
+  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+  #       )
+  #       return(NULL)
+  #     }
+  # })
 
   inputData <- reactiveVal(NULL)
 
   mydata <- reactive({
     df <- NULL
-    cookie_data <- appCookies()
+    cookie <- cookies::get_cookie(session_info$state)
+      
+    if (!is.null(cookie)) {
+      cookie_data <- fromJSON(cookie)
+      dataset_rid <- cookie_data$inputRID
+      branch <- cookie_data$inputBranch
+      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
+      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", cookie_data$outputRID))
+    } else {
+      cookie_data <- NULL
+      print(paste("could not find cooke: ", session_info$state))
+      output$error_message_box <- renderText(
+        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+      )
+      output$upload_error_message_box <- renderText(
+        paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+      )
+  
+    }
     if(is.null(cookie_data) ){
-      return()(NULL)
+      return(NULL)
     }
     dataset_rid <- cookie_data$inputRID
     branch <- cookie_data$inputBranch
