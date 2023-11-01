@@ -419,72 +419,85 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       print("exporting to nidap")
       cookie <- cookies::get_cookie(session_info$state)
       if(!is.null(cookie)){
-        cookie_json <- fromJSON(cookie)  
-        rid <- cookie_json$outputRID      
-        branch <- cookie_json$outputBranch
-        filePath <- sprintf("tempFile_from_posit-%s.csv", Sys.Date())
-        
-        #data_to_upload <- exportDataset$data
-        data_to_upload <- generate_random_sample_data(200)
-        two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
-        character_list <- paste(two_d_csv, collapse="\n")
-        raw_char_array <- charToRaw(character_list)
-        
-        # /NIH/tSNE3d_v01/datasets/posit_output_test
-        # ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
-        # https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95&outputRID=ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a # nolint
-        upload_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath,"&branchId=",branch)
+        withProgress(message="Uploading Results to NIDAP", value = 0, {
+          
+          cookie_json <- fromJSON(cookie)  
+          rid <- cookie_json$outputRID      
+          branch <- cookie_json$outputBranch
+          filePath <- sprintf("tempFile_from_posit-%s.csv", Sys.Date())
 
-        response <- POST(
-          upload_url, 
-          content_type("application/octet-stream"),
-          httr::add_headers(Authorization = paste("Bearer", auth_token)),
-          body = raw_char_array
-        )
-        print(status_code(response))
-        print(content(response))
+          incProgress(0.25, detail="Converting data to CSV...")
+          data_to_upload <- generate_random_sample_data(200)
+          two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
+          character_list <- paste(two_d_csv, collapse="\n")
+          raw_char_array <- charToRaw(character_list)
+          
+          #========Upload to NIDAP===========
+          # /NIH/tSNE3d_v01/datasets/posit_output_test
+          # ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
+          # https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95&outputRID=ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a # nolint
+          upload_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files:upload?filePath=",filePath,"&branchId=",branch)
+          incProgress(0.25, detail="Uploading Data...")
+          response <- POST(
+            upload_url, 
+            content_type("application/octet-stream"),
+            httr::add_headers(Authorization = paste("Bearer", auth_token)),
+            body = raw_char_array
+          )
+          if (status_code(response) == 200) {
+            print("Data Upload Success")
+          } else {
+            error_message <- content(response, "text")
+            print(paste("Data Upload Error:", error_message))
+            output$upload_error_message_box <- renderText("ERROR: Error uploading data (see logs for more details)")
+            stop("Error uploading data")
+          }
         
-        schema_create_url <- sprintf("https://nidap.nih.gov/foundry-schema-inference/api/datasets/%s/branches/%s/schema", rid, branch)
-        
-        create_schema_response <- POST(
-          schema_create_url,
-          add_headers(
-            Authorization = paste0("Bearer ", auth_token),
-            "Content-Type" = "application/json"),
-          body = '{}',
-          encode = "json"
-        )
-        
-        if (status_code(create_schema_response) == 200) {
-          print("Schema Acquisition Success")
-        } else {
-          error_message <- content(response, "text")
-          print(paste("Schema Acquisition Error:", error_message))
-        }
-        response_content <- content(create_schema_response, "text")
-        foundrySchema <- fromJSON(response_content)$data$foundrySchema
-        
-        schema_set_url <- sprintf("https://nidap.nih.gov/foundry-metadata/api/schemas/datasets/%s/branches/%s", rid, branch)
-        
-        update_schema_response <- POST(
-          schema_set_url,
-          add_headers(
-            Authorization = paste0("Bearer ", auth_token),
-            "Content-Type" = "application/json"
-          ),
-          body = foundrySchema,
-          encode = "json"
-        )
+          #========Get Default Schema===========
+          incProgress(0.25, detail="Getting Schema...")
+          get_default_schema_url <- sprintf("https://nidap.nih.gov/foundry-schema-inference/api/datasets/%s/branches/%s/schema", rid, branch)
+          create_schema_response <- POST(
+            get_default_schema_url,
+            add_headers(
+              Authorization = paste0("Bearer ", auth_token),
+              "Content-Type" = "application/json"),
+            body = '{}',
+            encode = "json"
+          )
+          if (status_code(create_schema_response) == 200) {
+            print("Schema Acquisition Success")
+          } else {
+            error_message <- content(response, "text")
+            print(paste("Schema Acquisition Error:", error_message))
+            output$upload_error_message_box <- renderText("ERROR: Schema Acquisition Error (see logs for more detail)")
+            stop("Error getting default schema")
+          }
+          response_content <- content(create_schema_response, "text")
+          foundrySchema <- fromJSON(response_content)$data$foundrySchema
+          
+          #========Apply Schema===========
+          incProgress(0.25, detail="Applying Schema...")
+          schema_set_url <- sprintf("https://nidap.nih.gov/foundry-metadata/api/schemas/datasets/%s/branches/%s", rid, branch)
+          update_schema_response <- POST(
+            schema_set_url,
+            add_headers(
+              Authorization = paste0("Bearer ", auth_token),
+              "Content-Type" = "application/json"
+            ),
+            body = foundrySchema,
+            encode = "json"
+          )
 
-        response_content <- content(update_schema_response, "text")
-
-        if (status_code(update_schema_response) == 200) {
-          print("Schema Update Success")
-        } else {
-          error_message <- content(update_schema_response, "text")
-          print(paste("Schema Update Error:", error_message))
-        }
-
+          if (status_code(update_schema_response) == 200) {
+            print("Schema Update Success")
+          } else {
+            error_message <- content(update_schema_response, "text")
+            print(paste("Schema Update Error:", error_message))
+            output$upload_error_message_box <- renderText("ERROR: Error applying schema (see logs for more detail)")
+            stop("Error updating schema")
+          }
+          output$upload_error_message_box <- renderText("SUCCESS: Successfully uploaded data back to NIDAP, you can close this window now")
+        }) #withprogress
       } else{
         output$upload_error_message_box <- renderText("ERROR, could not find upload RID in cookies")
       }
