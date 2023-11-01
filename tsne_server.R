@@ -287,7 +287,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         message = 'Transforming Points',
         value = 0,
         {
-          loading_bar_amount <- (1/length(pkCol))*100
+          loading_bar_amount <- (1/length(pkCol))*1000
           for (ai in 1: length(pkCol)) {
             vp <- c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
             transformed <- projectVertex(vp, input$model, input$view, input$projection, c(1,1))
@@ -296,7 +296,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
             
-            if(ai %% 100 == 0 ){
+            if(ai %% 1000 == 0 ){
               incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
             }
           }
