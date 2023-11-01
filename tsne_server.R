@@ -4,7 +4,6 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 
 tsne_server <- function (input, output, session, session_info = NULL) {
   # download_dataset_from_nidap -> function(dataset_rid, token, branch) {
-
   # }
   print("regular server function: Global nonce data:")
   auth_token <- session$userData$auth0_credentials$access_token
@@ -37,12 +36,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #     }
   # })
 
-  inputData <- reactiveVal(NULL)
+  #inputData <- reactiveVal(NULL)
   mydata <- reactive({
     df <- NULL
     print("session info")
     print(session_info)
     cookie <- cookies::get_cookie(session_info$state)
+    
     print("cookie")
     print(cookie)
     if (!is.null(cookie)) {
@@ -117,7 +117,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       print("successfully read in all data")
       print(head(df, 5))
     }) #withProgress
-    inputData(df)
+    #inputData(df)
     return(df)
   }) #reactive mydata
   
@@ -147,7 +147,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #Factors includes columns that have type character or factor
   observeEvent(input$indicator_col, {
     if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
-      df <- inputData()
+      df <- mydata()
       if (!is.null(df) ){
         unique_values = unique(df[[input$indicator_col]] %>% sort())
         if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
@@ -192,7 +192,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
   observe({
     #exportDataset$data <- data.frame()
-    df <- inputData()
+    df <- mydata()
     if( !is.null(df) ){
       if("x" %in% colnames(df)){
         x_default_col = "x"
