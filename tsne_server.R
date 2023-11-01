@@ -478,10 +478,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
         response_content <- content(update_schema_response, "text")
 
-        if (status_code(update_response) == 200) {
+        if (status_code(update_schema_response) == 200) {
           print("Schema Update Success")
         } else {
-          error_message <- content(update_response, "text")
+          error_message <- content(update_schema_response, "text")
           print(paste("Schema Update Error:", error_message))
         }
 
