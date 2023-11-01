@@ -469,7 +469,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         update_schema_response <- POST(
           schema_set_url,
           add_headers(
-            Authorization = paste0("Bearer ", key),
+            Authorization = paste0("Bearer ", auth_token),
             "Content-Type" = "application/json"
           ),
           body = foundrySchema,
