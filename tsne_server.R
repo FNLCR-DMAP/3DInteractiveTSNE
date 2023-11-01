@@ -295,9 +295,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             y2d[ai] <- transformed[2]
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
-            #if(ai %% 100 == 0 ){
-            incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
-            #}
+            
+            if(ai %% 100 == 0 ){
+              incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
+            }
           }
         }
       )
