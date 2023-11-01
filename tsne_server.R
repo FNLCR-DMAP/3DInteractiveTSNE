@@ -40,9 +40,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   inputData <- reactiveVal(NULL)
   mydata <- reactive({
     df <- NULL
-    print(paste("session info", session_info))
+    print("session info")
+    print(session_info)
     cookie <- cookies::get_cookie(session_info$state)
-      
+    print("cookie")
+    print(cookie)
     if (!is.null(cookie)) {
       cookie_data <- fromJSON(cookie)
       dataset_rid <- cookie_data$inputRID
