@@ -38,7 +38,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   # })
 
   inputData <- reactiveVal(NULL)
-# noop
   mydata <- reactive({
     df <- NULL
     cookie <- cookies::get_cookie(session_info$state)
@@ -58,11 +57,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       output$upload_error_message_box <- renderText(
         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
       )
-  
-    }
-    if(is.null(cookie_data) ){
       return(NULL)
     }
+      
     dataset_rid <- cookie_data$inputRID
     branch <- cookie_data$inputBranch
     withProgress(message="Downloading Data From NIDAP", value = 0, {
