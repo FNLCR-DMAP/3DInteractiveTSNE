@@ -423,10 +423,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         rid <- cookie_json$outputRID      
         branch <- cookie_json$outputBranch
         filePath <- sprintf("tempFile_from_posit-%s.csv", Sys.Date())
-        data_to_upload <- exportDataset$data
+        
+        #data_to_upload <- exportDataset$data
+        data_to_upload <- generate_random_sample_data(200)
         two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
         character_list <- paste(two_d_csv, collapse="\n")
         raw_char_array <- charToRaw(character_list)
+        
         # /NIH/tSNE3d_v01/datasets/posit_output_test
         # ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a
         # https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95&outputRID=ri.foundry.main.dataset.b2dcb103-6b5f-4411-90eb-dd0f6043b54a # nolint
