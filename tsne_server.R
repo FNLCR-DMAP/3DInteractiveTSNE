@@ -1,97 +1,126 @@
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
 
+
+
 tsne_server <- function (input, output, session, session_info = NULL) {
+  # download_dataset_from_nidap -> function(dataset_rid, token, branch) {
+
+  # }
   print("regular server function: Global nonce data:")
   auth_token <- session$userData$auth0_credentials$access_token
   shinyjs::disable("add_to_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
 
-  mydata <- reactive({
-    cookie <- cookies::get_cookie(session_info$state)
-    rid <- NULL
-    branch <- NULL
-    if (!is.null(cookie)) {
-      foundry_rids <- fromJSON(cookie)
-      rid <- foundry_rids$inputRID
-      branch <- foundry_rids$inputBranch
-      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", rid, "branch:", branch))
-      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
 
+  # mydata <- reactive({sdfasdf
+  # appCookies <- reactive({
+      
+  #     cookie <- cookies::get_cookie(session_info$state)
+      
+  #     if (!is.null(cookie)) {
+  #       foundry_rids <- fromJSON(cookie)
+  #       dataset_rid <- foundry_rids$inputRID
+  #       branch <- foundry_rids$inputBranch
+  #       output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
+  #       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
+  #       return(foundry_rids)
+  #     } else {
+  #       print(paste("could not find cooke: ", session_info$state))
+  #       output$error_message_box <- renderText(
+  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+  #       )
+  #       output$upload_error_message_box <- renderText(
+  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
+  #       )
+  #       return(NULL)
+  #     }
+  # })
+
+  inputData <- reactiveVal(NULL)
+
+  mydata <- reactive({
+    df <- NULL
+    cookie <- cookies::get_cookie(session_info$state)
+      
+    if (!is.null(cookie)) {
+      cookie_data <- fromJSON(cookie)
+      dataset_rid <- cookie_data$inputRID
+      branch <- cookie_data$inputBranch
+      output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
+      output$upload_error_message_box <- renderText(paste("Uploading to dataset:", cookie_data$outputRID))
     } else {
+      cookie_data <- NULL
       print(paste("could not find cooke: ", session_info$state))
       output$error_message_box <- renderText(
         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
       )
-
       output$upload_error_message_box <- renderText(
         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
       )
+  
+    }
+    if(is.null(cookie_data) ){
       return(NULL)
     }
-    # ri.foundry.main.dataset.f0708c74-d5b1-4e73-9fe7-6a086cdf0b95 100 RID
-    # ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a 100K RID
-    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.85416a76-46aa-4260-bdc7-3cd611ca3c8a # nolint
-    #https://rstudio-connect-dev.cancer.gov/content/529413aa-fc85-4353-9355-07d249a3f25c/?inputRID=ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6 # nolint
-    #rid = "ri.foundry.main.dataset.556cfc74-1c10-4662-a4ed-04feb1c7b6b6"
-
-    url2 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files?branchId=", branch)
-    print(paste("making request to ", url2))
-
-    response <- GET(url2, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    data_content <- content(response, as="text")
-    print(paste("got content", data_content))
-    parsed_json <- fromJSON(data_content)
-    print(paste("parsed json as ", parsed_json))
-    files <- parsed_json$data$path
-    print(paste("found files", files))
-    files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
-
-    print("reading through files")
-    df = data.frame()
-    for (file in files) {
-      print(paste("getting data from", file))
-      file <- url_encode(file)
-      url3 <- paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",file,"/content?branchId=", branch)
-      response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+    dataset_rid <- cookie_data$inputRID
+    branch <- cookie_data$inputBranch
+    withProgress(message="Downloading Data From NIDAP", value = 0, {
       
-      if (file_ext(file) == "csv") {
-        raw <- content(response2, as="text")
-        dataset <- read.csv(text = raw)
-        dataset <- data.frame(dataset)
-        df <- rbind(df, dataset)
-      } else if (file_ext(file) == "parquet") {
-        print("reading parquet file")
-        print(file)
-        raw = content(response2, as="raw")
-        dataset = read_parquet(raw)
-        dataset = data.frame(dataset)
+        list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
+        print(paste("making request to ", list_files_url))
+
+        response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
         
-        #print(raw[1:100])
-        # dataset = generate_random_sample_data(10)
-        dataset$name <- file
-        df <- rbind(df, dataset)
-      } else {
-        dataset = generate_random_sample_data(100)
-        dataset$name <- "else"
-        df <- rbind(df, dataset)
+        incProgress(0.10, detail="Listed files from dataset")
+        
+        data_content <- content(response, as="text")
+        parsed_json <- fromJSON(data_content)
+        files <- parsed_json$data$path
+        files <- files[!file_ext(files) %in% c("log", "")] #filter out log and spark success files
+        
+        num_files <- length(files)
+        if (num_files == 0 ){
+            stop("Error, zero files found in dataset")
+        }
+        print("reading through files")
+        df = data.frame()
+        index <- 0
+
+        for (file in files) {
+          print(paste("getting data from", file))
+          file <- url_encode(file)
+          get_file_content_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files/",file,"/content?branchId=", branch)
+          response2 <- GET(get_file_content_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
+          
+          if (file_ext(file) == "csv") {
+            raw <- content(response2, as="text")
+            dataset <- read.csv(text = raw)
+            dataset <- data.frame(dataset)
+            df <- rbind(df, dataset)
+          } else if (file_ext(file) == "parquet") {
+            raw = content(response2, as="raw")
+            dataset = read_parquet(raw)
+            dataset = data.frame(dataset)
+            
+            dataset$name <- file
+            df <- rbind(df, dataset)
+          } else {
+            dataset = generate_random_sample_data(100)
+            dataset$name <- "else"
+            df <- rbind(df, dataset)
+          }
+          index <- index + 1
+          incProgress(0.9 / num_files, detail=paste("Downloaded", index + 1, "of", num_files, "files"))
       }
-    }
-    # df = df %>% filter(!is.na(pk))
-    # fileName = files[1]
-    # print(fileName)
-    # handling / in file name
-    # fileName = url_encode(fileName)
-    # print(fileName)
-    # url3 = paste0("https://nidap.nih.gov/api/v1/datasets/",rid,"/files/",fileName,"/content")
-    # response2 <- GET(url3, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-    # print(response2)
-    # print("reading content here")
-    # raw_data = content(response2, as="raw") 
-    print("successfully read in all data")
-    print(head(df, 5))
+      # df = df %>% filter(!is.na(pk))
+      print("successfully read in all data")
+      print(head(df, 5))
+    }) #withProgress
+    inputData(df)
     return(df)
-  })
+  }) #reactive mydata
+  
 
   columnType <- reactive({
     sapply(mydata(),class)
@@ -107,6 +136,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   projectedData <- reactiveValues(
     data = data.frame(),
   )
+  
   factor_value <- reactiveVal(TRUE)
 
   output$text <- renderText({
@@ -117,7 +147,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #Factors includes columns that have type character or factor
   observeEvent(input$indicator_col, {
     if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
-      df <- mydata()
+      df <- inputData()
       if (!is.null(df) ){
         unique_values = unique(df[[input$indicator_col]] %>% sort())
         if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
@@ -161,8 +191,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   })
 
   observe({
-    exportDataset$data <- data.frame()
-    df <- mydata()
+    #exportDataset$data <- data.frame()
+    df <- inputData()
     if( !is.null(df) ){
       if("x" %in% colnames(df)){
         x_default_col = "x"
@@ -257,6 +287,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         message = 'Transforming Points',
         value = 0,
         {
+          loading_bar_amount <- (1/length(pkCol))*100
           for (ai in 1: length(pkCol)) {
             vp <- c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
             transformed <- projectVertex(vp, input$model, input$view, input$projection, c(1,1))
@@ -264,7 +295,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             y2d[ai] <- transformed[2]
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
-            incProgress(amount = 1/length(pkCol), detail = paste(ai, "of", length(pkCol)))
+            #if(ai %% 100 == 0 ){
+            incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
+            #}
           }
         }
       )
@@ -407,6 +440,47 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         )
         print(status_code(response))
         print(content(response))
+        
+        schema_create_url <- sprintf("https://nidap.nih.gov/foundry-schema-inference/api/datasets/%s/branches/%s/schema", rid, branch)
+        
+        create_schema_response <- POST(
+          schema_create_url,
+          add_headers(
+            Authorization = paste0("Bearer ", auth_token),
+            "Content-Type" = "application/json"),
+          body = '{}',
+          encode = "json"
+        )
+        
+        if (status_code(create_schema_respons) == 200) {
+          print("Schema Acquisition Success")
+        } else {
+          error_message <- content(response, "text")
+          print(paste("Schema Acquisition Error:", error_message))
+        }
+        response_content <- content(create_schema_respons, "text")
+        foundrySchema <- fromJSON(response_content)$data$foundrySchema
+        
+        schema_set_url <- sprintf("https://nidap.nih.gov/foundry-metadata/api/schemas/datasets/%s/branches/%s", rid, branch)
+        
+        update_schema_response <- POST(
+          schema_set_url,
+          add_headers(
+            Authorization = paste0("Bearer ", key),
+            "Content-Type" = "application/json"
+          ),
+          body = foundrySchema,
+          encode = "json"
+        )
+
+        response_content <- content(update_schema_response, "text")
+
+        if (status_code(update_response) == 200) {
+          print("Schema Update Success")
+        } else {
+          error_message <- content(update_response, "text")
+          print(paste("Schema Update Error:", error_message))
+        }
 
       } else{
         output$upload_error_message_box <- renderText("ERROR, could not find upload RID in cookies")

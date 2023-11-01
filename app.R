@@ -2,13 +2,13 @@ library(shiny)
 library(shinyjs)
 library(plotly)
 library(DT)
-library(auth0)
 library(httr)
 library(jsonlite)
 library(tools)
 library(urltools)
 library(arrow)
 library(cookies)
+library(auth0)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -30,7 +30,7 @@ auth0_server_verify <- function(session, app, api, state) {
     token <- httr::oauth2.0_token(
       app = app(redirect_uri), endpoint = api, cache = FALSE, credentials = cred,
       user_params = list(grant_type = "authorization_code"))
-    
+
     userinfo_url <- sub("authorize", "userinfo", api$authorize)
     resp <- httr::RETRY(
       verb = "GET"
@@ -38,11 +38,11 @@ auth0_server_verify <- function(session, app, api, state) {
       , httr::config(token = token)
       , times = 5
     )
-    
+
     assign("auth0_credentials", token$credentials, envir = session$userData)
     assign("auth0_info", httr::content(resp, "parsed"), envir = session$userData)
   }
-  
+
 }
 
 my_auth0_server <- function(server, info) {
@@ -83,8 +83,8 @@ redirect_and_serve_UI <- function(ui, info) {
 
         query <- paste0("/?", paste(
           mapply(paste, names(params), params, MoreArgs = list(sep = "=")),
-          collapse = "&")
-        )
+          collapse = "&"
+        ))
         if (!is.null(info$remote_url) && info$remote_url != "" && !getOption("auth0_local")) {
           redirect_uri <- info$remote_url
         } else {
