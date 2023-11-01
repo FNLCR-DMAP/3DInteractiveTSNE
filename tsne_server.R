@@ -38,7 +38,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   # })
 
   inputData <- reactiveVal(NULL)
-
+# noop
   mydata <- reactive({
     df <- NULL
     cookie <- cookies::get_cookie(session_info$state)
