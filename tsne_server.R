@@ -455,13 +455,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           encode = "json"
         )
         
-        if (status_code(create_schema_respons) == 200) {
+        if (status_code(create_schema_response) == 200) {
           print("Schema Acquisition Success")
         } else {
           error_message <- content(response, "text")
           print(paste("Schema Acquisition Error:", error_message))
         }
-        response_content <- content(create_schema_respons, "text")
+        response_content <- content(create_schema_response, "text")
         foundrySchema <- fromJSON(response_content)$data$foundrySchema
         
         schema_set_url <- sprintf("https://nidap.nih.gov/foundry-metadata/api/schemas/datasets/%s/branches/%s", rid, branch)
