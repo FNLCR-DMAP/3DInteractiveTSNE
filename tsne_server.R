@@ -288,7 +288,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         value = 0,
         {
           loading_bar_amount <- (1/length(pkCol))*100
-          for (ai in 1: length(pkCol)) {
+          print("Total length")
+          print(length(pkCol))
+          for (ai in 1:length(pkCol)) {
             vp <- c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
             transformed <- projectVertex(vp, input$model, input$view, input$projection, c(1,1))
             x2d[ai] <- transformed[1]
