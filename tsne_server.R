@@ -315,7 +315,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
             
-            print(ai)
+            #print(ai)
             if(ai %% 100 == 0 ){
               incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
             }
