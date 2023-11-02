@@ -30,6 +30,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
         selectInput("y_col", label = "Y-Axis", choices = NULL),
         selectInput("z_col", label = "Z-Axis", choices = NULL),
         selectInput("indicator_col", "Indicator", choices = NULL),
+        checkboxInput("toggle_continuious_discrete", label="Toggle Continuious / Discrete", value = TRUE)
         actionButton('show', 'Generate Plot'),
         br(),
         br(),
