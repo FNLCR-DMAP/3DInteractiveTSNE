@@ -232,6 +232,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         pk_default_col = colnames(df[4])
       }
 
+      pkColumn = df[input$pk_col]
+      if(length(unique(pkColumn)) != length(pkColumn)){
+        input$pk_error_message_box <- renderText("ERROR: PK column is not unique")
+      } 
+      if(sum(is.na(pkColumn)) > 0){
+        input$pk_error_message_box <- renderText("ERROR: PK column contains null values")
+      }
       updateSelectInput(session, "pk_col", choices = colnames(df), selected = pk_default_col)
       updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)
       updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)
@@ -240,20 +247,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     }
   })
 
-  observe({
-    df <- mydata()
-    if(!is.null(df)){
-      pkColumn = df[input$pk_col]
-      if(length(unique(pkColumn)) != length(pkColumn)){
-        input$pk_error_message_box <- renderText("ERROR: PK column is not unique")
-      } 
-      if(sum(is.na(pkColumn)) > 0){
-        input$pk_error_message_box <- renderText("ERROR: PK column contains null values")
-      }
-
-    }
-  })
-
+  
   observeEvent(input$show,{
     showModal( 
       modalDialog(
