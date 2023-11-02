@@ -298,7 +298,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       y <- filterData()[[input$y_col]]
       z <- filterData()[[input$z_col]]
       pkCol <- filterData()[['pk']]
-
+      # get null value cout for pkCol
+      null_count <- sum(is.na(pkCol))
+      print("null count")
+      print(null_count)
       #progress bar
       withProgress(
         message = 'Transforming Points',
@@ -308,14 +311,16 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           print("Total length")
           print(length(pkCol))
           for (ai in 1:length(pkCol)) {
-            vp <- c(x[ai]*input$dataScale[1],y[ai]*input$dataScale[2], z[ai]*input$dataScale[3])
+            vp <- c(x[ai]*input$dataScale[1],
+                    y[ai]*input$dataScale[2], 
+                    z[ai]*input$dataScale[3])
             transformed <- projectVertex(vp, input$model, input$view, input$projection, c(1,1))
             x2d[ai] <- transformed[1]
             y2d[ai] <- transformed[2]
             indicator[ai] <- ind[ai]
             pk[ai] <- pkCol[ai]
             
-            #print(ai)
+            #print(ai)d
             if(ai %% 100 == 0 ){
               incProgress(amount = loading_bar_amount , detail = paste(ai, "of", length(pkCol)))
             }
