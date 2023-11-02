@@ -173,8 +173,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
               selected = "Not a Factor"
             )
           }
-        }
-      })
+        })    
+      }
     #}
   })
   #Disable Generate button if no features are chosen
