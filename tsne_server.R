@@ -137,7 +137,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data = data.frame(),
   )
   
-  factor_value <- reactiveVal(TRUE)
+  factor_value <- reactiveVal(input$toggle_discrete$value)
 
   output$text <- renderText({
     paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
@@ -150,8 +150,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       df <- mydata()
       if (!is.null(df) ){
         unique_values = unique(df[[input$indicator_col]] %>% sort())
-        if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
-          factor_value(TRUE)
+        
+        #if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
+        if (factor_value()){
+          #factor_value(TRUE)
           updateCheckboxGroupInput(
             session,
             inputId = "indicator_values_filter",
@@ -159,7 +161,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             selected = unique_values
           )
         } else {
-          factor_value(FALSE)
+          #factor_value(FALSE)
           updateCheckboxGroupInput(
             session,
             inputId = "indicator_values_filter",
