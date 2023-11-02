@@ -208,8 +208,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     NULL
   })
 
-  observe({
-    #exportDataset$data <- data.frame()
+  observe({ #set default columns
     df <- mydata()
     if( !is.null(df) ){
       if("x" %in% colnames(df)){
@@ -227,11 +226,31 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       } else {
         z_default_col = colnames(df[3])
       }
+      if("pk" %in% colnames(df)){
+        pk_default_col = "pk"
+      } else {
+        pk_default_col = colnames(df[4])
+      }
 
+      updateSelectInput(session, "pk_col", choices = colnames(df), selected = pk_default_col)
       updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)
       updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)
       updateSelectInput(session, "z_col", choices = colnames(df), selected = z_default_col)
       updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+    }
+  })
+
+  observe({
+    df <- mydata()
+    if(!is.null(df)){
+      pkColumn = df[input$pk_col]
+      if(length(unique(pkColumn)) != length(pkColumn)){
+        input$pk_error_message_box <- renderText("ERROR: PK column is not unique")
+      } 
+      if(sum(is.na(pkColumn)) > 0){
+        input$pk_error_message_box <- renderText("ERROR: PK column contains null values")
+      }
+
     }
   })
 
