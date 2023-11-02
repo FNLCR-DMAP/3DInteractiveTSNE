@@ -137,7 +137,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data = data.frame(),
   )
   
-  factor_value <- reactiveVal(input$toggle_discrete$value)
+  factor_value <- reactive({input$toggle_discrete$value})
 
   output$text <- renderText({
     paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
