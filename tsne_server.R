@@ -148,31 +148,34 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #Update Feature Selection and Check if indicator column contains factors.
   #Factors includes columns that have type character or factor
   observeEvent(input$indicator_col, {
-    if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
+    #if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
       df <- mydata()
       if (!is.null(df) ){
-        unique_values = unique(df[[input$indicator_col]] %>% sort())
-        
-        #if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
-        if (factor_value()){
-          #factor_value(TRUE)
-          updateCheckboxGroupInput(
-            session,
-            inputId = "indicator_values_filter",
-            choices = unique_values,
-            selected = unique_values
-          )
-        } else {
-          #factor_value(FALSE)
-          updateCheckboxGroupInput(
-            session,
-            inputId = "indicator_values_filter",
-            choices = "Not a Factor",
-            selected = "Not a Factor"
-          )
+        withProgress(message="Updating Indicator Column", value = 0, {   
+          unique_values = unique(df[[input$indicator_col]] %>% sort())
+          incProgress(0.5, detail="Updating Indicator Column")
+
+          #if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
+          if (factor_value()){
+            #factor_value(TRUE)
+            updateCheckboxGroupInput(
+              session,
+              inputId = "indicator_values_filter",
+              choices = unique_values,
+              selected = unique_values
+            )
+          } else {
+            #factor_value(FALSE)
+            updateCheckboxGroupInput(
+              session,
+              inputId = "indicator_values_filter",
+              choices = "Not a Factor",
+              selected = "Not a Factor"
+            )
+          }
         }
-      }
-    }
+      })
+    #}
   })
   #Disable Generate button if no features are chosen
   observe({
