@@ -365,9 +365,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         )
       )
       shinyjs::disable("project2D")
-    }
-    print("successfully projected to 2D") 
-  )
+      print("successfully projected to 2D") 
+  })
   
   observeEvent(
     {
