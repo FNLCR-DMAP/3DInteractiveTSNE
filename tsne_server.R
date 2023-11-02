@@ -145,9 +145,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
   })
 
+  updateDiscreteContinuousListener <- reactive({
+    # not actually used, but needed to trigger update
+    list(input$indicator_col, input$toggle_discrete) 
+  })
   #Update Feature Selection and Check if indicator column contains factors.
   #Factors includes columns that have type character or factor
-  observeEvent(input$indicator_col, {
+  observeEvent(updateDiscreteContinuousListener(), {
     #if (!is.null(columnType()) && input$indicator_col %in% names(columnType())) {
       df <- mydata()
       if (!is.null(df) ){
