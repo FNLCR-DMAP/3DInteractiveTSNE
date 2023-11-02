@@ -276,8 +276,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     shinyjs::enable("project2D")
   })
 
-  observeEvent(
-    input$project2D, 
+  observeEvent(input$project2D, 
     {
       showModal(
         modalDialog(
@@ -323,7 +322,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           }
         }
       )
-
+      print("done transforming points")
+      
       transformed1 <- data.frame(x = x2d,y = y2d,indicator,pk)
       projectedData$data <- rbind(projectedData$data, transformed1)
       projectedData$data <- projectedData$data[projectedData$data['x'] >= 0 & projectedData$data['x'] <= 1,]
@@ -356,7 +356,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           )
         }
       )
-
+      print("plotly rendered")
       showModal(
         modalDialog(
           paste0("Projecting to 2D has been completed"),
@@ -366,6 +366,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       )
       shinyjs::disable("project2D")
     }
+    print("successfully projected to 2D") 
   )
   
   observeEvent(
