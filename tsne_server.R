@@ -398,7 +398,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   observeEvent(input$points_names, {
     trimmed <- str_trim(input$points_names)
     trimmed <- gsub(" ", "_", trimmed)
-    invalid_chars <- grep("^[a-zA-Z0-9_]+$", trimmed)
+    invalid_chars <- grep("^![a-zA-Z0-9_]+$", trimmed)
     if (length(invalid_chars) > 0) {
       output$name_message_box <- renderText(paste('Error', input$points_names, 'contains invalid characters:', trimmed[invalid_chars]))
       shinyjs::disable("add_to_list")
