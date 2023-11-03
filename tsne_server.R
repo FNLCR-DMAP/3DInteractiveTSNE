@@ -126,6 +126,31 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     paste("<b>Please save View First before Projecting to 2D<br>", "<br>", "</b>")
   })
 
+  selectedColumnValidationListener <- reactive({
+    list(input$pk_col, input$x_col, input$y_col, input$z_col, input$indicator_col) 
+  })
+  selectedColumnValidation <- observeEvent(selectedColumnValidationListener(), {
+    df <- mydata()
+    if (!is.null(df) ){
+      pkColumn = df[input$pk_col]
+      if(sum(duplicated(pkColumn)) > 0){
+        output$selection_error_message_box <- renderText('ERROR: Primary Key column contains duplicate values')
+        shinyjs::disable("generate")
+      }
+      if(sum(is.na(pkColumn)) > 0){
+        output$selection_error_message_box <- renderText('ERROR: Primary Key column contains null values')
+        shinyjs::disable("generate")
+      }
+
+      colsToCheck <- tail(selectedColumnValidationListener(), -1)
+      for(col in colsToCheck){  
+        if(sum(is.na(df[col])) > 0){
+          output$selection_error_message_box <- renderText(paste('WARNING:', col, 'contains null values'))
+        }
+      }        
+    }
+  })
+
   updateDiscreteContinuousListener <- reactive({
     # not actually used, but needed to trigger update
     list(input$indicator_col, input$toggle_discrete) 
@@ -209,12 +234,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       }
 
       pkColumn = df[pk_default_col]
-      if(length(unique(pkColumn)) != length(pkColumn)){
-        output$pk_error_message_box <- renderText("ERROR: PK column is not unique")
-      } 
-      if(sum(is.na(pkColumn)) > 0){
-        output$pk_error_message_box <- renderText('ERROR: PK column contains null values')
-      }
+      
       updateSelectInput(session, "pk_col", choices = colnames(df), selected = pk_default_col)
       updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)
       updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)

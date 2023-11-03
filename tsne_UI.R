@@ -19,7 +19,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
            font-size: 150%;
            text-align: center;
            }
-           #pk_error_message_box {
+           #selection_error_message_box {
              color: red;
              font-weight: bold;
              text-decoration: underline;
@@ -31,7 +31,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
     titlePanel("T-SNE 3D Scatterplot"),
     sidebarLayout(
       sidebarPanel(
-        textOutput("pk_error_message_box"),
+        textOutput("selection_error_message_box"),
         selectInput("pk_col", label = "Primary Key", choices = NULL),
         selectInput("x_col", label = "X-Axis", choices = NULL),
         selectInput("y_col", label = "Y-Axis", choices = NULL),
