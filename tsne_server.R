@@ -193,13 +193,13 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     #}
   })
   #Disable Generate button if no features are chosen
-  observe({
-    if (length(input$indicator_values_filter) > 0) {
-      shinyjs::enable("show")
-    } else {
-      shinyjs::disable("show")
-    }
-  })
+  # observe({
+  #   if (length(input$indicator_values_filter) > 0) {
+  #     shinyjs::enable("show")
+  #   } else {
+  #     shinyjs::disable("show")
+  #   }
+  # })
 
   filterData <- eventReactive(input$indicator_values_filter, {
     df = mydata()
