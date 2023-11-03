@@ -27,7 +27,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
     sidebarLayout(
       sidebarPanel(
         textOutput("pk_error_message_box"),
-        selectInput("pk_col", label = "PK", choices = NULL),
+        selectInput("pk_col", label = "Primary Key", choices = NULL),
         selectInput("x_col", label = "X-Axis", choices = NULL),
         selectInput("y_col", label = "Y-Axis", choices = NULL),
         selectInput("z_col", label = "Z-Axis", choices = NULL),

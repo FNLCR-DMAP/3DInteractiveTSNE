@@ -11,31 +11,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
 
-
-  # mydata <- reactive({sdfasdf
-  # appCookies <- reactive({
-      
-  #     cookie <- cookies::get_cookie(session_info$state)
-      
-  #     if (!is.null(cookie)) {
-  #       foundry_rids <- fromJSON(cookie)
-  #       dataset_rid <- foundry_rids$inputRID
-  #       branch <- foundry_rids$inputBranch
-  #       output$error_message_box <- renderText(paste("Found cookie with input dataset rid : ", dataset_rid, "branch:", branch))
-  #       output$upload_error_message_box <- renderText(paste("Uploading to dataset:", foundry_rids$outputRID))
-  #       return(foundry_rids)
-  #     } else {
-  #       print(paste("could not find cooke: ", session_info$state))
-  #       output$error_message_box <- renderText(
-  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-  #       )
-  #       output$upload_error_message_box <- renderText(
-  #         paste("ERROR: Could not find cookie with input dataset rid. State: ", session_info$state)
-  #       )
-  #       return(NULL)
-  #     }
-  # })
-
   inputData <- reactiveVal(NULL)
 
   mydata <- reactive({
@@ -108,7 +83,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             raw = content(response2, as="raw")
             dataset = read_parquet(raw)
             dataset = data.frame(dataset)
-            
             dataset$name <- file
             df <- rbind(df, dataset)
           } else {
@@ -121,7 +95,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         }
         # df = df %>% filter(!is.na(pk))
         print("successfully read in all data")
-        print(head(df, 5))
+        #print(head(df, 5))
       }) #withProgress
       inputData(df)
       return(df)
@@ -212,7 +186,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   observe({ #set default columns
     df <- mydata()
     if( !is.null(df) ){
-      if("x" %in% colnames(df)){
+      print("setting default columns")
+      if("x" %in% colnames(df)){ #TODO check if df length > 4
         x_default_col = "x"
       } else {
         x_default_col = colnames(df[1])
@@ -245,6 +220,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)
       updateSelectInput(session, "z_col", choices = colnames(df), selected = z_default_col)
       updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+      print("done setting default columns")
+      
     }
   })
 
