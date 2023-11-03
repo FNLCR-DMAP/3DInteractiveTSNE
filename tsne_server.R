@@ -208,6 +208,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     NULL
   })
 
+
   observe({ #set default columns
     df <- mydata()
     if( !is.null(df) ){
@@ -310,7 +311,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       x <- filterData()[[input$x_col]]
       y <- filterData()[[input$y_col]]
       z <- filterData()[[input$z_col]]
-      pkCol <- filterData()[['pk']]
+      pkCol <- filterData()[[input$pk_col]]
       # get null value cout for pkCol
       null_count <- sum(is.na(pkCol))
       print("null count")
@@ -415,11 +416,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           pointNum <- selected_points[i,]$pointNumber
           filtered_data <- filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
           filtered_data <- filtered_data[pointNum+1,]
-          pkDataset$data <- rbind(pkDataset$data, filtered_data['pk'])
+          pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
         }
       } else {
         filtered_data <- projectedData$data[selected_points$pointNumber+1,]
-        pkDataset$data <- rbind(pkDataset$data, filtered_data['pk'])
+        pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
       }
 
       pk <- pkDataset$data
