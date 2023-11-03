@@ -402,6 +402,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     if (length(invalid_chars) > 0) {
       output$name_message_box <- renderText(paste('Error', input$points_names, 'contains invalid characters:', trimmed[invalid_chars]))
       shinyjs::disable("add_to_list")
+      selectedPointsLabel(NULL)
     }
     else {
       output$name_message_box <- renderText(paste("using column name: ", trimmed))
