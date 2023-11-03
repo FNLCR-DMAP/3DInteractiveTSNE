@@ -132,14 +132,16 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   selectedColumnValidation <- observeEvent(selectedColumnValidationListener(), {
     df <- mydata()
     if (!is.null(df) ){
-      pkColumn = df[input$pk_col]
-      if(sum(duplicated(pkColumn)) > 0){
+      
+      if(sum(duplicated(df[input$pk_col])) > 0){
         output$selection_error_message_box <- renderText('ERROR: Primary Key column contains duplicate values')
-        shinyjs::disable("generate")
+        shinyjs::disable("show")
+        return()
       }
-      if(sum(is.na(pkColumn)) > 0){
+      if(sum(is.na(df[input$pk_col])) > 0){
         output$selection_error_message_box <- renderText('ERROR: Primary Key column contains null values')
-        shinyjs::disable("generate")
+        shinyjs::disable("show")
+        return()
       }
 
       colsToCheck <- tail(selectedColumnValidationListener(), -1)
@@ -150,6 +152,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       }        
     }
   })
+
+  #function to check if a string is a valid R variable name
+
 
   updateDiscreteContinuousListener <- reactive({
     # not actually used, but needed to trigger update
