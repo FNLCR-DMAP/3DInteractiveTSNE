@@ -410,17 +410,17 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     }
   })
 
-  observeEvent(
-    {
-      event_data("plotly_selected", source = "2dplot"); input$points_names}, {
-    if (length(event_data("plotly_selected", source = "2dplot")) & selectedPointsLabel() != NULL) {
-      shinyjs::enable("add_to_list")
-    }
-    else{
-      shinyjs::disable("add_to_list")
-    }
-    }
-  )
+  # observeEvent(
+  #   {
+  #     event_data("plotly_selected", source = "2dplot"); input$points_names}, {
+  #   if (length(event_data("plotly_selected", source = "2dplot")) > 0 & selectedPointsLabel() != NULL) {
+  #     shinyjs::enable("add_to_list")
+  #   }
+  #   else{
+  #     shinyjs::disable("add_to_list")
+  #   }
+  #   }
+  # )
   
   observeEvent(input$add_to_list, {
 
