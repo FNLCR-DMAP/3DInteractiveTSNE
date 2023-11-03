@@ -3,8 +3,6 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 
 
 tsne_server <- function (input, output, session, session_info = NULL) {
-  # download_dataset_from_nidap -> function(dataset_rid, token, branch) {
-  # }
   print("regular server function: Global nonce data:")
   auth_token <- session$userData$auth0_credentials$access_token
   shinyjs::disable("add_to_list")
@@ -52,7 +50,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         print(paste("making request to ", list_files_url))
 
         response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-        
+        if(status_code(response) != 200){
+          outpu$error_message_box <- renderText("ERROR: Could not list files in NIDAP")
+          stop("Error listing files from NIDAP")
+        }
+
         incProgress(0.10, detail="Listed files from dataset")
         
         data_content <- content(response, as="text")
@@ -73,7 +75,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           file <- url_encode(file)
           get_file_content_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files/",file,"/content?branchId=", branch)
           response2 <- GET(get_file_content_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
-          
+          if(status_code(response2) != 200){
+            outpu$error_message_box <- renderText("ERROR: Could not get file content from NIDAP")
+            stop("Error getting file content from NIDAP")
+          }
+
           if (file_ext(file) == "csv") {
             raw <- content(response2, as="text")
             dataset <- read.csv(text = raw)
@@ -132,18 +138,17 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   selectedColumnValidation <- observeEvent(selectedColumnValidationListener(), {
     df <- mydata()
     if (!is.null(df) ){
-      
+      if(sum(is.na(df[input$pk_col])) > 0){ #this one needs to go first, superseds the next PK check
+        output$selection_error_message_box <- renderText('ERROR: Primary Key column contains null values')
+        shinyjs::disable("show")
+        return()
+      }
       if(sum(duplicated(df[input$pk_col])) > 0){
         output$selection_error_message_box <- renderText('ERROR: Primary Key column contains duplicate values')
         shinyjs::disable("show")
         return()
       }
-      if(sum(is.na(df[input$pk_col])) > 0){
-        output$selection_error_message_box <- renderText('ERROR: Primary Key column contains null values')
-        shinyjs::disable("show")
-        return()
-      }
-
+      
       colsToCheck <- tail(selectedColumnValidationListener(), -1)
       for(col in colsToCheck){  
         if(sum(is.na(df[col])) > 0){
