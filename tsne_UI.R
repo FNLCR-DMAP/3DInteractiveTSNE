@@ -19,6 +19,11 @@ tsne_ui <-  cookies::add_cookie_handlers(
            font-size: 150%;
            text-align: center;
            }
+           .error_message {
+             color: red;
+             font-weight: bold;
+             text-decoration: underline;
+           }
            "
         )
       )
