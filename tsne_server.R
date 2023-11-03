@@ -210,10 +210,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
       pkColumn = df[pk_default_col]
       if(length(unique(pkColumn)) != length(pkColumn)){
-        output$pk_error_message_box <- renderText("<p class='error_message'>ERROR: PK column is not unique</p>")
+        output$pk_error_message_box <- renderText("ERROR: PK column is not unique")
       } 
       if(sum(is.na(pkColumn)) > 0){
-        output$pk_error_message_box <- renderText('<p class="error_message">ERROR: PK column contains null values</p>')
+        output$pk_error_message_box <- renderText('ERROR: PK column contains null values')
       }
       updateSelectInput(session, "pk_col", choices = colnames(df), selected = pk_default_col)
       updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)

@@ -19,7 +19,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
            font-size: 150%;
            text-align: center;
            }
-           .error_message {
+           #pk_error_message_box {
              color: red;
              font-weight: bold;
              text-decoration: underline;
