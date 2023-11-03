@@ -190,25 +190,25 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       if("x" %in% colnames(df)){ #TODO check if df length > 4
         x_default_col = "x"
       } else {
-        x_default_col = colnames(df[1])
+        x_default_col = colnames(df)[1]
       }
       if("y" %in% colnames(df)){
         y_default_col = "y"
       } else {
-        y_default_col = colnames(df[2])
+        y_default_col = colnames(df)[2]
       }
       if("z" %in% colnames(df)){
         z_default_col = "z"
       } else {
-        z_default_col = colnames(df[3])
+        z_default_col = colnames(df)[3]
       }
       if("pk" %in% colnames(df)){
         pk_default_col = "pk"
       } else {
-        pk_default_col = colnames(df[4])
+        pk_default_col = colnames(df)[4]
       }
 
-      pkColumn = df[input$pk_col]
+      pkColumn = df[pk_default_col]
       if(length(unique(pkColumn)) != length(pkColumn)){
         input$pk_error_message_box <- renderText("ERROR: PK column is not unique")
       } 
@@ -219,7 +219,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       updateSelectInput(session, "x_col", choices = colnames(df), selected = x_default_col)
       updateSelectInput(session, "y_col", choices = colnames(df), selected = y_default_col)
       updateSelectInput(session, "z_col", choices = colnames(df), selected = z_default_col)
-      updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df[5]))
+      updateSelectInput(session, "indicator_col", choices = colnames(df), selected = colnames(df)[5] )
       print("done setting default columns")
       
     }
