@@ -398,9 +398,14 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   observeEvent(input$points_names, {
     trimmed <- str_trim(input$points_names)
     trimmed <- gsub(" ", "_", trimmed)
-    invalid_chars <- grep("^![a-zA-Z0-9_]+$", trimmed)
+    # list of all non alphanumeric charcters in trimmed
+    invalid_chars <- c()
+    for( char in str_split(trimmed)){
+      append(invalid_chars, grep("[a-zA-Z0-9_]+", char, invert = TRUE, value = TRUE))  
+    }
+    
     if (length(invalid_chars) > 0) {
-      output$name_message_box <- renderText(paste('Error', input$points_names, 'contains invalid characters:', trimmed[invalid_chars]))
+      output$name_message_box <- renderText(paste('Error', input$points_names, 'contains invalid characters:', invalid_chars))
       shinyjs::disable("add_to_list")
       selectedPointsLabel(NULL)
     }
