@@ -124,7 +124,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data = data.frame(),
   )
   
-  factor_value <- reactive({
+  isDiscreteValue <- reactive({
     input$toggle_discrete
   })
 
@@ -176,8 +176,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           incProgress(0.5, detail="Updating Indicator Column")
 
           #if (columnType()[input$indicator_col] == "character" | columnType()[input$indicator_col] == "factor"){
-          if (factor_value()){
-            #factor_value(TRUE)
+          if (isDiscreteValue()){
+            #isDiscreteValue(TRUE)
             updateCheckboxGroupInput(
               session,
               inputId = "indicator_values_filter",
@@ -185,7 +185,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
               selected = unique_values
             )
           } else {
-            #factor_value(FALSE)
+            #isDiscreteValue(FALSE)
             updateCheckboxGroupInput(
               session,
               inputId = "indicator_values_filter",
@@ -209,7 +209,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   filterData <- eventReactive(input$indicator_values_filter, {
     df = mydata()
     if (!is.null(df) ){ 
-      if (factor_value()) {
+      if (isDiscreteValue()) {
         df <- df %>% filter(get(input$indicator_col) %in% input$indicator_values_filter)
       }
       return(df)
@@ -268,7 +268,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     x <- filterData()[[input$x_col]]
     y <- filterData()[[input$y_col]]
     z <- filterData()[[input$z_col]]
-    js$plot3d('mydiv', x, y, z, ind, factor_value(), input$marker, input$shape)
+    js$plot3d('mydiv', x, y, z, ind, isDiscreteValue(), input$marker, input$shape)
     removeModal()
     shinyjs::enable("getParam")
   })
@@ -415,8 +415,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     }
     else {
       output$name_message_box <- renderText(paste("using column name: ", trimmed))
-      shinyjs::enable("add_to_export_list")
       selectedPointsLabel(trimmed)
+      shinyjs::enable("add_to_export_list")
     }
   })
 
@@ -438,31 +438,33 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     if(!is.null(df)){
       pkDataset$data <- data.frame()
       selected_points <- event_data("plotly_selected", source = "2dplot")
-
       print("selected points")
       print(selected_points)
-
       indicator_col_values <- unique(projectedData$data[['indicator']]) %>% sort
-
       num_selected_points <- nrow(selected_points)
-
-      if (factor_value()) {
-        for (i in 1:num_selected_points) {
-          curveNum <- selected_points[i,]$curveNumber
-          pointNum <- selected_points[i,]$pointNumber
-          filtered_data <- filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
-          filtered_data <- filtered_data[pointNum+1,]
+      if(num_selected_points > 0) {
+        if (isDiscreteValue()) {
+          for (i in 1:num_selected_points) {
+            curveNum <- selected_points[i,]$curveNumber
+            pointNum <- selected_points[i,]$pointNumber
+            filtered_data <- filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
+            filtered_data <- filtered_data[pointNum+1,]
+            pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
+          }
+        } else {
+          filtered_data <- projectedData$data[selected_points$pointNumber+1,]
           pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
         }
-      } else {
-        filtered_data <- projectedData$data[selected_points$pointNumber+1,]
-        pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
-      }
 
-      pk <- pkDataset$data
-      exportData <- df[df$pk %in% pk$pk,]
-      exportData$InterestPoint <- input$points_names
-      exportDataset$data <- rbind(exportDataset$data, exportData)
+        pk <- pkDataset$data
+        exportData <- df[df$pk %in% pk$pk,]
+        exportData$InterestPoint <- input$points_names
+        exportDataset$data <- rbind(exportDataset$data, exportData)
+      } else {
+         #todo show error
+         print("no points selected, doing nothing")
+      }
+      
     }
 
   })
