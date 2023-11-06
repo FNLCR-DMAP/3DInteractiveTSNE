@@ -431,6 +431,18 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #   }
   #   }
   # )
+
+  observe({
+    output$data_format_info <- renderText({
+      paste0(
+        "The following are the options for the output format of this data<br>",
+        "<ul>",
+        "<li><b>Indicator_Column</b>: A new column for each label consisting of TRUE / FALSE values deppending if that datapoint was selected or not</li>",
+        "<li><b>Subset</b>: A subset of the original data with a column coanining the label value, could have duplicates</li>",
+        "</ul>"
+      )
+    })
+  })
   
   observeEvent(input$add_to_export_list, {
 
