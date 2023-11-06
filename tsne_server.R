@@ -415,6 +415,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     }
     else {
       output$name_message_box <- renderText(paste("using column name: ", trimmed))
+      shinyjs::enable("add_to_export_list")
       selectedPointsLabel(trimmed)
     }
   })
@@ -440,7 +441,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
       print("selected points")
       print(selected_points)
-      
+
       indicator_col_values <- unique(projectedData$data[['indicator']]) %>% sort
 
       num_selected_points <- nrow(selected_points)
