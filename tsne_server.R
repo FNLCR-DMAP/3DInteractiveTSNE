@@ -403,9 +403,10 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     for( char in str_split(trimmed, pattern = "")){
       append(invalid_chars, grep("[a-zA-Z0-9]+", char, invert = TRUE, value = TRUE))  
     }
-    
+    print("invalid chars")
+    print(invalid_chars)
     if (length(invalid_chars) > 0) {
-      output$name_message_box <- renderText(paste('Error', input$points_names, 'contains invalid characters:', invalid_chars))
+      output$name_message_box <- renderText(paste('Error', trimmed, 'contains invalid characters:', invalid_chars))
       shinyjs::disable("add_to_list")
       selectedPointsLabel(NULL)
     }
