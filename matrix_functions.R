@@ -16,8 +16,8 @@ projectVertex <- function(v, model, view, projection, resolution) {
   for (i in 1:4) {
     p[i] = p[i]/p[4]
   }
-  print("projectVertex, before if")
-  print(p)
+  #print("projectVertex, before if")
+  #print(p)
   if ((p[3]+1)*0.5 > 1) {
     p[1] = -1
     p[2] = -1
@@ -25,7 +25,7 @@ projectVertex <- function(v, model, view, projection, resolution) {
     p[1] = 0.5 * resolution[1] * (1.0+p[1])
     p[2] = 0.5 * resolution[2] * (1.0+p[2])
   }
-  print("projectVertex after if")
+  #print("projectVertex after if")
   return(c(p[1], p[2]))
 }
 
