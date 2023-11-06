@@ -536,7 +536,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           all.x = TRUE
         )
         new_col_name <- selectedPointsLabel()
-        df_with_indicator <- transform(df_with_indicator, new_col_name=ifelse(is.na(InterestPoint), FALSE, TRUE) )
+        #df_with_indicator <- transform(df_with_indicator, new_col_name=ifelse(is.na(InterestPoint), FALSE, TRUE) )
+        df_with_indicator[new_col_name] <- ifelse(is.na(df_with_indicator$InterestPoint), FALSE, TRUE)
         df_with_indicator <- subset(df_with_indicator, select = -InterestPoint)
 
         print("exportDataPrimaryKeysLabels$data")
