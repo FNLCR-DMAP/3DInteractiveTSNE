@@ -442,7 +442,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       print(selected_points)
       indicator_col_values <- unique(projectedData$data[['indicator']]) %>% sort
       num_selected_points <- nrow(selected_points)
-      if(num_selected_points > 0) {
+
+      if(!is.null(num_selected_points) && num_selected_points > 0) {
         if (isDiscreteValue()) {
           for (i in 1:num_selected_points) {
             curveNum <- selected_points[i,]$curveNumber
