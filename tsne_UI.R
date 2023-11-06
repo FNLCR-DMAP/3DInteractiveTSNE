@@ -72,13 +72,14 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    textOutput("upload_error_message_box"),
                    br(),
                    htmlOutput("data_format_info"),
-                   fluidRow(
-                     column (4, selectInput(inputId = "export_data_format", 
+                   br(),
+                   selectInput(inputId = "export_data_format", 
                                             label = "Export Format", 
                                             choices = c("Indicator_Column", "Subset"),
                                             selected = "Indicator_Column"
-                                           )
-                     ),
+                   ),
+                   br(),
+                   fluidRow(
                      column (4, actionButton("clear", label = 'Clear Export List')),
                      column (4, actionButton("exportNidap", label = "Export to NIDAP"))
                    ),
