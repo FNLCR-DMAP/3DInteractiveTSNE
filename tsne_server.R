@@ -401,12 +401,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     # list of all non alphanumeric charcters in trimmed
     invalid_chars <- c()
     for( char in str_split(trimmed, pattern = "")){
-      print("char")
-      print(char)
       matched <- grep("[a-zA-Z0-9_]+", char, invert = TRUE, value = TRUE)
-      print("matched charss")
-      print(matched)
-      append(invalid_chars, matched)
+      invalid_chars <- append(invalid_chars, matched)
     }
     print("invalid chars")
     print(invalid_chars)
