@@ -75,7 +75,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    fluidRow(
                      column (4, selectInput(inputId = "export_data_format", 
                                             label = "Export Format", 
-                                            choices = c("Indicator_Column", "Subset")
+                                            choices = c("Indicator_Column", "Subset"),
                                             selected = "Indicator_Column"
                                            )
                      ),
