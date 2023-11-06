@@ -117,9 +117,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data = data.frame(),
   )
 
-  exportDataset <- reactiveValues(
+  exportDataPrimaryKeysLabels <- reactiveValues(
     data = data.frame()
   )
+
+  dataToExport <- reactive(NULL)
+
   projectedData <- reactiveValues(
     data = data.frame(),
   )
@@ -479,8 +482,8 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         exportData <- df[df$pk %in% pk$pk,] 
         exportData <- exportData[input$pk_col]
         exportData$InterestPoint <- selectedPointsLabel()
-        exportDataset$data <- rbind(exportDataset$data, exportData)
-        print(exportDataset$data)
+        exportDataPrimaryKeysLabels$data <- rbind(exportDataPrimaryKeysLabels$data, exportData)
+        print(exportDataPrimaryKeysLabels$data)
       } else {
          #todo show error
          print("no points selected, doing nothing")
@@ -490,19 +493,50 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
   })
 
+  
+
   observeEvent(
     input$clear, 
     {
-      exportDataset$data = data.frame()
+      exportDataPrimaryKeysLabels$data = data.frame()
     }
   )
 
+  dataToExportFormatListener <- reactive({
+    # not actually used, but needed to trigger update
+    list(input$export_data_format, exportDataPrimaryKeysLabels$data)
+  })
+  observeEvent(dataToExportFormatListener(), {
+    dataToExportFormat <- dataToExportFormatListener()
+    df <- mydata()
+    if(nrow(exportDataPrimaryKeysLabels$data) > 0 && !is.null(df)){
+      if(input$export_data_format == "Subset"){
+        #df_subset <- df[df[input$pk_col] %in% exportDataPrimaryKeysLabels$data$pk,]
+        # inner join df and exportDataPrimaryKeysLabels$data
+        df_subset <- merge(
+          x = df, 
+          y = exportDataPrimaryKeysLabels$data,
+          by.x=input$pk_col,
+          by.y="pk",
+          all = FALSE
+        )
+        print("exportDataPrimaryKeysLabels$data")
+        print(exportDataPrimaryKeysLabels$data)
+        print("df_subset")
+        print(df_subset)
+        dataToExport(df_subset)
+      } else if (input$export_data_format == "Indicator_Column"){
+        print('noop')
+      } 
+    }
+    
 
+  })
   output$Export_Dataset <- renderDT(
     server = FALSE,
     {
       DT::datatable(
-        exportDataset$data,
+        dataToExport(),
         rownames = FALSE,
         extensions = 'Buttons',
         options = list(
@@ -528,7 +562,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           filePath <- sprintf("tempFile_from_posit-%s.csv", Sys.Date())
 
           incProgress(0.25, detail="Converting data to CSV...")
+          
           data_to_upload <- generate_random_sample_data(200)
+
           two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
           character_list <- paste(two_d_csv, collapse="\n")
           raw_char_array <- charToRaw(character_list)
