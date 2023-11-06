@@ -470,7 +470,12 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         }
 
         pk <- pkDataset$data
+        print("pk pkDataset$data")
+        print(pk) 
+
         exportData <- df[df$pk %in% pk$pk,]
+        print("export data subset")
+        print(exportData[input$pk_col])
         exportData$InterestPoint <- input$points_names
         exportDataset$data <- rbind(exportDataset$data, exportData)
       } else {
@@ -488,6 +493,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       exportDataset$data = data.frame()
     }
   )
+
 
   output$Export_Dataset <- renderDT(
     server = FALSE,
