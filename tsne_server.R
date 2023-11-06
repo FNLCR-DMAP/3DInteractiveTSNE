@@ -5,7 +5,7 @@ source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sam
 tsne_server <- function (input, output, session, session_info = NULL) {
   print("regular server function: Global nonce data:")
   auth_token <- session$userData$auth0_credentials$access_token
-  shinyjs::disable("add_to_list")
+  shinyjs::disable("add_to_export_list")
   shinyjs::disable("getParam")
   shinyjs::disable("project2D")
 
@@ -410,7 +410,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       output$name_message_box <- renderText({
         paste('<b style="color:red">Error</b>', trimmed, 'contains invalid characters:', invalid_chars)
       })
-      shinyjs::disable("add_to_list")
+      shinyjs::disable("add_to_export_list")
       selectedPointsLabel(NULL)
     }
     else {
@@ -423,21 +423,24 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   #   {
   #     event_data("plotly_selected", source = "2dplot"); input$points_names}, {
   #   if (length(event_data("plotly_selected", source = "2dplot")) > 0 & selectedPointsLabel() != NULL) {
-  #     shinyjs::enable("add_to_list")
+  #     shinyjs::enable("add_to_export_list")
   #   }
   #   else{
-  #     shinyjs::disable("add_to_list")
+  #     shinyjs::disable("add_to_export_list")
   #   }
   #   }
   # )
   
-  observeEvent(input$add_to_list, {
+  observeEvent(input$add_to_export_list, {
 
     df <- mydata()
     if(!is.null(df)){
       pkDataset$data <- data.frame()
       selected_points <- event_data("plotly_selected", source = "2dplot")
 
+      print("selected points")
+      print(selected_points)
+      
       indicator_col_values <- unique(projectedData$data[['indicator']]) %>% sort
 
       num_selected_points <- nrow(selected_points)

@@ -65,7 +65,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    textInput("points_names", label = "Name of Selected Points"),
                    p("Please only use alphanumeric characters and underscores"),
                    htmlOutput("name_message_box"),
-                   actionButton("add_to_list", label = "Add Points to Export List"),
+                   actionButton("add_to_export_list", label = "Add Points to Export List"),
                    plotlyOutput("plot2d")),
           tabPanel("View Export Dataset",
                    br(),
