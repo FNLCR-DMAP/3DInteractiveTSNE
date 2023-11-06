@@ -121,7 +121,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     data = data.frame()
   )
 
-  dataToExport <- reactive(NULL)
+  dataToExport <- reactiveVal()(NULL)
 
   projectedData <- reactiveValues(
     data = data.frame(),
