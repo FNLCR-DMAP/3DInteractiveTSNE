@@ -526,7 +526,21 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         print(df_subset)
         dataToExport(df_subset)
       } else if (input$export_data_format == "Indicator_Column"){
-        print('noop')
+        df_with_indicator <- data.frame()
+        # left join df with exportDataPrimaryKeysLabels$data
+        df_with_indicator <- merge(
+          x = df, 
+          y = exportDataPrimaryKeysLabels$data,
+          by.x=input$pk_col,
+          by.y="pk",
+          all.x = TRUE
+        )
+        
+        print("exportDataPrimaryKeysLabels$data")
+        print(exportDataPrimaryKeysLabels$data)
+        print("df_with_indicator")
+        print(df_with_indicator)
+        dataToExport(df_with_indicator)
       } 
     }
     
