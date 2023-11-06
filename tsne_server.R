@@ -526,16 +526,18 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         print(df_subset)
         dataToExport(df_subset)
       } else if (input$export_data_format == "Indicator_Column"){
-        df_with_indicator <- data.frame()
-        # left join df with exportDataPrimaryKeysLabels$data
+        current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == selectedPointsLabel(),]
+        
         df_with_indicator <- merge(
           x = df, 
-          y = exportDataPrimaryKeysLabels$data,
+          y = current_intrest_points,
           by.x=input$pk_col,
           by.y="pk",
           all.x = TRUE
         )
-        
+        df_with_indicator <- transform(df_with_indicator, selectedPointsLabel()=ifelse(is.na(InterestPoint), FALSE, TRUE) )
+        df_with_indicator <- subset(df_with_indicator, select = -InterestPoint)
+
         print("exportDataPrimaryKeysLabels$data")
         print(exportDataPrimaryKeysLabels$data)
         print("df_with_indicator")
