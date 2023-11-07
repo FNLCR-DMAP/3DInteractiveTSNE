@@ -529,7 +529,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
         for(intrest_point in unique_interest_points){
 
-          current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == current_intrest_point,]        
+          current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == intrest_point,]        
           df_with_indicator <- merge(
             x = df_with_indicator, 
             y = current_intrest_points,
@@ -537,8 +537,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             by.y="pk",
             all.x = TRUE
           )
-          new_col_name <- selectedPointsLabel()
-          df_with_indicator[new_col_name] <- ifelse(is.na(df_with_indicator$InterestPoint), FALSE, TRUE)
+          #new_col_name <- selectedPointsLabel()
+          
+          df_with_indicator[intrest_point] <- ifelse(is.na(df_with_indicator$InterestPoint), FALSE, TRUE)
           df_with_indicator <- subset(df_with_indicator, select = -InterestPoint)
         }
         
