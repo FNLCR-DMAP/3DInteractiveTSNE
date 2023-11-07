@@ -552,9 +552,15 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   output$Export_Dataset <- renderDT(
     server = FALSE,
     {
-      print("rendering dt")
+      render_data <- dataToExport()
+      if( nrow(exportDataPrimaryKeysLabels$data) > 0 ){
+        label_columns <- unique(exportDataPrimaryKeysLabels$data$InterestPoint)
+        column_names <- colnames(render_data)
+        column_names <- c(label_columns, setdiff(column_names, label_columns))
+        render_data <- render_data[column_names]
+      }
       DT::datatable(
-        dataToExport(),
+        render_data,
         rownames = FALSE,
         extensions = 'Buttons',
         options = list(
