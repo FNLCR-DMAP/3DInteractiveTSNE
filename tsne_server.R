@@ -554,9 +554,14 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     {
       render_data <- dataToExport()
       if( nrow(exportDataPrimaryKeysLabels$data) > 0 ){
-        label_columns <- unique(exportDataPrimaryKeysLabels$data$InterestPoint)
         column_names <- colnames(render_data)
-        column_names <- c(label_columns, setdiff(column_names, label_columns))
+        if(input$export_data_format == "Subset"){
+          column_names <- c("InterestPoint", setdiff(column_names, "InterestPoint"))
+        }
+        else if (input$export_data_format == "Indicator_Column"){
+          label_columns <- unique(exportDataPrimaryKeysLabels$data$InterestPoint)
+          column_names <- c(label_columns, setdiff(column_names, label_columns))
+        }
         render_data <- render_data[column_names]
       }
       DT::datatable(
