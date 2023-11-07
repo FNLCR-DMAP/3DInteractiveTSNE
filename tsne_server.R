@@ -608,7 +608,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
           incProgress(0.25, detail="Converting data to CSV...")
           
-          data_to_upload <- exportData()
+          data_to_upload <- dataToExport()
 
           two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
           character_list <- paste(two_d_csv, collapse="\n")
