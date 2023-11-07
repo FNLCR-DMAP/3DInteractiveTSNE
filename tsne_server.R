@@ -565,7 +565,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         render_data <- render_data[column_names]
       }
       DT::datatable(
-        render_data,
+        render_data,#
         rownames = FALSE,
         extensions = 'Buttons',
         options = list(
