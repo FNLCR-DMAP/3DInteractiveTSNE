@@ -33,9 +33,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
              height: 100%;
            }
            3dProjectionDiv {
-             height: 100%;
              width: 100%;
-             padding: 20px;
            }
            "
         )
