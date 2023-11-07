@@ -489,7 +489,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           exportDataPrimaryKeysLabels$data <- rbind(exportDataPrimaryKeysLabels$data, exportData)
           showModal(
             modalDialog(
-              paste0("Added", num_selected_points, " datapoints to export list"),
+              paste("Added", num_selected_points, "datapoints to export list"),
               easyClose = TRUE,
               footer = NULL
             )
@@ -608,7 +608,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
           incProgress(0.25, detail="Converting data to CSV...")
           
-          data_to_upload <- generate_random_sample_data(200)
+          data_to_upload <- exportData()
 
           two_d_csv <- capture.output(write.csv(data_to_upload, row.names = FALSE)) #list of lists
           character_list <- paste(two_d_csv, collapse="\n")
