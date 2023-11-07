@@ -1,9 +1,9 @@
-shinyjs.plot3d = function(projectionDiv){
-    console.log(projectionDiv[1])
+shinyjs.plot3d = function(mydiv){
+    console.log(mydiv[1])
 
     var data = []
     
-    if (projectionDiv[5]) {
+    if (mydiv[5]) {
     
       colsels = [
         '#1f77b4',
@@ -18,7 +18,7 @@ shinyjs.plot3d = function(projectionDiv){
         '#17becf'
       ];
       
-      var cats = projectionDiv[4].filter((v,i,a) => a.indexOf(v)===i)
+      var cats = mydiv[4].filter((v,i,a) => a.indexOf(v)===i)
       console.log(cats)
       
       var catcols = {}
@@ -26,7 +26,7 @@ shinyjs.plot3d = function(projectionDiv){
       
       for (isl=0; isl<cats.length;isl++) {
         catcols[cats[isl]] = colsels[isl]
-        styledict[cats[isl]] = {target: cats[isl], value: {marker: {color: colsels[isl], symbol: projectionDiv[7], size:projectionDiv[6]}}}
+        styledict[cats[isl]] = {target: cats[isl], value: {marker: {color: colsels[isl], symbol: mydiv[7], size:mydiv[6]}}}
       }
       
       console.log(catcols)
@@ -41,15 +41,15 @@ shinyjs.plot3d = function(projectionDiv){
           type: 'scatter3d',
           mode: 'markers',
           
-          x: projectionDiv[1],
-          y: projectionDiv[2],
-          z: projectionDiv[3],
+          x: mydiv[1],
+          y: mydiv[2],
+          z: mydiv[3],
           
-          text: projectionDiv[4],
+          text: mydiv[4],
           hoverinfo:'text',
           transforms: [{
             type: 'groupby',
-            groups: projectionDiv[4],
+            groups: mydiv[4],
             styles: globalstyles
           }]
         }
@@ -62,17 +62,17 @@ shinyjs.plot3d = function(projectionDiv){
           type: 'scatter3d',
           mode: 'markers',
           
-          x: projectionDiv[1],
-          y: projectionDiv[2],
-          z: projectionDiv[3],
+          x: mydiv[1],
+          y: mydiv[2],
+          z: mydiv[3],
           
-          text: projectionDiv[4],
+          text: mydiv[4],
           hoverinfo:'text',
           
           marker: {
-            size: projectionDiv[6],
-            symbol: projectionDiv[7],
-            color: projectionDiv[4],
+            size: mydiv[6],
+            symbol: mydiv[7],
+            color: mydiv[4],
             colorbar: {thickness:20}
           }
         }
@@ -85,7 +85,7 @@ shinyjs.plot3d = function(projectionDiv){
       'center': {'x':0, 'y':0, 'z':0},
     }
     
-    var gd3D = document.getElementById('projectionDiv');
+    var gd3D = document.getElementById('mydiv');
     
     if(gd3D.className !== 'myplot') {
       camera=gd3D._fullLayout.scene.camera;
@@ -116,7 +116,7 @@ shinyjs.plot3d = function(projectionDiv){
       }
     };
     
-    var graphDiv3D = document.getElementById(projectionDiv[0])
+    var graphDiv3D = document.getElementById(mydiv[0])
     
     Plotly.newPlot(graphDiv3D,data,layout)
     
