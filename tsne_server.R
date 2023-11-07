@@ -463,10 +463,9 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       indicator_col_values <- unique(projectedData$data[['indicator']]) %>% sort
       num_selected_points <- nrow(selected_points)
 
-      if(  !is.null(num_selected_points) 
-        && !is.null(selectedPointsLabel()) ) 
+      if(!is.null(selectedPointsLabel()) ) 
       { 
-        if(num_selected_points > 0) { 
+        if(!is.null(num_selected_points) && num_selected_points > 0) { 
           if (isDiscreteValue()) {
             for (i in 1:num_selected_points) {
               curveNum <- selected_points[i,]$curveNumber
@@ -503,7 +502,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
               footer = NULL
             )
           )
-          #todo show error
           print("no points selected, doing nothing")
         }
       }
