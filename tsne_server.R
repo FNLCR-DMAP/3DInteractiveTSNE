@@ -464,38 +464,50 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       num_selected_points <- nrow(selected_points)
 
       if(  !is.null(num_selected_points) 
-        && !is.null(selectedPointsLabel()) 
-        && num_selected_points > 0) 
-      {
-        if (isDiscreteValue()) {
-          for (i in 1:num_selected_points) {
-            curveNum <- selected_points[i,]$curveNumber
-            pointNum <- selected_points[i,]$pointNumber
-            filtered_data <- filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
-            filtered_data <- filtered_data[pointNum+1,]
+        && !is.null(selectedPointsLabel()) ) 
+      { 
+        if(num_selected_points > 0) { 
+          if (isDiscreteValue()) {
+            for (i in 1:num_selected_points) {
+              curveNum <- selected_points[i,]$curveNumber
+              pointNum <- selected_points[i,]$pointNumber
+              filtered_data <- filter(projectedData$data, get('indicator') == indicator_col_values[curveNum+1])
+              filtered_data <- filtered_data[pointNum+1,]
+              pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
+            }
+          } else {
+            filtered_data <- projectedData$data[selected_points$pointNumber+1,]
             pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
           }
+
+          pk <- pkDataset$data
+          print("pk pkDataset$data")
+          print(pk) 
+
+          exportData <- df[df$pk %in% pk$pk,] 
+          exportData <- exportData[input$pk_col]
+          exportData$InterestPoint <- selectedPointsLabel()
+          exportDataPrimaryKeysLabels$data <- rbind(exportDataPrimaryKeysLabels$data, exportData)
+          showModal(
+            modalDialog(
+              paste0("Added", num_selected_points, " datapoints to export list"),
+              easyClose = TRUE,
+              footer = NULL
+            )
+          )
         } else {
-          filtered_data <- projectedData$data[selected_points$pointNumber+1,]
-          pkDataset$data <- rbind(pkDataset$data, filtered_data[input$pk_col])
+          showModal(
+            modalDialog(
+              paste0("Zero datapoints selected, adding nothing to export list"),
+              easyClose = TRUE,
+              footer = NULL
+            )
+          )
+          #todo show error
+          print("no points selected, doing nothing")
         }
-
-        pk <- pkDataset$data
-        print("pk pkDataset$data")
-        print(pk) 
-
-        exportData <- df[df$pk %in% pk$pk,] 
-        exportData <- exportData[input$pk_col]
-        exportData$InterestPoint <- selectedPointsLabel()
-        exportDataPrimaryKeysLabels$data <- rbind(exportDataPrimaryKeysLabels$data, exportData)
-        print(exportDataPrimaryKeysLabels$data)
-      } else {
-         #todo show error
-         print("no points selected, doing nothing")
       }
-      
     }
-
   })
 
   
