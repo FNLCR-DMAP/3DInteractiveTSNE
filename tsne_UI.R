@@ -32,6 +32,11 @@ tsne_ui <-  cookies::add_cookie_handlers(
            html, body {
              height: 100%;
            }
+           3dProjectionDiv {
+             height: 100%;
+             width: 100%;
+             padding: 20px;
+           }
            "
         )
       )
@@ -66,7 +71,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    actionButton('getParam', 'Save View to Project'),
                    actionButton('project2D', "Project to 2D"),
                    tags$body(
-                     tags$div(id='mydiv', class = 'myplot')
+                     tags$div(id='3dProjectionDiv', class = 'myplot')
                    )),
           tabPanel("2D Lasso",
                    br(),
