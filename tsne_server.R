@@ -531,7 +531,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
          # current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == selectedPointsLabel(),]        
           df_with_indicator <- merge(
             x = df_with_indicator, 
-            y = current_intrest_points,
+            y = intrest_point,
             by.x=input$pk_col,
             by.y="pk",
             all.x = TRUE
