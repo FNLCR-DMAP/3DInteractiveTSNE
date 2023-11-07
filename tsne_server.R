@@ -528,10 +528,11 @@ tsne_server <- function (input, output, session, session_info = NULL) {
         df_with_indicator <- df 
 
         for(intrest_point in unique_interest_points){
-         # current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == selectedPointsLabel(),]        
+
+          current_intrest_points <- exportDataPrimaryKeysLabels$data[exportDataPrimaryKeysLabels$data$InterestPoint == current_intrest_point,]        
           df_with_indicator <- merge(
             x = df_with_indicator, 
-            y = intrest_point,
+            y = current_intrest_points,
             by.x=input$pk_col,
             by.y="pk",
             all.x = TRUE
