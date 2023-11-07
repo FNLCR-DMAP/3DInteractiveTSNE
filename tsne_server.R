@@ -514,6 +514,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
     input$clear, 
     {
       exportDataPrimaryKeysLabels$data = data.frame()
+      dataToExport(NULL)
     }
   )
 
