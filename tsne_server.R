@@ -552,6 +552,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   output$Export_Dataset <- renderDT(
     server = FALSE,
     {
+      print("rendering dt")
       DT::datatable(
         dataToExport(),
         rownames = FALSE,
