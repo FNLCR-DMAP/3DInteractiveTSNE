@@ -32,6 +32,10 @@ tsne_ui <-  cookies::add_cookie_handlers(
            html, body {
              height: 100%;
            }
+           mydiv {
+             height: 100%;
+             width: 100%;
+           }
            "
         )
       )
