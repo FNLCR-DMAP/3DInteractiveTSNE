@@ -25,9 +25,12 @@ tsne_ui <-  cookies::add_cookie_handlers(
              text-decoration: underline;
            }
            .container-fluid {
-             background-color: #F5F5F5;
+             background-color: #FBFBFD;
              height: 100%;
              width: 100%;
+           }
+           html, body {
+             height: 100%;
            }
            "
         )
