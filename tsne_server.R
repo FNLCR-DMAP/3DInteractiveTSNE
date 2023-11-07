@@ -141,15 +141,20 @@ tsne_server <- function (input, output, session, session_info = NULL) {
   selectedColumnValidation <- observeEvent(selectedColumnValidationListener(), {
     df <- mydata()
     if (!is.null(df) ){
+      print("selectedColumnValidation")
       if(sum(is.na(df[input$pk_col])) > 0){ #this one needs to go first, superseds the next PK check
         output$selection_error_message_box <- renderText('ERROR: Primary Key column contains null values')
         shinyjs::disable("show")
         return()
       }
-      if(sum(duplicated(df[input$pk_col])) > 0){
+      else if(sum(duplicated(df[input$pk_col])) > 0){
         output$selection_error_message_box <- renderText('ERROR: Primary Key column contains duplicate values')
         shinyjs::disable("show")
         return()
+      }
+      else {
+        output$selection_error_message_box <- renderText('')
+        shinyjs::enable("show")
       }
       
       colsToCheck <- tail(selectedColumnValidationListener(), -1)
