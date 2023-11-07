@@ -69,7 +69,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    actionButton('getParam', 'Save View to Project'),
                    actionButton('project2D', "Project to 2D"),
                    tags$body(
-                     tags$div(id='projectionDiv', class = 'myplot')
+                     tags$div(id='mydiv', class = 'myplot')
                    )),
           tabPanel("2D Lasso",
                    br(),
