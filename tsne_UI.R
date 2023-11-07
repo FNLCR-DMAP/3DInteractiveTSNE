@@ -32,16 +32,15 @@ tsne_ui <-  cookies::add_cookie_handlers(
            html, body {
              height: 100%;
            }
-           3dProjectionDiv {
-             width: 100%;
-           }
            "
         )
       )
     ),
-    titlePanel("T-SNE 3D Scatterplot"),
+    #titlePanel("T-SNE 3D Scatterplot"),
     sidebarLayout(
       sidebarPanel(
+        width = 3,
+        h3("T-SNE 3D Scatterplot"),
         textOutput("selection_error_message_box"),
         selectInput("pk_col", label = "Primary Key", choices = NULL),
         selectInput("x_col", label = "X-Axis", choices = NULL),
@@ -55,6 +54,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
         checkboxGroupInput("indicator_values_filter", label = "Features", choices = NULL)
       ),
       mainPanel(
+        width = 9, 
         fluidRow(
           column (4, sliderInput("marker", label = 'Marker Size', min = 1, max = 10, value = 3)),
           column (4, selectInput("shape", label = "Marker Shape", choices = markerShape)),
@@ -69,7 +69,7 @@ tsne_ui <-  cookies::add_cookie_handlers(
                    actionButton('getParam', 'Save View to Project'),
                    actionButton('project2D', "Project to 2D"),
                    tags$body(
-                     tags$div(id='3dProjectionDiv', class = 'myplot')
+                     tags$div(id='projectionDiv', class = 'myplot')
                    )),
           tabPanel("2D Lasso",
                    br(),
