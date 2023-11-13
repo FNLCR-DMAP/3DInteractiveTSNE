@@ -45,19 +45,6 @@ tsne_server <- function (input, output, session, session_info = NULL) {
       dataset_rid <- cookie_data$inputRID
       branch <- cookie_data$inputBranch
       withProgress(message="Downloading Data From NIDAP", value = 0, {
-  })
-
-  inputData <- reactiveVal(NULL)
-
-  mydata <- reactive({
-    df <- NULL
-    cookie_data <- appCookies()
-    if(is.null(cookie_data) ){
-      return(NULL)
-    }
-    dataset_rid <- cookie_data$inputRID
-    branch <- cookie_data$inputBranch
-    withProgress(message="Downloading Data From NIDAP", value = 0, {
       
         list_files_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files?branchId=", branch)
         print(paste("making request to ", list_files_url))
