@@ -9,6 +9,7 @@ library(urltools)
 library(arrow)
 library(cookies)
 library(auth0)
+library(stringr)
 
 source("./UI_functions.R") # get_fluid_page, get_server
 source("./matrix_functions.R") # projectVertex, xformMatrix, generate_random_sample_data
@@ -83,8 +84,8 @@ redirect_and_serve_UI <- function(ui, info) {
 
         query <- paste0("/?", paste(
           mapply(paste, names(params), params, MoreArgs = list(sep = "=")),
-          collapse = "&")
-        )
+          collapse = "&"
+        ))
         if (!is.null(info$remote_url) && info$remote_url != "" && !getOption("auth0_local")) {
           redirect_uri <- info$remote_url
         } else {
