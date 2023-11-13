@@ -91,10 +91,15 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             dataset = data.frame(dataset)
             dataset$name <- file
             df <- rbind(df, dataset)
-          } else {
-            dataset = generate_random_sample_data(100)
-            dataset$name <- "else"
-            df <- rbind(df, dataset)
+          } else if(file_ext(file) == "rds"){
+            raw = content(response2, as="raw")
+            dataset = readRDS(raw)
+            dataset = data.frame(dataset)
+            dataset$name <- file
+            df <- rbind(df, dataset){
+          }else {
+            #TODO raise an error
+            print("unsoupported file type")
           }
           index <- index + 1
           incProgress(0.9 / num_files, detail=paste("Downloaded", index + 1, "of", num_files, "files"))
