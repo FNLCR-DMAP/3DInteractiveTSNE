@@ -96,7 +96,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
             dataset = readRDS(raw)
             dataset = data.frame(dataset)
             dataset$name <- file
-            df <- rbind(df, dataset){
+            df <- rbind(df, dataset)
           }else {
             #TODO raise an error
             print("unsoupported file type")
