@@ -51,7 +51,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
         response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
         if(status_code(response) != 200){
-          outpu$error_message_box <- renderText("ERROR: Could not list files in NIDAP")
+          output$error_message_box <- renderText("ERROR: Could not list files in NIDAP")
           stop("Error listing files from NIDAP")
         }
 
@@ -76,7 +76,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
           get_file_content_url <- paste0("https://nidap.nih.gov/api/v1/datasets/",dataset_rid,"/files/",file,"/content?branchId=", branch)
           response2 <- GET(get_file_content_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
           if(status_code(response2) != 200){
-            outpu$error_message_box <- renderText("ERROR: Could not get file content from NIDAP")
+            output$error_message_box <- renderText("ERROR: Could not get file content from NIDAP")
             stop("Error getting file content from NIDAP")
           }
 
