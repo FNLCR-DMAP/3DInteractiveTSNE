@@ -51,6 +51,7 @@ tsne_server <- function (input, output, session, session_info = NULL) {
 
         response <- GET(list_files_url, httr::add_headers(Authorization = paste("Bearer", auth_token)))
         if(status_code(response) != 200){
+          print(content(response, as="text"))
           output$error_message_box <- renderText("ERROR: Could not list files in NIDAP")
           stop("Error listing files from NIDAP")
         }
