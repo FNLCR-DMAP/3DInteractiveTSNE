@@ -30,7 +30,8 @@ auth0_server_verify <- function(session, app, api, state) {
     cred <- httr::oauth2.0_access_token(api, app(redirect_uri), params$code)
     token <- httr::oauth2.0_token(
       app = app(redirect_uri), endpoint = api, cache = FALSE, credentials = cred,
-      user_params = list(grant_type = "authorization_code"))
+      user_params = list(grant_type = "authorization_code")
+    )
 
     userinfo_url <- sub("authorize", "userinfo", api$authorize)
     resp <- httr::RETRY(
